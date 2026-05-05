@@ -9,7 +9,9 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { RecognitionSection } from "@/components/RecognitionSection";
 import { RevealImage } from "@/components/RevealImage";
+import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -23,6 +25,7 @@ export default function CommercialIndustrialPage() {
       <WhyChooseUs />
       <Testimonials />
       <Recognition />
+      <RecognitionSection />
       <FinalCta />
       <SiteFooter />
     </main>
@@ -521,55 +524,10 @@ function WhyChooseUs() {
 
 function Testimonials() {
   return (
-    <section className="border-t border-white/10 bg-black py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1.05fr_1fr] md:gap-20">
-          <Reveal className="flex flex-col">
-            <div className="flex items-baseline gap-4">
-              <span className="text-[64px] font-medium leading-[0.95] tracking-tight md:text-[112px]">
-                850+
-              </span>
-            </div>
-            <div className="mt-2 flex flex-col gap-0.5 text-white/85">
-              <span className="text-base font-medium md:text-lg">
-                Businesses
-              </span>
-              <span className="text-sm text-white/55 md:text-base">
-                Operating
-              </span>
-            </div>
-          </Reveal>
-
-          <Reveal delay={150} className="flex flex-col gap-10">
-            <h3 className="text-[34px] font-medium leading-[1.05] tracking-tight md:text-[56px]">
-              What our partners say?
-            </h3>
-            <div className="flex items-center gap-4">
-              <span className="relative inline-block h-12 w-12 overflow-hidden rounded-full bg-white/10">
-                <Image
-                  src="/residential/testimonial-avatar.png"
-                  alt=""
-                  fill
-                  sizes="48px"
-                  className="object-cover"
-                />
-              </span>
-              <div className="flex flex-col">
-                <span className="text-base font-medium">Anand Patel</span>
-                <span className="text-sm text-white/55">
-                  Director, Ankleshwar
-                </span>
-              </div>
-            </div>
-            <p className="max-w-md text-[17px] leading-[1.5] text-white/75 md:text-lg">
-              We moved our manufacturing into a Golden estate two years ago.
-              Specs were exactly as promised, possession was on time, and the
-              site team is still responsive when we need them.
-            </p>
-          </Reveal>
-        </div>
-      </div>
-    </section>
+    <TestimonialCarousel
+      count="+850"
+      labelLines={["Businesses", "Operating"]}
+    />
   );
 }
 
@@ -733,12 +691,15 @@ function SiteFooter() {
         <div className="border-t border-[#464646]" aria-hidden />
         <div className="flex flex-col gap-3 px-[30px] py-6 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
           <span>© 2026 Golden Group. All rights reserved.</span>
-          <div className="flex gap-8">
+          <div className="flex flex-wrap gap-6 md:gap-8">
             <Link href="/privacy" className="hover:text-white">
               Privacy Policy
             </Link>
             <Link href="/terms" className="hover:text-white">
-              Terms of Use
+              Terms &amp; Conditions
+            </Link>
+            <Link href="/disclaimer" className="hover:text-white">
+              Disclaimer
             </Link>
           </div>
         </div>
