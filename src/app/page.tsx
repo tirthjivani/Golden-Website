@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 
 type Side = "left" | "right";
@@ -12,7 +12,6 @@ const DURATION = "900ms";
 
 export default function Home() {
   const [hovered, setHovered] = useState<Side>("left");
-  const mainRef = useRef<HTMLElement>(null);
 
   const leftWidth = hovered === "left" ? "60%" : "40%";
   const rightWidth = hovered === "right" ? "60%" : "40%";
@@ -20,23 +19,12 @@ export default function Home() {
   const sideTransition = `width ${DURATION} ${EASE}, flex-basis ${DURATION} ${EASE}`;
   const fadeTransition = `opacity ${DURATION} ${EASE}, transform ${DURATION} ${EASE}`;
 
-  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = mainRef.current?.getBoundingClientRect();
-    if (!rect || rect.width === 0) return;
-    const x = e.clientX - rect.left;
-    const next: Side = x < rect.width / 2 ? "left" : "right";
-    setHovered((prev) => (prev === next ? prev : next));
-  };
-
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black text-white">
-      <main
-        ref={mainRef}
-        className="flex min-h-screen w-full flex-col md:flex-row"
-        onMouseMove={handleMove}
-      >
+      <main className="flex min-h-screen w-full flex-col md:flex-row">
         <Link
           href="/residential"
+          onMouseEnter={() => setHovered("left")}
           className="group relative flex h-[60vh] min-h-[480px] w-full items-end overflow-hidden md:h-screen md:min-h-screen md:w-[var(--side-width)] md:flex-none md:will-change-[width]"
           style={
             {
@@ -70,6 +58,7 @@ export default function Home() {
 
         <Link
           href="/commercial-industrial"
+          onMouseEnter={() => setHovered("right")}
           className="group relative flex h-[60vh] min-h-[480px] w-full items-end overflow-hidden bg-black md:h-screen md:min-h-screen md:w-[var(--side-width)] md:flex-none md:will-change-[width]"
           style={
             {

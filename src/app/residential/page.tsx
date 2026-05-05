@@ -9,6 +9,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { RevealImage } from "@/components/RevealImage";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -157,7 +158,7 @@ function StatsGallery() {
 
       <div className="relative h-[85vh] min-h-[480px] w-full overflow-hidden">
         {PROJECT_IMAGES.map((src, i) => (
-          <Image
+          <RevealImage
             key={src}
             src={src}
             alt=""
@@ -169,6 +170,7 @@ function StatsGallery() {
               opacity: i === index ? 1 : 0,
               transition: `opacity 800ms ${EASE}`,
             }}
+            containerClassName="absolute inset-0"
           />
         ))}
 
@@ -191,16 +193,18 @@ function StatsGallery() {
                   transition: `opacity 350ms ${EASE}`,
                 }}
               >
-                <Image
+                <RevealImage
                   src={src}
                   alt=""
                   fill
                   sizes="96px"
                   className="object-cover"
+                  containerClassName="absolute inset-0"
+                  delay={i * 110}
                 />
                 <span
                   aria-hidden
-                  className="absolute inset-0"
+                  className="absolute inset-0 z-10"
                   style={{
                     boxShadow: index === i ? "inset 0 0 0 2px #fff" : "none",
                   }}
@@ -363,15 +367,14 @@ function ProjectCard({
         opacity: active ? 1 : 0.55,
       }}
     >
-      <div className="relative aspect-[380/370] w-full overflow-hidden">
-        <Image
-          src={project.image}
-          alt={project.name}
-          fill
-          sizes="380px"
-          className="object-cover"
-        />
-      </div>
+      <RevealImage
+        src={project.image}
+        alt={project.name}
+        fill
+        sizes="380px"
+        className="object-cover"
+        containerClassName="relative aspect-[380/370] w-full"
+      />
       <div className="mt-2 flex w-[334px] flex-col gap-3">
         <h4 className="text-[24px] font-normal leading-[1.4] text-white">
           {project.name}
@@ -615,15 +618,14 @@ function FinalCta() {
         </div>
 
         <Reveal delay={120} className="relative">
-          <div className="relative aspect-[590/840] w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[780px]">
-            <Image
-              src="/residential/cta-dream.jpg"
-              alt=""
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+          <RevealImage
+            src="/residential/cta-dream.jpg"
+            alt=""
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+            containerClassName="relative aspect-[590/840] w-full md:aspect-auto md:h-full md:min-h-[780px]"
+          />
         </Reveal>
       </div>
     </section>
@@ -675,16 +677,15 @@ function SiteFooter() {
       {/* RIGHT */}
       <div className="flex flex-col">
         <div className="flex flex-1 flex-col items-start justify-between gap-10 p-[30px] md:flex-row md:items-start">
-          <div className="shrink-0">
-            <Image
-              src="/residential/gallery-5.jpg"
-              alt=""
-              width={300}
-              height={169}
-              sizes="300px"
-              className="h-auto w-[300px]"
-            />
-          </div>
+          <RevealImage
+            src="/residential/gallery-5.jpg"
+            alt=""
+            width={300}
+            height={169}
+            sizes="300px"
+            className="h-auto w-[300px]"
+            containerClassName="relative w-[300px] h-[169px] shrink-0"
+          />
           <div className="flex flex-col gap-9 md:items-end md:text-right">
             <ul className="flex flex-col gap-3 text-base text-white">
               {navLinks.map((l) => (

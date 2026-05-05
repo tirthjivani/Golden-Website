@@ -1,9 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { RevealImage } from "@/components/RevealImage";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
+const REVEAL_STAGGER = 140;
 
 type ProjectType = "residential" | "commercial-industrial";
 type Filter = "all" | ProjectType;
@@ -28,6 +29,7 @@ const PROJECTS: Project[] = [
       "/residential/gallery-1.jpg",
       "/residential/gallery-2.jpg",
       "/residential/gallery-3.jpg",
+      "/residential/project-1.png",
     ],
   },
   {
@@ -40,6 +42,7 @@ const PROJECTS: Project[] = [
       "/residential/gallery-4.jpg",
       "/residential/gallery-5.jpg",
       "/residential/gallery-6.jpg",
+      "/residential/project-2.png",
     ],
   },
   {
@@ -52,6 +55,7 @@ const PROJECTS: Project[] = [
       "/residential/gallery-3.jpg",
       "/residential/gallery-1.jpg",
       "/residential/gallery-5.jpg",
+      "/residential/nirvana-tile.png",
     ],
   },
   {
@@ -64,6 +68,7 @@ const PROJECTS: Project[] = [
       "/residential/gallery-2.jpg",
       "/residential/gallery-4.jpg",
       "/residential/gallery-6.jpg",
+      "/residential/project-3.png",
     ],
   },
   {
@@ -76,6 +81,7 @@ const PROJECTS: Project[] = [
       "/residential/gallery-1.jpg",
       "/residential/gallery-3.jpg",
       "/residential/gallery-5.jpg",
+      "/residential/project-4.png",
     ],
   },
   {
@@ -88,6 +94,7 @@ const PROJECTS: Project[] = [
       "/residential/gallery-2.jpg",
       "/residential/gallery-5.jpg",
       "/residential/gallery-4.jpg",
+      "/residential/project-5.png",
     ],
   },
   {
@@ -100,6 +107,7 @@ const PROJECTS: Project[] = [
       "/residential/gallery-6.jpg",
       "/residential/gallery-2.jpg",
       "/residential/gallery-1.jpg",
+      "/residential/why-image.png",
     ],
   },
   {
@@ -112,6 +120,7 @@ const PROJECTS: Project[] = [
       "/commercial-hero.png",
       "/residential/gallery-3.jpg",
       "/residential/gallery-1.jpg",
+      "/residential/gallery-5.jpg",
     ],
   },
   {
@@ -124,6 +133,7 @@ const PROJECTS: Project[] = [
       "/commercial-hero.png",
       "/residential/gallery-4.jpg",
       "/residential/gallery-5.jpg",
+      "/residential/gallery-6.jpg",
     ],
   },
   {
@@ -136,6 +146,7 @@ const PROJECTS: Project[] = [
       "/commercial-hero.png",
       "/residential/gallery-2.jpg",
       "/residential/gallery-6.jpg",
+      "/residential/gallery-3.jpg",
     ],
   },
   {
@@ -148,6 +159,7 @@ const PROJECTS: Project[] = [
       "/commercial-hero.png",
       "/residential/gallery-3.jpg",
       "/residential/gallery-5.jpg",
+      "/residential/gallery-4.jpg",
     ],
   },
 ];
@@ -160,14 +172,10 @@ const FILTERS: { id: Filter; label: string }[] = [
 
 export default function ProjectsPage() {
   const [filter, setFilter] = useState<Filter>("all");
-  const [openId, setOpenId] = useState<string>(PROJECTS[0].id);
 
   const filtered = PROJECTS.filter(
     (p) => filter === "all" || p.type === filter,
   );
-
-  const effectiveOpenId =
-    filtered.find((p) => p.id === openId)?.id ?? filtered[0]?.id ?? "";
 
   return (
     <main className="relative min-h-screen w-full bg-black text-white">
@@ -212,12 +220,7 @@ export default function ProjectsPage() {
 
       <section className="border-t border-[#464646]">
         {filtered.map((p) => (
-          <ProjectRow
-            key={p.id}
-            project={p}
-            open={effectiveOpenId === p.id}
-            onToggle={() => setOpenId((curr) => (curr === p.id ? "" : p.id))}
-          />
+          <ProjectRow key={p.id} project={p} />
         ))}
       </section>
 
@@ -226,77 +229,90 @@ export default function ProjectsPage() {
   );
 }
 
-function ProjectRow({
-  project,
-  open,
-  onToggle,
-}: {
-  project: Project;
-  open: boolean;
-  onToggle: () => void;
-}) {
+function ProjectRow({ project }: { project: Project }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setShown(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <div className="border-b border-[#464646]">
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={open}
-        aria-controls={`project-${project.id}-images`}
-        className="flex w-full flex-col gap-3 px-[30px] py-5 text-left sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-      >
-        <h3 className="text-[20px] font-normal leading-[1.2] text-white md:text-[24px]">
+    <div
+      ref={ref}
+      className="grid grid-cols-1 gap-8 border-b border-[#464646] px-[30px] py-10 md:grid-cols-12 md:gap-10 md:py-14"
+    >
+      <div className="md:col-span-4 lg:col-span-3">
+        <h3 className="text-[28px] font-medium leading-[1.05] tracking-tight md:text-[36px]">
           {project.name}
         </h3>
-        <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:gap-3">
-          <Chip label={project.category} />
-          <Chip label={project.status} />
+        <div className="mt-6 flex flex-col gap-3">
+          <Detail icon={<BedIcon />} label={project.category} />
+          <Detail icon={<StatusIcon />} label={project.status} />
         </div>
-      </button>
+      </div>
 
-      <div
-        id={`project-${project.id}-images`}
-        className="grid"
-        style={{
-          gridTemplateRows: open ? "1fr" : "0fr",
-          transition: `grid-template-rows 700ms ${EASE}`,
-        }}
-      >
-        <div className="overflow-hidden">
-          <div className="grid grid-cols-1 gap-2 px-[30px] pb-6 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
-            {project.images.map((src, i) => (
-              <div
-                key={`${project.id}-${i}`}
-                className="relative aspect-[4/3] overflow-hidden bg-[#111]"
-                style={{
-                  opacity: open ? 1 : 0,
-                  transform: open ? "translateX(0)" : "translateX(64px)",
-                  transition: `opacity 650ms ${EASE} ${
-                    open ? 200 + i * 120 : 0
-                  }ms, transform 800ms ${EASE} ${open ? 200 + i * 120 : 0}ms`,
-                  willChange: "transform, opacity",
-                }}
-              >
-                <Image
-                  src={src}
-                  alt={`${project.name} — image ${i + 1}`}
-                  fill
-                  sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
+      <div className="md:col-span-8 lg:col-span-9">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:gap-3">
+          {project.images.map((src, i) => (
+            <RevealImage
+              key={`${project.id}-${i}`}
+              src={src}
+              alt={`${project.name} — image ${i + 1}`}
+              fill
+              sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
+              className="object-cover"
+              containerClassName="relative aspect-[4/3] w-full"
+              shown={shown}
+              delay={i * REVEAL_STAGGER}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-function Chip({ label }: { label: string }) {
+function Detail({ icon, label }: { icon: ReactNode; label: string }) {
   return (
-    <span className="inline-flex h-[28px] items-center whitespace-nowrap border border-[#464646] px-3 text-[11px] uppercase leading-none tracking-[0.04em] text-[#d7d7d7] md:text-[12px]">
-      {label}
-    </span>
+    <div className="flex items-center gap-3 text-[14px] text-[#d7d7d7]">
+      <span className="inline-flex h-5 w-5 items-center justify-center text-white/70">
+        {icon}
+      </span>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function BedIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.4" className="h-full w-full">
+      <path d="M2 14V7m0 7h16m0 0V7m-16 0h16M5 11h4a1 1 0 0 1 1 1v2H4v-2a1 1 0 0 1 1-1Zm6-1h6v4h-6" />
+    </svg>
+  );
+}
+
+function StatusIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.4" className="h-full w-full">
+      <circle cx="10" cy="10" r="7" />
+      <path d="m7 10 2 2 4-4" />
+    </svg>
   );
 }
 
