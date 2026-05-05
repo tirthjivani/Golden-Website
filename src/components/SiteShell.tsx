@@ -54,7 +54,7 @@ export default function SiteShell({
   const showSticky = stickyVisible || menuOpen;
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden">
+    <div className="relative min-h-screen w-full overflow-x-clip">
       <div
         className="relative min-h-screen"
         style={{
