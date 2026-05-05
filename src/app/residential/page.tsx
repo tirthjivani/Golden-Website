@@ -11,6 +11,7 @@ import {
 } from "react";
 import { RecognitionSection } from "@/components/RecognitionSection";
 import { RevealImage } from "@/components/RevealImage";
+import { SiteFooter } from "@/components/SiteFooter";
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
@@ -134,7 +135,7 @@ function StatsGallery() {
       id="projects"
       className="relative w-full border-b border-[#464646] bg-black"
     >
-      <div className="flex items-end justify-between gap-6 px-[30px] py-[40px] md:gap-12 md:py-[48px]">
+      <div className="flex flex-col gap-8 px-[30px] py-[40px] sm:flex-row sm:items-end sm:justify-between sm:gap-6 md:gap-12 md:py-[48px]">
         <Reveal as="div" delay={120}>
           <div className="flex items-end gap-4">
             <span className="text-[80px] font-medium leading-[0.9] tracking-tight md:text-[140px] md:tracking-[-4px]">
@@ -190,7 +191,7 @@ function StatsGallery() {
                 type="button"
                 onClick={() => select(i)}
                 aria-label={`Show project ${i + 1}`}
-                className="relative aspect-square h-[70px] w-[70px] shrink-0 overflow-hidden md:h-[97px] md:w-[97px]"
+                className="relative aspect-square h-[48px] w-[48px] shrink-0 overflow-hidden sm:h-[70px] sm:w-[70px] md:h-[97px] md:w-[97px]"
                 style={{
                   opacity: index === i ? 1 : 0.55,
                   transition: `opacity 350ms ${EASE}`,
@@ -336,7 +337,7 @@ function ProjectsSection() {
         <Reveal delay={150}>
           <Link
             href="#projects"
-            className="pill-hover relative block h-[75px] w-[300px] shrink-0 overflow-hidden bg-white text-black"
+            className="pill-hover relative block h-[75px] w-full shrink-0 overflow-hidden bg-white text-black sm:w-[300px]"
           >
             <span
               aria-hidden
@@ -529,23 +530,24 @@ function Testimonials() {
 }
 
 function Recognition() {
-  const items = ["RERA Approved", "ISO 9001:2015", "CREDAI Member", "GBCI"];
+  const badges = [
+    { src: "/rera.png", alt: "RERA Approved" },
+    { src: "/credai.png", alt: "CREDAI Member" },
+  ];
   return (
-    <section className="border-y border-white/10 bg-black py-12 md:py-16">
-      <div className="mx-auto max-w-7xl px-6 md:px-10">
+    <section className="border-y border-[#464646] bg-black py-28 md:py-36">
+      <div className="mx-auto max-w-2xl px-[30px]">
         <Reveal>
-          <div className="grid grid-cols-2 items-center gap-8 text-center md:grid-cols-4 md:gap-10">
-            {items.map((label, i) => (
-              <div
-                key={label}
-                className="flex items-center justify-center gap-3 text-white/55"
-                style={{ opacity: 1 - i * 0.04 }}
-              >
-                <LaurelIcon />
-                <span className="text-sm uppercase tracking-[0.2em] md:text-base">
-                  {label}
-                </span>
-                <LaurelIcon flipped />
+          <div className="grid grid-cols-2 items-center gap-6 md:gap-12">
+            {badges.map((b) => (
+              <div key={b.src} className="relative aspect-[3/2] w-full">
+                <Image
+                  src={b.src}
+                  alt={b.alt}
+                  fill
+                  sizes="(min-width: 768px) 20vw, 25vw"
+                  className="object-contain"
+                />
               </div>
             ))}
           </div>
@@ -592,118 +594,6 @@ function FinalCta() {
   );
 }
 
-function SiteFooter() {
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About Us" },
-    { href: "/residential", label: "Residential" },
-    { href: "#projects", label: "Projects" },
-  ];
-  const socials = [
-    { href: "#", label: "Instagram" },
-    { href: "#", label: "Linkedin" },
-    { href: "#", label: "Twitter" },
-  ];
-
-  return (
-    <footer className="relative grid h-[80vh] min-h-[640px] grid-cols-1 border-t border-[#464646] bg-black md:grid-cols-2">
-      {/* LEFT */}
-      <div className="relative flex flex-col p-[30px] md:border-r md:border-[#464646]">
-        <div className="flex items-start justify-between gap-10">
-          <Image
-            src="/icon.svg"
-            alt=""
-            width={86}
-            height={218}
-            className="h-[180px] w-auto md:h-[200px]"
-          />
-          <p className="max-w-[420px] pt-2 text-base leading-[1.5] text-white/55">
-            Building Better Lives since 2011. Residential, Commercial, and
-            Industrial developments across Gujarat.
-          </p>
-        </div>
-        <div className="mt-auto flex items-end justify-between gap-8">
-          <Image
-            src="/logo.svg"
-            alt="Golden Group"
-            width={300}
-            height={70}
-            className="h-12 w-auto md:h-[64px]"
-          />
-          <Pill href="/contact" label="Contact Us" />
-        </div>
-      </div>
-
-      {/* RIGHT */}
-      <div className="flex flex-col">
-        <div className="flex flex-1 flex-col items-start justify-between gap-10 p-[30px] md:flex-row md:items-start">
-          <RevealImage
-            src="/residential/gallery-5.jpg"
-            alt=""
-            width={300}
-            height={169}
-            sizes="300px"
-            className="h-auto w-[300px]"
-            containerClassName="relative w-[300px] h-[169px] shrink-0"
-          />
-          <div className="flex flex-col gap-9 md:items-end md:text-right">
-            <ul className="flex flex-col gap-3 text-base text-white">
-              {navLinks.map((l) => (
-                <li key={l.label}>
-                  <Link href={l.href} className="hover:text-white/80">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <div className="flex flex-col gap-3">
-              <p className="text-sm text-white/40">Contact</p>
-              <a
-                href="mailto:info@goldengroup.in"
-                className="text-base text-white hover:text-white/80"
-              >
-                info@goldengroup.in
-              </a>
-              <a
-                href="tel:+919876543210"
-                className="text-base text-white hover:text-white/80"
-              >
-                +91 98765 43210
-              </a>
-            </div>
-            <div className="flex flex-col gap-3">
-              <p className="text-sm text-white/40">Socials</p>
-              {socials.map((s) => (
-                <Link
-                  key={s.label}
-                  href={s.href}
-                  className="text-base text-white hover:text-white/80"
-                >
-                  {s.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-[#464646]" aria-hidden />
-        <div className="flex flex-col gap-3 px-[30px] py-6 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 Golden Group. All rights reserved.</span>
-          <div className="flex flex-wrap gap-6 md:gap-8">
-            <Link href="/privacy" className="hover:text-white">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="hover:text-white">
-              Terms &amp; Conditions
-            </Link>
-            <Link href="/disclaimer" className="hover:text-white">
-              Disclaimer
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 function Pill({
   href,

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { RevealImage } from "@/components/RevealImage";
+import { SiteFooter } from "@/components/SiteFooter";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 const REVEAL_STAGGER = 140;
@@ -224,7 +225,7 @@ export default function ProjectsPage() {
         ))}
       </section>
 
-      <div className="h-24 md:h-32" aria-hidden />
+      <SiteFooter />
     </main>
   );
 }

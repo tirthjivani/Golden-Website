@@ -21,11 +21,13 @@ type Testimonial = {
 };
 
 const TESTIMONIALS: Testimonial[] = [
-  { id: "t1", poster: "/testimonials/poster-1.jpg" },
-  { id: "t2", poster: "/testimonials/poster-1.jpg" },
-  { id: "t3", poster: "/testimonials/poster-1.jpg" },
-  { id: "t4", poster: "/testimonials/poster-1.jpg" },
-  { id: "t5", poster: "/testimonials/poster-1.jpg" },
+  { id: "t1", poster: "/testimonials/poster-1.jpg", video: "/testimonials/testimonial-1.mp4" },
+  { id: "t2", poster: "/testimonials/poster-1.jpg", video: "/testimonials/testimonial-2.mp4" },
+  { id: "t3", poster: "/testimonials/poster-1.jpg", video: "/testimonials/testimonial-3.mp4" },
+  { id: "t4", poster: "/testimonials/poster-1.jpg", video: "/testimonials/testimonial-4.mp4" },
+  { id: "t5", poster: "/testimonials/poster-1.jpg", video: "/testimonials/testimonial-5.mp4" },
+  { id: "t6", poster: "/testimonials/poster-1.jpg", video: "/testimonials/testimonial-6.mp4" },
+  { id: "t7", poster: "/testimonials/poster-1.jpg", video: "/testimonials/testimonial-7.mp4" },
 ];
 
 export function TestimonialCarousel({
@@ -36,10 +38,12 @@ export function TestimonialCarousel({
   labelLines?: [string, string];
 }) {
   const [active, setActive] = useState(0);
+  const [muted, setMuted] = useState(true);
   const total = TESTIMONIALS.length;
 
   const prev = () => setActive((i) => (i - 1 + total) % total);
   const next = () => setActive((i) => (i + 1) % total);
+  const toggleMute = () => setMuted((m) => !m);
 
   return (
     <section className="border-y border-[#464646] bg-black text-white">
@@ -61,7 +65,12 @@ export function TestimonialCarousel({
         <div className="relative flex flex-col gap-[17px] p-[30px] md:py-[60px]">
           <div className="relative aspect-[852/483] w-full overflow-hidden bg-black">
             {TESTIMONIALS.map((t, i) => (
-              <Slide key={t.id} testimonial={t} active={i === active} />
+              <Slide
+                key={t.id}
+                testimonial={t}
+                active={i === active}
+                muted={muted}
+              />
             ))}
           </div>
 
@@ -73,6 +82,19 @@ export function TestimonialCarousel({
               <NavButton onClick={next} aria-label="Next testimonial">
                 <Arrow dir="right" />
               </NavButton>
+              <button
+                type="button"
+                onClick={toggleMute}
+                aria-label={muted ? "Unmute video" : "Mute video"}
+                aria-pressed={!muted}
+                className="flex h-[45px] w-[45px] items-center justify-center transition-colors"
+                style={{
+                  backgroundColor: muted ? "#8e3a3a" : "#ffffff",
+                  color: muted ? "#ffffff" : "#000000",
+                }}
+              >
+                {muted ? <MutedIcon /> : <UnmutedIcon />}
+              </button>
             </div>
             <div className="flex items-center gap-[3px]">
               {TESTIMONIALS.map((t, i) => (
@@ -101,9 +123,11 @@ export function TestimonialCarousel({
 function Slide({
   testimonial,
   active,
+  muted,
 }: {
   testimonial: Testimonial;
   active: boolean;
+  muted: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -117,6 +141,15 @@ function Slide({
       v.pause();
     }
   }, [active]);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = muted;
+    if (active && !muted) {
+      v.play().catch(() => {});
+    }
+  }, [muted, active]);
 
   return (
     <div
@@ -141,7 +174,7 @@ function Slide({
           className="absolute inset-0 h-full w-full object-cover"
           src={testimonial.video}
           poster={testimonial.poster}
-          muted
+          muted={muted}
           playsInline
           loop
           preload="metadata"
@@ -164,11 +197,31 @@ function NavButton({
     <button
       type="button"
       onClick={onClick}
-      className="flex h-[45px] w-[140px] items-center justify-center bg-[#313131] text-white transition-colors hover:bg-[#3f3f3f]"
+      className="flex h-[45px] w-[60px] items-center justify-center bg-[#313131] text-white transition-colors hover:bg-[#3f3f3f] sm:w-[100px] md:w-[140px]"
       {...rest}
     >
       {children}
     </button>
+  );
+}
+
+function MutedIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+      <path d="m22 9-6 6" />
+      <path d="m16 9 6 6" />
+    </svg>
+  );
+}
+
+function UnmutedIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    </svg>
   );
 }
 
