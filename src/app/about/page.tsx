@@ -327,24 +327,28 @@ function StorySection() {
       <section className="relative h-[80vh] min-h-[640px] w-full border-b border-[#464646] bg-black">
         <div className="grid h-full grid-cols-1 md:grid-cols-2">
           <div className="relative flex h-full flex-col p-[30px]">
-            <div className="flex items-start gap-3">
+            <Reveal className="flex items-start gap-3">
               <span className="text-[80px] font-medium leading-[0.9] tracking-tight md:text-[140px] md:tracking-[-4px]">
                 2005
               </span>
               <span className="pt-2 text-[12px] uppercase tracking-[0.08em] text-white/60 md:pt-4 md:text-[14px]">
                 Since
               </span>
-            </div>
-            <h2 className="mt-auto max-w-[18ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-              Two Decades of Shaping Spaces That Last
-            </h2>
+            </Reveal>
+            <Reveal as="div" delay={120} className="mt-auto">
+              <h2 className="max-w-[18ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+                Two Decades of Shaping Spaces That Last
+              </h2>
+            </Reveal>
           </div>
 
           <div className="relative flex h-full flex-col gap-8 p-[30px] md:border-l md:border-[#464646]">
-            <h3 className="text-[36px] font-medium leading-[1.05] tracking-tight md:text-[50px]">
-              Golden Group Story
-            </h3>
-            <div className="flex flex-col gap-5 text-[18px] leading-[1.4] text-white/85 md:max-w-[560px] md:text-[24px] md:leading-[1.2]">
+            <Reveal delay={120}>
+              <h3 className="text-[36px] font-medium leading-[1.05] tracking-tight md:text-[50px]">
+                Golden Group Story
+              </h3>
+            </Reveal>
+            <Reveal delay={240} className="flex flex-col gap-5 text-[18px] leading-[1.4] text-white/85 md:max-w-[560px] md:text-[24px] md:leading-[1.2]">
               <p>
                 Golden Group was founded on the belief that real estate should
                 stand for confidence, stability, and long-term value, not just
@@ -357,14 +361,14 @@ function StorySection() {
                 spaces, it builds trust, rising steadily like its
                 skyline-inspired identity.
               </p>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       <section className="relative w-full border-b border-[#464646] bg-black">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="relative aspect-[685/526] w-full overflow-hidden md:border-r md:border-[#464646]">
+          <Reveal className="relative aspect-[685/526] w-full overflow-hidden md:border-r md:border-[#464646]">
             <Image
               src="/about/story-1.png"
               alt="Golden Residency exterior"
@@ -372,8 +376,8 @@ function StorySection() {
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover"
             />
-          </div>
-          <div className="relative aspect-[685/526] w-full overflow-hidden">
+          </Reveal>
+          <Reveal delay={150} className="relative aspect-[685/526] w-full overflow-hidden">
             <Image
               src="/about/story-2.png"
               alt="Golden Residency entrance"
@@ -381,7 +385,7 @@ function StorySection() {
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover"
             />
-          </div>
+          </Reveal>
         </div>
       </section>
     </>
@@ -413,14 +417,17 @@ function WhyChooseUs() {
   ];
   return (
     <section className="border-t border-[#464646] bg-black px-[30px] py-16 md:py-20">
-      <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-        Why Choose Us?
-      </h3>
+      <Reveal>
+        <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+          Why Choose Us?
+        </h3>
+      </Reveal>
 
       <div className="mt-10 grid grid-cols-1 gap-3 md:mt-14 md:grid-cols-3">
-        {items.map((item) => (
-          <div
+        {items.map((item, i) => (
+          <Reveal
             key={item.title}
+            delay={120 + i * 120}
             className="flex h-full flex-col justify-between gap-12 overflow-hidden bg-[#111] p-[30px]"
           >
             <div className="relative flex h-[64px] w-[64px] shrink-0 items-center justify-center">
@@ -440,7 +447,7 @@ function WhyChooseUs() {
                 {item.body}
               </p>
             </div>
-          </div>
+          </Reveal>
         ))}
       </div>
     </section>
@@ -453,13 +460,13 @@ function Milestones() {
   const stats = [
     { value: "+10M", label: "sq. ft. built since 2005", filled: false },
     { value: "+6.3k", label: "Residential Units", filled: true },
-    { value: "+9k", label: "Happy Customers", filled: true },
+    { value: "+10k", label: "Happy Customers", filled: true },
     { value: "+2.7k", label: "Commercial Units", filled: false },
   ];
   return (
     <section className="border-t border-[#464646] bg-black px-[30px] py-16 md:py-20">
       <div className="mx-auto grid w-full grid-cols-1 gap-10 md:grid-cols-[260px_1fr] md:gap-12 lg:grid-cols-[320px_1fr]">
-        <div className="flex flex-col gap-4">
+        <Reveal className="flex flex-col gap-4">
           <p className="text-[32px] font-medium leading-[1.05] tracking-tight md:text-[42px]">
             Our Milestones
           </p>
@@ -467,25 +474,27 @@ function Milestones() {
             22 completed projects. 55 lakh square feet constructed. 9,000+
             families and businesses served across Gujarat.
           </p>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {stats.map((s) => (
-            <div
+          {stats.map((s, i) => (
+            <Reveal
               key={s.label}
+              delay={120 + i * 120}
               className={`flex aspect-[458/410] flex-col items-center justify-center gap-3 ${
                 s.filled
                   ? "bg-[#111]"
                   : "border border-[#464646]"
               }`}
             >
-              <span className="text-[64px] font-medium leading-[0.9] tracking-tight text-white md:text-[110px] md:tracking-[-3px] lg:text-[140px] lg:tracking-[-4px]">
-                {s.value}
-              </span>
+              <CountUp
+                value={s.value}
+                className="text-[64px] font-medium leading-[0.9] tracking-tight text-white md:text-[110px] md:tracking-[-3px] lg:text-[140px] lg:tracking-[-4px]"
+              />
               <span className="text-[12px] uppercase tracking-[0.06em] text-white/60 md:text-[14px]">
                 {s.label}
               </span>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -504,7 +513,7 @@ function GroupOfCompanies() {
   return (
     <section className="border-t border-[#464646] bg-black p-[30px] md:py-20">
       <div className="mx-auto flex w-full flex-col gap-10">
-        <div className="flex flex-col gap-4">
+        <Reveal className="flex flex-col gap-4">
           <h3 className="text-[32px] font-medium leading-[1.05] tracking-tight md:text-[42px]">
             Group of Companies
           </h3>
@@ -515,15 +524,14 @@ function GroupOfCompanies() {
             that has grown steadily since 2005 not by chasing scale, but by
             maintaining standards across everything we do.
           </p>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-3">
           {logos.map((l, i) => (
-            <div
+            <Reveal
               key={l.alt}
-              className={`relative flex aspect-[180/120] w-full items-center justify-center border border-[#464646] ${
-                i > 0 ? "sm:-ml-px" : ""
-              }`}
+              delay={120 + i * 120}
+              className="relative flex aspect-[180/120] w-full items-center justify-center"
             >
               <div className="relative h-[60%] w-[60%]">
                 <Image
@@ -534,7 +542,7 @@ function GroupOfCompanies() {
                   className="object-contain"
                 />
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -642,4 +650,119 @@ function lerpColor(a: RGB, b: RGB, t: number): RGB {
 
 function rgbCss({ r, g, b }: RGB) {
   return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+}
+
+/* ---------- CountUp: animates 0 → target when scrolled into view ---------- */
+
+function CountUp({
+  value,
+  duration = 1600,
+  className,
+}: {
+  value: string;
+  duration?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [n, setN] = useState(0);
+
+  const match = value.match(/^([^\d.-]*)([\d.]+)(.*)$/);
+  const prefix = match?.[1] ?? "";
+  const numericStr = match?.[2] ?? "0";
+  const suffix = match?.[3] ?? "";
+  const target = parseFloat(numericStr);
+  const decimals = numericStr.includes(".")
+    ? numericStr.split(".")[1].length
+    : 0;
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setN(target);
+      return;
+    }
+
+    let raf = 0;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            io.disconnect();
+            const start = performance.now();
+            const tick = (now: number) => {
+              const t = Math.min(1, (now - start) / duration);
+              const eased = 1 - Math.pow(1 - t, 3);
+              setN(target * eased);
+              if (t < 1) raf = requestAnimationFrame(tick);
+            };
+            raf = requestAnimationFrame(tick);
+            break;
+          }
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(node);
+    return () => {
+      io.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [target, duration]);
+
+  return (
+    <span ref={ref} className={className}>
+      {prefix}
+      {n.toFixed(decimals)}
+      {suffix}
+    </span>
+  );
+}
+
+/* ---------- Reveal-on-scroll wrapper (matches residential/commercial) ---------- */
+
+type RevealProps = {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+  as?: "div" | "section" | "article";
+};
+
+function Reveal({ children, delay = 0, className = "", as = "div" }: RevealProps) {
+  const ref = useRef<HTMLElement>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setShown(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, []);
+
+  const Tag = as as "div";
+  return (
+    <Tag
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className={`reveal ${shown ? "is-in" : ""} ${className}`}
+      style={{ "--reveal-delay": `${delay}ms` } as CSSProperties}
+    >
+      {children}
+    </Tag>
+  );
 }

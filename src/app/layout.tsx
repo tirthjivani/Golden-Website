@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import SiteShell from "@/components/SiteShell";
+import Agentation from "@/components/Agentation";
 import "./globals.css";
 
 const satoshi = localFont({
@@ -38,6 +39,7 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-black text-white">
         <SiteShell>{children}</SiteShell>
+        {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>
   );
