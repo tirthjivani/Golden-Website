@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import SiteShell from "@/components/SiteShell";
+import SmoothScroll from "@/components/SmoothScroll";
 import Agentation from "@/components/Agentation";
 import "./globals.css";
 
@@ -38,6 +39,7 @@ export default function RootLayout({
       className={`${satoshi.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-black text-white">
+        <SmoothScroll />
         <SiteShell>{children}</SiteShell>
         {process.env.NODE_ENV === "development" && <Agentation />}
       </body>

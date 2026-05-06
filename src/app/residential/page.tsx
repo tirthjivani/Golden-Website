@@ -46,7 +46,7 @@ function Hero() {
           className="object-cover"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
 
       <div className="relative z-10 flex h-full w-full flex-col p-[30px]">
         <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">

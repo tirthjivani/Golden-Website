@@ -506,9 +506,9 @@ function Milestones() {
 
 function GroupOfCompanies() {
   const logos = [
-    { src: "/about/group-shrungal.png", alt: "Shrungal" },
-    { src: "/about/group-golden.png", alt: "Golden Group" },
-    { src: "/about/group-keystar.png", alt: "Keystar Gems LLP" },
+    { src: "/about/group-shrungal.png", alt: "Shrungal", sizeClass: "h-[60%] w-[60%]" },
+    { src: "/about/group-golden.png", alt: "Golden Group", sizeClass: "h-[90%] w-[90%]" },
+    { src: "/about/group-keystar.png", alt: "Keystar Gems LLP", sizeClass: "h-[60%] w-[60%]" },
   ];
   return (
     <section className="border-t border-[#464646] bg-black p-[30px] md:py-20">
@@ -533,7 +533,7 @@ function GroupOfCompanies() {
               delay={120 + i * 120}
               className="relative flex aspect-[180/120] w-full items-center justify-center"
             >
-              <div className="relative h-[60%] w-[60%]">
+              <div className={`relative ${l.sizeClass}`}>
                 <Image
                   src={l.src}
                   alt={l.alt}

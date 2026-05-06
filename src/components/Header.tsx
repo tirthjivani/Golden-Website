@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 const SEGMENTS = [
   { href: "/residential", label: "Residential" },
-  { href: "/commercial-industrial", label: "Industrial" },
+  { href: "/commercial-industrial", label: "Commercial" },
 ] as const;
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";

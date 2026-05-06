@@ -46,7 +46,7 @@ function Hero() {
           className="object-cover"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
 
       <div className="relative z-10 flex h-full w-full flex-col p-[30px]">
         <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
@@ -144,17 +144,6 @@ function StatsGallery() {
             <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
               <span>sq. ft. of</span>
               <span>commercial space</span>
-            </div>
-          </div>
-        </Reveal>
-        <Reveal as="div" delay={260}>
-          <div className="flex items-end gap-4">
-            <span className="text-[80px] font-medium leading-[0.9] tracking-tight md:text-[140px] md:tracking-[-4px]">
-              +850
-            </span>
-            <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
-              <span>Businesses</span>
-              <span>Housed</span>
             </div>
           </div>
         </Reveal>
@@ -526,8 +515,8 @@ function WhyChooseUs() {
 function Testimonials() {
   return (
     <TestimonialCarousel
-      count="+850"
-      labelLines={["Businesses", "Operating"]}
+      count="+2.7k"
+      labelLines={["Commercial", "Units"]}
     />
   );
 }
