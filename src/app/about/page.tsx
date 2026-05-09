@@ -22,6 +22,7 @@ export default function AboutPage() {
       <IntroSection />
       <StorySection />
       <WhyChooseUs />
+      <Accreditations />
       <Milestones />
       <GroupOfCompanies />
       <RecognitionSection />
@@ -449,6 +450,28 @@ function WhyChooseUs() {
             </div>
           </Reveal>
         ))}
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Accreditations (RERA + CREDAI) ---------- */
+
+function Accreditations() {
+  return (
+    <section className="border-t border-[#464646] bg-black py-28 md:py-36">
+      <div className="mx-auto max-w-3xl px-[30px]">
+        <Reveal>
+          <div className="relative aspect-[2576/926] w-full">
+            <Image
+              src="/rera-credai.png"
+              alt="RERA Approved and CREDAI Member"
+              fill
+              sizes="(min-width: 768px) 720px, 100vw"
+              className="object-contain"
+            />
+          </div>
+        </Reveal>
       </div>
     </section>
   );

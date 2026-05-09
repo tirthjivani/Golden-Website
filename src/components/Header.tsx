@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 const SEGMENTS = [
   { href: "/residential", label: "Residential" },
-  { href: "/commercial-industrial", label: "Commercial" },
+  { href: "/commercial-industrial", label: "Commercial & Industrial" },
 ] as const;
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
@@ -132,7 +132,7 @@ function SegmentSwitcher({ current }: { current: string }) {
       </button>
       <div
         role="listbox"
-        className="absolute left-0 top-full z-40 mt-2 min-w-[160px] overflow-hidden rounded-md border border-white/10 bg-black/90 p-1 backdrop-blur"
+        className="absolute left-0 top-full z-40 mt-2 w-[240px] overflow-hidden rounded-md border border-white/10 bg-black/90 p-1 backdrop-blur"
         style={{
           opacity: open ? 1 : 0,
           transform: open ? "translateY(0)" : "translateY(-6px)",

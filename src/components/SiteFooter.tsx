@@ -9,27 +9,44 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/residential", label: "Residential" },
-  { href: "/commercial-industrial", label: "Commercial" },
+  { href: "/commercial-industrial", label: "Commercial & Industrial" },
   { href: "/projects", label: "Projects" },
 ];
 
 const socials = [
-  { href: "#", label: "Instagram" },
-  { href: "#", label: "Linkedin" },
-  { href: "#", label: "X" },
+  { href: "https://instagram.com/goldengroup", label: "Instagram" },
+  { href: "mailto:info@goldengroup.in", label: "Email" },
 ];
 
 export function SiteFooter() {
   return (
     <footer className="relative grid grid-cols-1 border-t border-[#464646] bg-black md:h-[80vh] md:min-h-[640px] md:grid-cols-2">
       {/* LEFT */}
-      <div className="relative flex flex-col gap-10 p-[30px] md:flex-row md:gap-12 md:border-r md:border-[#464646]">
+      <div className="relative flex flex-col gap-10 p-[30px] md:flex-row md:gap-12">
+        {/* Mobile: icon + logo, vertically aligned, anchored to the left */}
+        <div className="flex items-center gap-4 md:hidden">
+          <Image
+            src="/icon.svg"
+            alt=""
+            width={86}
+            height={218}
+            className="h-[60px] w-auto"
+          />
+          <Image
+            src="/logo.svg"
+            alt="Golden Group"
+            width={300}
+            height={70}
+            className="h-[34px] w-auto"
+          />
+        </div>
+        {/* Desktop: logo only */}
         <Image
           src="/logo.svg"
           alt="Golden Group"
           width={300}
           height={70}
-          className="h-[34px] w-auto md:h-[45px]"
+          className="hidden h-[34px] w-auto md:block md:h-[45px]"
         />
         <div className="flex w-full flex-col justify-between gap-12 md:ml-auto md:w-[230px]">
           <ul className="flex flex-col gap-2 text-[24px] leading-[1.2] text-white">
@@ -41,33 +58,20 @@ export function SiteFooter() {
               </li>
             ))}
           </ul>
-          <div className="flex flex-col gap-6 text-[24px] leading-[1.2] text-white">
-            <ul className="flex flex-col gap-2">
-              {socials.map((s) => (
-                <li key={s.label}>
-                  <Link href={s.href} className="hover:text-white/80">
-                    {s.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <div className="flex flex-col gap-2">
-              <a
-                href="mailto:info@goldengroup.in"
-                className="hover:text-white/80"
-              >
-                info@goldengroup.in
-              </a>
-              <a href="tel:+919876543210" className="hover:text-white/80">
-                +91 98765 43210
-              </a>
-            </div>
-          </div>
+          <ul className="flex flex-col gap-2 text-[24px] leading-[1.2] text-white">
+            {socials.map((s) => (
+              <li key={s.label}>
+                <Link href={s.href} className="hover:text-white/80">
+                  {s.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
       {/* RIGHT */}
-      <div className="flex flex-col">
+      <div className="flex flex-col border-t border-[#464646] md:border-l md:border-t-0 md:border-[#464646]">
         <div className="flex flex-1 flex-col items-stretch justify-between gap-10 p-[30px]">
           <div className="flex flex-row items-start justify-between gap-9">
             <Image
@@ -75,12 +79,31 @@ export function SiteFooter() {
               alt=""
               width={86}
               height={218}
-              className="h-[180px] w-auto md:h-[200px]"
+              className="hidden h-[180px] w-auto md:block md:h-[200px]"
             />
-            <p className="max-w-[420px] text-base leading-[1.5] text-white/55">
-              Building Better Lives since 2011. Residential, Commercial, and
-              Industrial developments across Gujarat.
-            </p>
+            <div className="flex w-full max-w-[420px] flex-col gap-6 md:w-auto">
+              <p className="text-base leading-[1.5] text-white/55">
+                Building Better Lives since 2011. Residential, Commercial, and
+                Industrial developments across Gujarat.
+              </p>
+              <div className="flex flex-col gap-2 pb-6 pt-6 md:pb-0">
+                <p className="text-base leading-[1.5] text-white">
+                  3rd Floor, Part-B, Plot No-5, Block No-4, Kohinoor Industrial
+                  Estate, Varachha Road, Varachha, Surat, Gujarat - 395006
+                </p>
+                <div className="flex flex-col text-base leading-[1.5] text-white/55">
+                  <a
+                    href="mailto:info@goldengroup.in"
+                    className="hover:text-white"
+                  >
+                    info@goldengroup.in
+                  </a>
+                  <a href="tel:+919876543210" className="hover:text-white">
+                    +91 98765 43210
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="flex w-full flex-col gap-6 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
             <span>
@@ -122,7 +145,7 @@ function FooterPill({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="pill-hover relative block h-[75px] w-[245px] shrink-0 overflow-hidden bg-white text-black"
+      className="pill-hover relative block h-[75px] w-full max-w-[420px] shrink-0 overflow-hidden bg-white text-black sm:w-[420px]"
       style={{ transition: `opacity 700ms ${EASE}, transform 700ms ${EASE}` }}
     >
       <span

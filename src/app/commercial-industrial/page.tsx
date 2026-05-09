@@ -522,26 +522,18 @@ function Testimonials() {
 }
 
 function Recognition() {
-  const badges = [
-    { src: "/rera.png", alt: "RERA Approved" },
-    { src: "/credai.png", alt: "CREDAI Member" },
-  ];
   return (
     <section className="border-y border-[#464646] bg-black py-28 md:py-36">
-      <div className="mx-auto max-w-2xl px-[30px]">
+      <div className="mx-auto max-w-3xl px-[30px]">
         <Reveal>
-          <div className="grid grid-cols-2 items-center gap-6 md:gap-12">
-            {badges.map((b) => (
-              <div key={b.src} className="relative aspect-[3/2] w-full">
-                <Image
-                  src={b.src}
-                  alt={b.alt}
-                  fill
-                  sizes="(min-width: 768px) 20vw, 25vw"
-                  className="object-contain"
-                />
-              </div>
-            ))}
+          <div className="relative aspect-[2576/926] w-full">
+            <Image
+              src="/rera-credai.png"
+              alt="RERA Approved and CREDAI Member"
+              fill
+              sizes="(min-width: 768px) 720px, 100vw"
+              className="object-contain"
+            />
           </div>
         </Reveal>
       </div>

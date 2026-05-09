@@ -100,7 +100,7 @@ export default function MenuPanel({
             alt="Golden Group"
             width={148}
             height={32}
-            className="h-7 w-auto md:h-8"
+            className="h-5 w-auto md:h-6"
           />
           <Link
             href="/contact"
