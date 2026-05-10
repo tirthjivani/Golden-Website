@@ -51,7 +51,7 @@ function Hero() {
       <div className="relative z-10 flex h-full w-full flex-col p-[30px]">
         <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
           <h2
-            className="reveal is-in max-w-[14ch] text-[44px] font-medium leading-[1.02] tracking-tight md:text-[88px]"
+            className="reveal is-in max-w-[14ch] text-[44px] font-medium leading-[1.02] tracking-tight lg:text-[88px]"
             style={{ "--reveal-delay": "350ms" } as CSSProperties}
           >
             Where Everyday Life Feels Extraordinary
@@ -60,7 +60,7 @@ function Hero() {
             className="reveal is-in"
             style={{ "--reveal-delay": "700ms" } as CSSProperties}
           >
-            <Pill href="#projects" label="See latest projects" />
+            <Pill href="/projects" label="See latest projects" />
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@ function StatsGallery() {
       <div className="flex flex-col gap-8 px-[30px] py-[40px] sm:flex-row sm:items-end sm:justify-between sm:gap-6 md:gap-12 md:py-[48px]">
         <Reveal as="div" delay={120}>
           <div className="flex items-end gap-4">
-            <span className="text-[80px] font-medium leading-[0.9] tracking-tight md:text-[140px] md:tracking-[-4px]">
+            <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
               +10M
             </span>
             <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
@@ -149,7 +149,7 @@ function StatsGallery() {
         </Reveal>
         <Reveal as="div" delay={260}>
           <div className="flex items-end gap-4">
-            <span className="text-[80px] font-medium leading-[0.9] tracking-tight md:text-[140px] md:tracking-[-4px]">
+            <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
               +2.7k
             </span>
             <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
@@ -268,21 +268,49 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const CARD_W = 380;
 const CARD_GAP = 14;
+
+function useResponsiveCardWidth() {
+  const [cardW, setCardW] = useState(380);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 640) setCardW(Math.min(w - 60, 320));
+      else if (w < 1024) setCardW(300);
+      else setCardW(380);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return cardW;
+}
 
 function ProjectsSection() {
   const [active, setActive] = useState(0);
   const total = PROJECTS.length;
+  const cardW = useResponsiveCardWidth();
   const next = () => setActive((i) => Math.min(total - 1, i + 1));
   const prev = () => setActive((i) => Math.max(0, i - 1));
+  const touchStartX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current == null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0) next();
+    else prev();
+  };
 
   return (
     <section className="relative overflow-hidden bg-black py-12 md:py-16">
-      <div className="flex flex-col gap-10 px-[30px] md:flex-row md:items-end md:justify-between">
+      <div className="flex flex-col gap-10 px-[30px] min-[560px]:flex-row min-[560px]:items-end min-[560px]:justify-between">
         <Reveal>
           <div className="flex items-end gap-4">
-            <span className="text-[80px] font-medium leading-[0.9] tracking-tight md:text-[140px] md:tracking-[-4px]">
+            <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
               +25
             </span>
             <span className="max-w-[120px] pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
@@ -290,14 +318,14 @@ function ProjectsSection() {
             </span>
           </div>
         </Reveal>
-        <Reveal delay={150}>
-          <div className="flex h-[60px] gap-2">
+        <Reveal delay={150} className="w-full min-[560px]:w-auto">
+          <div className="flex h-[60px] w-full gap-2 min-[560px]:w-auto">
             <button
               type="button"
               onClick={prev}
               aria-label="Previous"
               disabled={active === 0}
-              className="flex h-full w-[100px] items-center justify-center bg-[#313131] text-white transition-colors hover:bg-[#3f3f3f] disabled:opacity-40 md:w-[160px]"
+              className="flex h-full flex-1 items-center justify-center bg-[#313131] text-white transition-colors hover:bg-[#3f3f3f] disabled:opacity-40 min-[560px]:w-[100px] min-[560px]:flex-none md:w-[160px]"
             >
               <CarouselArrow dir="left" />
             </button>
@@ -306,7 +334,7 @@ function ProjectsSection() {
               onClick={next}
               aria-label="Next"
               disabled={active === total - 1}
-              className="flex h-full w-[100px] items-center justify-center bg-[#313131] text-white transition-colors hover:bg-[#3f3f3f] disabled:opacity-40 md:w-[160px]"
+              className="flex h-full flex-1 items-center justify-center bg-[#313131] text-white transition-colors hover:bg-[#3f3f3f] disabled:opacity-40 min-[560px]:w-[100px] min-[560px]:flex-none md:w-[160px]"
             >
               <CarouselArrow dir="right" />
             </button>
@@ -314,16 +342,25 @@ function ProjectsSection() {
         </Reveal>
       </div>
 
-      <div className="mt-12 overflow-hidden md:mt-16">
+      <div
+        className="mt-12 overflow-hidden md:mt-16"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
         <div
           className="flex gap-[14px] will-change-transform"
           style={{
-            transform: `translateX(calc(50vw - ${CARD_W / 2}px - ${active * (CARD_W + CARD_GAP)}px))`,
+            transform: `translateX(calc(50vw - ${cardW / 2}px - ${active * (cardW + CARD_GAP)}px))`,
             transition: `transform 700ms ${EASE}`,
           }}
         >
           {PROJECTS.map((p, i) => (
-            <ProjectCard key={p.name} project={p} active={i === active} />
+            <ProjectCard
+              key={p.name}
+              project={p}
+              active={i === active}
+              cardW={cardW}
+            />
           ))}
         </div>
       </div>
@@ -336,7 +373,7 @@ function ProjectsSection() {
         </Reveal>
         <Reveal delay={150}>
           <Link
-            href="#projects"
+            href="/projects"
             className="pill-hover relative block h-[75px] w-full shrink-0 overflow-hidden bg-white text-black sm:w-[300px]"
           >
             <span
@@ -357,14 +394,17 @@ function ProjectsSection() {
 function ProjectCard({
   project,
   active,
+  cardW,
 }: {
   project: Project;
   active: boolean;
+  cardW: number;
 }) {
   return (
     <article
-      className="flex w-[380px] shrink-0 flex-col gap-2 pt-5"
+      className="flex shrink-0 flex-col gap-2 pt-5"
       style={{
+        width: cardW,
         borderTop: "2px solid",
         borderTopColor: active ? "#fff" : "transparent",
         transition: `border-color 350ms ${EASE}, opacity 500ms ${EASE}`,
@@ -375,11 +415,11 @@ function ProjectCard({
         src={project.image}
         alt={project.name}
         fill
-        sizes="380px"
+        sizes="(min-width: 1024px) 380px, (min-width: 640px) 300px, 80vw"
         className="object-cover"
         containerClassName="relative aspect-[380/370] w-full"
       />
-      <div className="mt-2 flex w-[334px] flex-col gap-3">
+      <div className="mt-2 flex w-full flex-col gap-3 pr-4">
         <h4 className="text-[24px] font-normal leading-[1.4] text-white">
           {project.name}
         </h4>
@@ -532,14 +572,14 @@ function Testimonials() {
 function Recognition() {
   return (
     <section className="border-y border-[#464646] bg-black py-28 md:py-36">
-      <div className="mx-auto max-w-3xl px-[30px]">
+      <div className="mx-auto w-full max-w-[440px] px-[30px] sm:max-w-[500px] lg:max-w-[560px]">
         <Reveal>
           <div className="relative aspect-[2576/926] w-full">
             <Image
               src="/rera-credai.png"
               alt="RERA Approved and CREDAI Member"
               fill
-              sizes="(min-width: 768px) 720px, 100vw"
+              sizes="(min-width: 1024px) 560px, (min-width: 640px) 500px, 80vw"
               className="object-contain"
             />
           </div>

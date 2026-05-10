@@ -49,17 +49,17 @@ function InfoGrid() {
         value="info@goldengroup.in"
         action={{ kind: "copy", text: "info@goldengroup.in", verb: "Email" }}
       />
-      <div className="-mt-px grid grid-cols-1 sm:grid-cols-2">
+      <div className="-mt-px grid grid-cols-1 lg:grid-cols-2">
         <InfoCard
           label="Instagram"
-          value="@goldengroup"
+          value="@goldengroupofficial"
           action={{
             kind: "open",
-            href: "https://instagram.com/goldengroup",
+            href: "https://www.instagram.com/goldengroupofficial",
             verb: "Instagram",
           }}
         />
-        <div className="-mt-px sm:ml-[-1px] sm:mt-0">
+        <div className="-mt-px lg:ml-[-1px] lg:mt-0">
           <InfoCard
             label="Phone"
             value="+91 98765 43210"
@@ -283,18 +283,14 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <label className="flex flex-col gap-2">
-      <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white">
-        {label}
-      </span>
-      <input
-        type={type}
-        name={name}
-        required={required}
-        placeholder={placeholder}
-        className="w-full bg-[#131313] px-3 py-4 text-[15px] text-white placeholder:text-[#a1a1a1] outline-none focus:ring-1 focus:ring-white/30 md:text-base"
-      />
-    </label>
+    <input
+      aria-label={label}
+      type={type}
+      name={name}
+      required={required}
+      placeholder={placeholder}
+      className="w-full bg-[#131313] px-3 py-4 text-[15px] text-white outline-none transition-colors duration-300 placeholder:text-[#a1a1a1] focus:bg-[#2a2114] md:text-base"
+    />
   );
 }
 
@@ -310,17 +306,13 @@ function TextareaField({
   required?: boolean;
 }) {
   return (
-    <label className="flex flex-col gap-2">
-      <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white">
-        {label}
-      </span>
-      <textarea
-        name={name}
-        required={required}
-        placeholder={placeholder}
-        rows={6}
-        className="min-h-[180px] w-full resize-none bg-[#131313] px-3 py-4 text-[15px] text-white placeholder:text-[#a1a1a1] outline-none focus:ring-1 focus:ring-white/30 md:min-h-[234px] md:text-base"
-      />
-    </label>
+    <textarea
+      aria-label={label}
+      name={name}
+      required={required}
+      placeholder={placeholder}
+      rows={6}
+      className="min-h-[180px] w-full resize-none bg-[#131313] px-3 py-4 text-[15px] text-white outline-none transition-colors duration-300 placeholder:text-[#a1a1a1] focus:bg-[#2a2114] md:min-h-[234px] md:text-base"
+    />
   );
 }

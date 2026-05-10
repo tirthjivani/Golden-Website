@@ -51,7 +51,7 @@ export function TestimonialCarousel({
         <div className="relative flex min-h-[420px] items-end p-[30px] md:min-h-[665px] md:justify-end md:border-r md:border-[#464646]">
           <Reveal>
             <div className="flex items-end gap-4 md:flex-col md:items-end md:gap-3">
-              <span className="text-[80px] font-medium leading-[0.9] tracking-tight md:text-[140px] md:tracking-[-4px]">
+              <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
                 {count}
               </span>
               <span className="flex max-w-[180px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-0 md:text-right">

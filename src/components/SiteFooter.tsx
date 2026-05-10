@@ -14,7 +14,7 @@ const navLinks = [
 ];
 
 const socials = [
-  { href: "https://instagram.com/goldengroup", label: "Instagram" },
+  { href: "https://www.instagram.com/goldengroupofficial", label: "Instagram" },
   { href: "mailto:info@goldengroup.in", label: "Email" },
 ];
 
@@ -81,7 +81,7 @@ export function SiteFooter() {
               height={218}
               className="hidden h-[180px] w-auto md:block md:h-[200px]"
             />
-            <div className="flex w-full max-w-[420px] flex-col gap-6 md:w-auto">
+            <div className="flex w-full flex-col gap-6 md:w-1/2 md:max-w-none">
               <p className="text-base leading-[1.5] text-white/55">
                 Building Better Lives since 2011. Residential, Commercial, and
                 Industrial developments across Gujarat.
@@ -115,7 +115,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="border-t border-[#464646]" aria-hidden />
-        <div className="flex flex-col gap-4 px-[30px] py-6 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="flex flex-col gap-4 px-[30px] py-6 text-sm text-white/55 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
           <div className="flex flex-wrap gap-6 md:gap-8">
             <Link href="/privacy" className="hover:text-white">
               Privacy Policy
@@ -131,7 +131,7 @@ export function SiteFooter() {
             href="https://thesummerdesign.com"
             target="_blank"
             rel="noreferrer noopener"
-            className="hover:text-white"
+            className="self-end hover:text-white lg:self-auto"
           >
             By The Summer Design
           </a>
@@ -145,7 +145,7 @@ function FooterPill({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="pill-hover relative block h-[75px] w-full max-w-[420px] shrink-0 overflow-hidden bg-white text-black sm:w-[420px]"
+      className="pill-hover relative block h-[75px] w-full shrink-0 overflow-hidden bg-white text-black sm:w-1/2"
       style={{ transition: `opacity 700ms ${EASE}, transform 700ms ${EASE}` }}
     >
       <span

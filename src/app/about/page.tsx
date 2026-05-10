@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { RecognitionSection } from "@/components/RecognitionSection";
+import ScrollLottie from "@/components/ScrollLottie";
 import { SiteFooter } from "@/components/SiteFooter";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
@@ -126,7 +127,8 @@ function IntroSection() {
               fill
               sizes="(min-width:768px) 760px, 100vw"
               className="object-contain"
-              priority={false}
+              priority
+              fetchPriority="high"
             />
           </div>
         </div>
@@ -141,13 +143,24 @@ function IntroSection() {
           }}
         >
           <Image
-            src="/about/building.png"
+            src="/about/building-mobile.webp"
             alt=""
-            width={2400}
-            height={1600}
+            width={6506}
+            height={6830}
             sizes="100vw"
-            className="block h-auto w-full"
-            priority={false}
+            className="block h-auto w-full min-[800px]:hidden"
+            priority
+            fetchPriority="high"
+          />
+          <Image
+            src="/about/building-wide.webp"
+            alt=""
+            width={9656}
+            height={5754}
+            sizes="100vw"
+            className="hidden h-auto w-full min-[800px]:block"
+            priority
+            fetchPriority="high"
           />
         </div>
 
@@ -299,25 +312,7 @@ function ScrollHint({ shown, fade }: { shown: boolean; fade: number }) {
 }
 
 function ArrowDown() {
-  return (
-    <svg
-      width="14"
-      height="20"
-      viewBox="0 0 14 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-      className="animate-[scrollhint_1.6s_ease-in-out_infinite] text-white/70"
-    >
-      <path
-        d="M7 1v17m0 0L1 12m6 6 6-6"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <ScrollLottie />;
 }
 
 /* ---------- Story section (after intro) ---------- */
@@ -329,7 +324,7 @@ function StorySection() {
         <div className="grid h-full grid-cols-1 md:grid-cols-2">
           <div className="relative flex h-full flex-col p-[30px]">
             <Reveal className="flex items-start gap-3">
-              <span className="text-[80px] font-medium leading-[0.9] tracking-tight md:text-[140px] md:tracking-[-4px]">
+              <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
                 2005
               </span>
               <span className="pt-2 text-[12px] uppercase tracking-[0.08em] text-white/60 md:pt-4 md:text-[14px]">
@@ -345,7 +340,7 @@ function StorySection() {
 
           <div className="relative flex h-full flex-col gap-8 p-[30px] md:border-l md:border-[#464646]">
             <Reveal delay={120}>
-              <h3 className="text-[36px] font-medium leading-[1.05] tracking-tight md:text-[50px]">
+              <h3 className="text-[36px] font-medium leading-[1.05] tracking-tight lg:text-[50px]">
                 Golden Group Story
               </h3>
             </Reveal>
@@ -367,29 +362,101 @@ function StorySection() {
         </div>
       </section>
 
-      <section className="relative w-full border-b border-[#464646] bg-black">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          <Reveal className="relative aspect-[685/526] w-full overflow-hidden md:border-r md:border-[#464646]">
-            <Image
-              src="/about/story-1.png"
-              alt="Golden Residency exterior"
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </Reveal>
-          <Reveal delay={150} className="relative aspect-[685/526] w-full overflow-hidden">
-            <Image
-              src="/about/story-2.png"
-              alt="Golden Residency entrance"
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </Reveal>
-        </div>
-      </section>
+      <StoryGallery />
     </>
+  );
+}
+
+const STORY_GALLERY_IMAGES = [
+  "/residential/gallery-1.jpg",
+  "/residential/gallery-2.jpg",
+  "/residential/gallery-3.jpg",
+  "/residential/gallery-4.jpg",
+  "/residential/gallery-5.jpg",
+  "/residential/gallery-6.jpg",
+];
+
+function StoryGallery() {
+  const [index, setIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startAuto = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setIndex((i) => (i + 1) % STORY_GALLERY_IMAGES.length);
+    }, 4500);
+  };
+
+  useEffect(() => {
+    startAuto();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  const select = (i: number) => {
+    setIndex(i);
+    startAuto();
+  };
+
+  return (
+    <section className="relative w-full border-b border-[#464646] bg-black">
+      <div className="relative h-[85vh] min-h-[480px] w-full overflow-hidden">
+        {STORY_GALLERY_IMAGES.map((src, i) => (
+          <Image
+            key={src}
+            src={src}
+            alt=""
+            fill
+            sizes="100vw"
+            priority={i === 0}
+            className="object-cover"
+            style={{
+              opacity: i === index ? 1 : 0,
+              transition: `opacity 800ms ${EASE}`,
+            }}
+          />
+        ))}
+
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[45%] bg-gradient-to-t from-black via-black/70 to-transparent"
+        />
+
+        <div className="absolute inset-x-0 bottom-0 z-10 flex justify-end p-[20px] md:p-[30px]">
+          <div className="flex gap-2 md:gap-3">
+            {STORY_GALLERY_IMAGES.map((src, i) => (
+              <button
+                key={src}
+                type="button"
+                onClick={() => select(i)}
+                aria-label={`Show image ${i + 1}`}
+                className="relative aspect-square h-[48px] w-[48px] shrink-0 overflow-hidden sm:h-[70px] sm:w-[70px] md:h-[97px] md:w-[97px]"
+                style={{
+                  opacity: index === i ? 1 : 0.55,
+                  transition: `opacity 350ms ${EASE}`,
+                }}
+              >
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  sizes="96px"
+                  className="object-cover"
+                />
+                <span
+                  aria-hidden
+                  className="absolute inset-0 z-10"
+                  style={{
+                    boxShadow: index === i ? "inset 0 0 0 2px #fff" : "none",
+                  }}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -504,7 +571,7 @@ function Milestones() {
             <Reveal
               key={s.label}
               delay={120 + i * 120}
-              className={`flex aspect-[458/410] flex-col items-center justify-center gap-3 ${
+              className={`flex aspect-[458/360] flex-col items-center justify-center gap-3 sm:aspect-[458/220] ${
                 s.filled
                   ? "bg-[#111]"
                   : "border border-[#464646]"
@@ -512,9 +579,9 @@ function Milestones() {
             >
               <CountUp
                 value={s.value}
-                className="text-[64px] font-medium leading-[0.9] tracking-tight text-white md:text-[110px] md:tracking-[-3px] lg:text-[140px] lg:tracking-[-4px]"
+                className="text-[56px] font-medium leading-[0.9] tracking-tight text-white sm:text-[64px] lg:text-[120px] lg:tracking-[-4px]"
               />
-              <span className="text-[12px] uppercase tracking-[0.06em] text-white/60 md:text-[14px]">
+              <span className="text-sm leading-[1.4] text-white/60">
                 {s.label}
               </span>
             </Reveal>
