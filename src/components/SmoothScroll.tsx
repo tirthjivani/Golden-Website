@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { setLenisInstance } from "@/lib/smooth-scroll";
 
 export default function SmoothScroll() {
   useEffect(() => {
@@ -16,6 +17,7 @@ export default function SmoothScroll() {
       lerp: 0.1,
       smoothWheel: true,
     });
+    setLenisInstance(lenis);
 
     let raf = 0;
     const tick = (time: number) => {
@@ -26,6 +28,7 @@ export default function SmoothScroll() {
 
     return () => {
       cancelAnimationFrame(raf);
+      setLenisInstance(null);
       lenis.destroy();
     };
   }, []);

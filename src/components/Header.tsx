@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ProjectSectionNav } from "@/components/ProjectSectionNav";
+import { getProjectBySlug, getProjectSections } from "@/lib/projects";
 
 const SEGMENTS = [
   { href: "/residential", label: "Residential" },
@@ -25,6 +27,11 @@ export default function Header({
 }) {
   const pathname = usePathname();
   const active = SEGMENTS.find((s) => pathname?.startsWith(s.href));
+  const projectSlug = pathname?.startsWith("/project/")
+    ? pathname.split("/")[2]
+    : null;
+  const project = projectSlug ? getProjectBySlug(projectSlug) : undefined;
+  const sectionItems = project ? getProjectSections(project) : [];
 
   if (variant === "sticky") {
     return (
@@ -46,7 +53,11 @@ export default function Header({
                 className="h-7 w-auto md:h-8"
               />
             </Link>
-            {active ? <SegmentSwitcher current={active.href} /> : null}
+            {sectionItems.length > 0 ? (
+              <ProjectSectionNav sections={sectionItems} />
+            ) : active ? (
+              <SegmentSwitcher current={active.href} />
+            ) : null}
           </div>
           <button
             type="button"

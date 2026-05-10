@@ -1,192 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
+import {
+  listProjects,
+  projectImage,
+  type Project,
+  type ProjectType,
+} from "@/lib/projects";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 const REVEAL_STAGGER = 140;
 
-type ProjectType = "residential" | "commercial-industrial";
 type Filter = "all" | ProjectType;
 
-type Project = {
-  id: string;
-  name: string;
-  type: ProjectType;
-  category: string;
-  location: string;
-  area: string;
-  status: "Completed" | "Ongoing";
-  images: string[];
-};
-
-const PROJECTS: Project[] = [
-  {
-    id: "golden-residency",
-    name: "Golden Residency",
-    type: "residential",
-    category: "1 & 2 BHK Flats",
-    location: "Bharuch",
-    area: "650-1100 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/projects/golden-residency/01.jpg",
-      "/projects/golden-residency/02.jpg",
-      "/projects/golden-residency/03.jpg",
-    ],
-  },
-  {
-    id: "golden-luxuria",
-    name: "Golden Luxuria",
-    type: "residential",
-    category: "2 & 3 BHK Flats",
-    location: "Surat",
-    area: "1200-1750 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/projects/golden-luxuria/01.jpg",
-      "/projects/golden-luxuria/02.jpg",
-      "/projects/golden-luxuria/03.jpg",
-      "/projects/golden-luxuria/04.jpg",
-    ],
-  },
-  {
-    id: "golden-nirvana",
-    name: "Golden Nirvana",
-    type: "residential",
-    category: "3 BHK Bungalows or 2 BHK Flats",
-    location: "Surat",
-    area: "1900-2500 Sq. Ft.",
-    status: "Ongoing",
-    images: [
-      "/projects/golden-nirvana/01.jpg",
-      "/projects/golden-nirvana/02.jpg",
-      "/projects/golden-nirvana/03.jpg",
-      "/projects/golden-nirvana/04.jpg",
-    ],
-  },
-  {
-    id: "golden-villa",
-    name: "Golden Villa",
-    type: "residential",
-    category: "Villas",
-    location: "Ankleshwar",
-    area: "2500-3200 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/projects/golden-villa/01.jpg",
-      "/projects/golden-villa/02.jpg",
-      "/projects/golden-villa/03.jpg",
-      "/projects/golden-villa/04.jpg",
-    ],
-  },
-  {
-    id: "golden-homes",
-    name: "Golden Homes",
-    type: "residential",
-    category: "Residential Flats",
-    location: "Bharuch",
-    area: "1100-1500 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/projects/golden-homes/01.jpg",
-      "/projects/golden-homes/02.jpg",
-      "/projects/golden-homes/03.jpg",
-      "/projects/golden-homes/04.jpg",
-    ],
-  },
-  {
-    id: "golden-palm-villa",
-    name: "Golden Palm Villa",
-    type: "residential",
-    category: "Villas",
-    location: "Ankleshwar",
-    area: "2700-3500 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/projects/golden-palm-villa/01.jpg",
-      "/projects/golden-palm-villa/02.jpg",
-      "/projects/golden-palm-villa/03.jpg",
-      "/projects/golden-palm-villa/04.jpg",
-    ],
-  },
-  {
-    id: "golden-heaven",
-    name: "Golden Heaven",
-    type: "residential",
-    category: "3 & 4 BHK Flats",
-    location: "Surat",
-    area: "1901-2479 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/projects/golden-heaven/01.jpg",
-      "/projects/golden-heaven/02.jpg",
-      "/projects/golden-heaven/03.jpg",
-      "/projects/golden-heaven/04.jpg",
-    ],
-  },
-  {
-    id: "golden-palm-plaza",
-    name: "Golden Palm Plaza",
-    type: "commercial-industrial",
-    category: "Shops & Offices",
-    location: "Bharuch",
-    area: "300-1200 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/commercial-hero.png",
-      "/residential/gallery-3.jpg",
-      "/residential/gallery-1.jpg",
-      "/residential/gallery-5.jpg",
-    ],
-  },
-  {
-    id: "golden-square",
-    name: "Golden Square",
-    type: "commercial-industrial",
-    category: "Commercial Spaces",
-    location: "Ankleshwar",
-    area: "450-1500 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/commercial-hero.png",
-      "/residential/gallery-4.jpg",
-      "/residential/gallery-5.jpg",
-      "/residential/gallery-6.jpg",
-    ],
-  },
-  {
-    id: "golden-square-2",
-    name: "Golden Square",
-    type: "commercial-industrial",
-    category: "Commercial Spaces",
-    location: "Surat",
-    area: "500-1600 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/commercial-hero.png",
-      "/residential/gallery-2.jpg",
-      "/residential/gallery-6.jpg",
-      "/residential/gallery-3.jpg",
-    ],
-  },
-  {
-    id: "golden-industrial-estate",
-    name: "Golden Industrial Estate",
-    type: "commercial-industrial",
-    category: "Industrial Plots",
-    location: "Ankleshwar",
-    area: "5000-12000 Sq. Ft.",
-    status: "Completed",
-    images: [
-      "/commercial-hero.png",
-      "/residential/gallery-3.jpg",
-      "/residential/gallery-5.jpg",
-      "/residential/gallery-4.jpg",
-    ],
-  },
-];
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "All" },
@@ -196,8 +25,9 @@ const FILTERS: { id: Filter; label: string }[] = [
 
 export default function ProjectsPage() {
   const [filter, setFilter] = useState<Filter>("all");
+  const projects = listProjects();
 
-  const filtered = PROJECTS.filter(
+  const filtered = projects.filter(
     (p) => filter === "all" || p.type === filter,
   );
 
@@ -282,9 +112,14 @@ function ProjectRow({ project }: { project: Project }) {
       className="grid grid-cols-1 gap-8 border-b border-[#464646] px-[30px] py-10 md:grid-cols-12 md:gap-10 md:py-14"
     >
       <div className="md:col-span-4 lg:col-span-3">
-        <h3 className="text-[28px] font-medium leading-[1.05] tracking-tight md:text-[36px]">
-          {project.name}
-        </h3>
+        <Link
+          href={`/project/${project.slug}`}
+          className="group inline-block"
+        >
+          <h3 className="text-[28px] font-medium leading-[1.05] tracking-tight transition-colors group-hover:text-[#C19B4D] md:text-[36px]">
+            {project.name}
+          </h3>
+        </Link>
         <ul className="mt-6 flex flex-col gap-2 text-[16px] text-[#737373]">
           <li className="flex items-center gap-1.5">
             <BedIcon />
@@ -303,19 +138,28 @@ function ProjectRow({ project }: { project: Project }) {
             <span>{project.status}</span>
           </li>
         </ul>
+        <Link
+          href={`/project/${project.slug}`}
+          className="mt-6 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.08em] text-white/80 transition-colors hover:text-[#C19B4D]"
+        >
+          View Details
+          <span aria-hidden>→</span>
+        </Link>
       </div>
 
       <div className="md:col-span-8 lg:col-span-9">
-        <div
+        <Link
+          href={`/project/${project.slug}`}
+          aria-label={`Open ${project.name} details`}
           className={`grid grid-cols-2 gap-2 md:gap-3 ${
             project.images.length >= 4 ? "sm:grid-cols-4" : "sm:grid-cols-3"
           }`}
         >
-          {project.images.map((src, i) => (
+          {project.images.map((img, i) => (
             <RevealImage
               key={`${project.id}-${i}`}
-              src={src}
-              alt={`${project.name} — image ${i + 1}`}
+              src={projectImage(img.src)}
+              alt={img.alt ?? `${project.name} — image ${i + 1}`}
               fill
               sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
               className="object-cover"
@@ -324,7 +168,7 @@ function ProjectRow({ project }: { project: Project }) {
               delay={i * REVEAL_STAGGER}
             />
           ))}
-        </div>
+        </Link>
       </div>
     </div>
   );
