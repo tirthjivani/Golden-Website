@@ -8,23 +8,30 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
  * (the home page already did the expand) and play a tighter reveal sequence.
  */
 export function useFromHome(): boolean {
+  return useTransitionFlag("golden-from-home");
+}
+
+export function useFromProjects(): boolean {
+  return useTransitionFlag("golden-from-projects");
+}
+
+function useTransitionFlag(key: string): boolean {
   // Lazy initializer locks the value on first render. The only flow that sets
   // the flag is a client-side click followed by client-side navigation, so
   // there's no SSR/hydration mismatch in practice — the destination renders
-  // fresh on the client when arriving from home.
-  const [fromHome] = useState(
+  // fresh on the client when arriving from the trigger page.
+  const [flag] = useState(
     () =>
-      typeof window !== "undefined" &&
-      sessionStorage.getItem("golden-from-home") === "1",
+      typeof window !== "undefined" && sessionStorage.getItem(key) === "1",
   );
 
   useEffect(() => {
-    if (fromHome && typeof window !== "undefined") {
-      sessionStorage.removeItem("golden-from-home");
+    if (flag && typeof window !== "undefined") {
+      sessionStorage.removeItem(key);
     }
-  }, [fromHome]);
+  }, [flag, key]);
 
-  return fromHome;
+  return flag;
 }
 
 /**

@@ -67,10 +67,14 @@ export default function SiteShell({
         {children}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-20 bg-white"
+          className="pointer-events-none absolute inset-0 z-20"
           style={{
-            opacity: menuOpen ? 0.1 : 0,
-            transition: `opacity ${DURATION} ${EASE}`,
+            backgroundColor: menuOpen
+              ? "rgba(255, 255, 255, 0.05)"
+              : "rgba(255, 255, 255, 0)",
+            backdropFilter: menuOpen ? "blur(10px)" : "blur(0px)",
+            WebkitBackdropFilter: menuOpen ? "blur(10px)" : "blur(0px)",
+            transition: `background-color ${DURATION} ${EASE}, backdrop-filter ${DURATION} ${EASE}, -webkit-backdrop-filter ${DURATION} ${EASE}`,
           }}
         />
       </div>

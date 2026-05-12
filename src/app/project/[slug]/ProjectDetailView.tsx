@@ -12,6 +12,7 @@ import {
   Tree,
   Train,
 } from "@phosphor-icons/react";
+import { HeroRise, WordReveal, useFromProjects } from "@/components/HeroIntro";
 import {
   projectImage,
   type AmenityKey,
@@ -50,10 +51,16 @@ export function ProjectDetailView({ project }: { project: Project }) {
 function Hero({ project }: { project: Project }) {
   const detail = project.detail!;
   const heroSrc = projectImage(detail.hero.image.src);
+  const fromProjects = useFromProjects();
+
+  const titleStart = fromProjects ? 250 : 450;
+  const titleWords = project.name.split(/\s+/).filter(Boolean).length;
+  const factsDelay = titleStart + titleWords * 70 + 80;
+
   return (
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
       {heroSrc ? (
-        <div className="hero-expand absolute inset-0">
+        <div className={`absolute inset-0 ${fromProjects ? "" : "hero-expand"}`}>
           <Image
             src={heroSrc}
             alt={detail.hero.image.alt ?? project.name}
@@ -69,49 +76,23 @@ function Hero({ project }: { project: Project }) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
 
       <div className="relative z-10 flex h-full w-full flex-col p-[30px] pt-[110px] md:pt-[140px]">
-        <div className="mt-auto flex flex-col gap-10">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
-            <div
-              className="hero-rise"
-              style={{ "--hero-rise-delay": "450ms" } as CSSProperties}
-            >
-              <h1 className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]">
-                {project.name}
-              </h1>
-            </div>
+        <div className="mt-auto grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
+          <WordReveal
+            as="h1"
+            text={project.name}
+            startDelay={titleStart}
+            className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]"
+          />
 
-            <div
-              className="hero-rise"
-              style={{ "--hero-rise-delay": "650ms" } as CSSProperties}
-            >
-              <dl className="flex w-full max-w-[420px] flex-col divide-y divide-white/10 border border-white/10 bg-black/40 backdrop-blur-sm sm:w-[420px]">
-                <HeroFact label="Location" value={project.location} />
-                <HeroFact label="Type" value={project.category} />
-                <HeroFact label="RERA" value={project.rera ?? "Pending"} />
-                <HeroFact label="Carpet Area" value={project.area} />
-                <HeroFact label="Status" value={project.status} />
-              </dl>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
-            <div
-              className="hero-rise"
-              style={{ "--hero-rise-delay": "850ms" } as CSSProperties}
-            >
-              <p className="max-w-[360px] text-sm leading-[1.4] text-white/75">
-                Scroll down to explore everything from amenities to floor plans, gallery, and location.
-              </p>
-            </div>
-            {detail.intro.brochureUrl ? (
-              <div
-                className="hero-rise"
-                style={{ "--hero-rise-delay": "1000ms" } as CSSProperties}
-              >
-                <BrochurePill href={detail.intro.brochureUrl} />
-              </div>
-            ) : null}
-          </div>
+          <HeroRise delay={factsDelay}>
+            <dl className="flex w-full max-w-[420px] flex-col divide-y divide-white/10 border border-white/10 bg-black/40 backdrop-blur-sm sm:w-[420px]">
+              <HeroFact label="Location" value={project.location} />
+              <HeroFact label="Type" value={project.category} />
+              <HeroFact label="RERA" value={project.rera ?? "Pending"} />
+              <HeroFact label="Carpet Area" value={project.area} />
+              <HeroFact label="Status" value={project.status} />
+            </dl>
+          </HeroRise>
         </div>
       </div>
     </section>

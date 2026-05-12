@@ -1,21 +1,41 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
   listProjects,
   projectImage,
   type Project,
+  type ProjectStatus,
   type ProjectType,
 } from "@/lib/projects";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 const REVEAL_STAGGER = 140;
+const ROW_TRANSITION_MS = 850;
+
+type TransitionState = {
+  slug: string;
+  src: string;
+  alt: string;
+  startRect: { top: number; left: number; width: number; height: number };
+  expanded: boolean;
+};
 
 type Filter = "all" | ProjectType;
+type StatusFilter = "all" | ProjectStatus;
+type Layout = "row" | "gallery";
 
 function parseFilter(value: string | null): Filter {
   if (value === "residential" || value === "commercial-industrial") return value;
@@ -27,6 +47,26 @@ const FILTERS: { id: Filter; label: string }[] = [
   { id: "residential", label: "Residential" },
   { id: "commercial-industrial", label: "Commercial & Industrial" },
 ];
+
+const STATUS_FILTERS: { id: StatusFilter; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "Ongoing", label: "Under Construction" },
+  { id: "Upcoming", label: "New" },
+  { id: "Completed", label: "Completed" },
+];
+
+const LAYOUT_FILTERS: { id: Layout; label: string }[] = [
+  { id: "row", label: "List" },
+  { id: "gallery", label: "Gallery" },
+];
+
+function statusLabel(status: ProjectStatus): string {
+  return STATUS_FILTERS.find((s) => s.id === status)?.label ?? status;
+}
+
+function projectHeroImage(project: Project) {
+  return project.detail?.hero.image ?? project.images[0];
+}
 
 export default function ProjectsPage() {
   return (
@@ -44,11 +84,58 @@ function ProjectsBodyWithSearchParams() {
 
 function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
   const [filter, setFilter] = useState<Filter>(initialFilter);
+  const [status, setStatus] = useState<StatusFilter>("all");
+  const [layout, setLayout] = useState<Layout>("row");
+  const [transition, setTransition] = useState<TransitionState | null>(null);
+  const [cols, setCols] = useState(3);
   const projects = listProjects();
+  const router = useRouter();
 
-  const filtered = projects.filter(
-    (p) => filter === "all" || p.type === filter,
-  );
+  useEffect(() => {
+    const compute = () => {
+      const w = window.innerWidth;
+      setCols(w >= 1280 ? 3 : w >= 768 ? 2 : 1);
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, []);
+
+  const filtered = projects
+    .filter((p) => filter === "all" || p.type === filter)
+    .filter((p) => status === "all" || p.status === status);
+
+  const remainder = filtered.length % cols;
+  const fillerCount = remainder === 0 ? 0 : cols - remainder;
+
+  const startTransition = (project: Project, imgEl: HTMLElement) => {
+    if (transition) return;
+    const heroRef = projectHeroImage(project);
+    if (!heroRef?.src) return;
+    const rect = imgEl.getBoundingClientRect();
+    const src = projectImage(heroRef.src);
+    sessionStorage.setItem("golden-from-projects", "1");
+    setTransition({
+      slug: project.slug,
+      src,
+      alt: heroRef.alt ?? project.name,
+      startRect: {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      },
+      expanded: false,
+    });
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTransition((t) => (t ? { ...t, expanded: true } : null));
+      });
+    });
+    window.setTimeout(() => {
+      router.push(`/project/${project.slug}`);
+    }, ROW_TRANSITION_MS);
+  };
 
   return (
     <main className="relative min-h-screen w-full bg-black text-white">
@@ -65,44 +152,128 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
           </p>
         </Reveal>
 
-        <Reveal delay={240} className="mt-10 flex flex-col gap-3">
-          <span className="text-sm text-white/60">Type</span>
-          <div className="flex flex-wrap gap-0">
-            {FILTERS.map((f) => {
-              const active = filter === f.id;
-              return (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setFilter(f.id)}
-                  className={`relative -ml-px h-[36px] border border-[#464646] px-4 text-[12px] uppercase tracking-[0.04em] first:ml-0 ${
-                    active
-                      ? "z-10 bg-white text-black"
-                      : "bg-transparent text-white hover:bg-white/5"
-                  }`}
-                  style={{ transition: `background-color 250ms ${EASE}, color 250ms ${EASE}` }}
-                  aria-pressed={active}
-                >
-                  {f.label}
-                </button>
-              );
-            })}
+        <Reveal delay={240} className="mt-10">
+          <div className="flex flex-col gap-8 md:flex-row md:flex-wrap md:items-start md:gap-x-12 md:gap-y-6">
+            <div className="flex flex-col gap-3">
+              <span className="text-sm text-white/60">Type</span>
+              <FilterRow items={FILTERS} value={filter} onChange={setFilter} />
+            </div>
+            <div className="flex flex-col gap-3">
+              <span className="text-sm text-white/60">Status</span>
+              <FilterRow items={STATUS_FILTERS} value={status} onChange={setStatus} />
+            </div>
+            <div className="flex flex-col gap-3">
+              <span className="text-sm text-white/60">Layout</span>
+              <FilterRow items={LAYOUT_FILTERS} value={layout} onChange={setLayout} />
+            </div>
           </div>
         </Reveal>
       </section>
 
-      <section className="border-t border-[#464646]">
-        {filtered.map((p) => (
-          <ProjectRow key={p.id} project={p} />
-        ))}
-      </section>
+      {layout === "row" ? (
+        <section className="border-t border-[#464646]">
+          {filtered.map((p) => (
+            <ProjectRow
+              key={p.id}
+              project={p}
+              disabled={transition !== null}
+              onSelect={(imgEl) => startTransition(p, imgEl)}
+            />
+          ))}
+        </section>
+      ) : (
+        <section className="border-t border-[#464646]">
+          <div className="grid grid-cols-1 gap-0 md:grid-cols-2 xl:grid-cols-3">
+            {filtered.map((p) => (
+              <ProjectGalleryCard
+                key={p.id}
+                project={p}
+                disabled={transition !== null}
+                onSelect={(imgEl) => startTransition(p, imgEl)}
+              />
+            ))}
+            {Array.from({ length: fillerCount }).map((_, i) => (
+              <div
+                key={`filler-${i}`}
+                aria-hidden
+                className="bg-black border-[#464646] [&:not(:first-child)]:border-t md:[&:nth-child(2)]:border-t-0 md:[&:nth-child(2n)]:border-l xl:[&:nth-child(3)]:border-t-0 xl:[&:nth-child(3n+1)]:!border-l-0 xl:[&:nth-child(3n+2)]:border-l xl:[&:nth-child(3n)]:border-l"
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       <SiteFooter />
+
+      {transition ? (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed z-50 overflow-hidden"
+          style={{
+            top: transition.expanded ? 0 : transition.startRect.top,
+            left: transition.expanded ? 0 : transition.startRect.left,
+            width: transition.expanded ? "100vw" : transition.startRect.width,
+            height: transition.expanded ? "100vh" : transition.startRect.height,
+            transition: `top ${ROW_TRANSITION_MS}ms ${EASE}, left ${ROW_TRANSITION_MS}ms ${EASE}, width ${ROW_TRANSITION_MS}ms ${EASE}, height ${ROW_TRANSITION_MS}ms ${EASE}`,
+          }}
+        >
+          <Image
+            src={transition.src}
+            alt={transition.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+      ) : null}
     </main>
   );
 }
 
-function ProjectRow({ project }: { project: Project }) {
+function FilterRow<T extends string>({
+  items,
+  value,
+  onChange,
+}: {
+  items: readonly { id: T; label: string }[];
+  value: T;
+  onChange: (next: T) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-0">
+      {items.map((f) => {
+        const active = value === f.id;
+        return (
+          <button
+            key={f.id}
+            type="button"
+            onClick={() => onChange(f.id)}
+            className={`relative -ml-px h-[36px] border border-[#464646] px-4 text-[13px] tracking-[0.01em] first:ml-0 ${
+              active
+                ? "z-10 bg-white text-black"
+                : "bg-transparent text-white hover:bg-white/5"
+            }`}
+            style={{ transition: `background-color 250ms ${EASE}, color 250ms ${EASE}` }}
+            aria-pressed={active}
+          >
+            {f.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ProjectRow({
+  project,
+  disabled,
+  onSelect,
+}: {
+  project: Project;
+  disabled: boolean;
+  onSelect: (heroImgEl: HTMLElement) => void;
+}) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [shown, setShown] = useState(false);
 
@@ -125,11 +296,36 @@ function ProjectRow({ project }: { project: Project }) {
     return () => io.disconnect();
   }, []);
 
+  // Use the project detail's hero image as the first tile so the row image
+  // matches the destination page's background. Fall back to the gallery's
+  // first image if no detail is configured yet.
+  const displayImages = (() => {
+    const heroImg = project.detail?.hero.image;
+    if (!heroImg) return project.images;
+    const rest = project.images.filter((i) => i.src !== heroImg.src);
+    return [heroImg, ...rest].slice(0, Math.max(project.images.length, 1));
+  })();
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (disabled) {
+      e.preventDefault();
+      return;
+    }
+    const heroEl = e.currentTarget.querySelector(
+      "[data-row-hero]",
+    ) as HTMLElement | null;
+    if (!heroEl) return;
+    e.preventDefault();
+    onSelect(heroEl);
+  };
+
   return (
     <Link
       ref={ref}
       href={`/project/${project.slug}`}
       aria-label={`Open ${project.name} details`}
+      onClick={handleClick}
       className="card-hover relative block overflow-hidden border-b border-[#464646] bg-black"
     >
       <span
@@ -156,7 +352,7 @@ function ProjectRow({ project }: { project: Project }) {
             </li>
             <li className="flex items-center gap-1.5">
               <StatusIcon />
-              <span>{project.status}</span>
+              <span>{statusLabel(project.status)}</span>
             </li>
           </ul>
         </div>
@@ -164,23 +360,134 @@ function ProjectRow({ project }: { project: Project }) {
         <div className="md:col-span-8 lg:col-span-9">
           <div
             className={`grid grid-cols-2 gap-2 md:gap-3 ${
-              project.images.length >= 4 ? "sm:grid-cols-4" : "sm:grid-cols-3"
+              displayImages.length >= 4 ? "sm:grid-cols-4" : "sm:grid-cols-3"
             }`}
           >
-            {project.images.map((img, i) => (
-              <RevealImage
-                key={`${project.id}-${i}`}
-                src={projectImage(img.src)}
-                alt={img.alt ?? `${project.name} — image ${i + 1}`}
-                fill
-                sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
-                className="object-cover"
-                containerClassName="relative aspect-[4/3] w-full"
-                shown={shown}
-                delay={i * REVEAL_STAGGER}
-              />
+            {displayImages.map((img, i) => (
+              <div key={`${project.id}-${i}`} {...(i === 0 ? { "data-row-hero": "" } : {})}>
+                <RevealImage
+                  src={projectImage(img.src)}
+                  alt={img.alt ?? `${project.name} — image ${i + 1}`}
+                  fill
+                  sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
+                  className="object-cover"
+                  containerClassName="relative aspect-[4/3] w-full"
+                  shown={shown}
+                  delay={i * REVEAL_STAGGER}
+                />
+              </div>
             ))}
           </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function ProjectGalleryCard({
+  project,
+  disabled,
+  onSelect,
+}: {
+  project: Project;
+  disabled: boolean;
+  onSelect: (heroImgEl: HTMLElement) => void;
+}) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setShown(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, []);
+
+  const heroRef = projectHeroImage(project);
+  const heroSrc = heroRef?.src ? projectImage(heroRef.src) : null;
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (disabled) {
+      e.preventDefault();
+      return;
+    }
+    const el = e.currentTarget.querySelector("[data-row-hero]") as HTMLElement | null;
+    if (!el) return;
+    e.preventDefault();
+    onSelect(el);
+  };
+
+  const detail = (delay: number) =>
+    ({
+      className: `reveal ${shown ? "is-in" : ""} flex items-center gap-1.5`,
+      style: { "--reveal-delay": `${delay}ms` } as CSSProperties,
+    });
+
+  return (
+    <Link
+      ref={ref}
+      href={`/project/${project.slug}`}
+      aria-label={`Open ${project.name} details`}
+      onClick={handleClick}
+      className="card-hover relative block overflow-hidden bg-black border-[#464646] [&:not(:first-child)]:border-t md:[&:nth-child(2)]:border-t-0 md:[&:nth-child(2n)]:border-l xl:[&:nth-child(3)]:border-t-0 xl:[&:nth-child(3n+1)]:!border-l-0 xl:[&:nth-child(3n+2)]:border-l xl:[&:nth-child(3n)]:border-l"
+    >
+      <span
+        aria-hidden
+        className="card-fill pointer-events-none absolute inset-0 z-0 bg-[#1a1a1a]"
+      />
+      <div className="relative z-10 p-[30px]">
+        <div data-row-hero className="relative aspect-[4/3] w-full bg-[#0f0f0f]">
+          {heroSrc ? (
+            <RevealImage
+              src={heroSrc}
+              alt={heroRef?.alt ?? project.name}
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              className="object-cover"
+              containerClassName="absolute inset-0"
+              shown={shown}
+            />
+          ) : null}
+        </div>
+
+        <div className="mt-6 flex flex-col gap-5">
+          <h3
+            className={`reveal ${shown ? "is-in" : ""} text-[24px] font-medium leading-[1.15] tracking-tight md:text-[28px]`}
+            style={{ "--reveal-delay": "500ms" } as CSSProperties}
+          >
+            {project.name}
+          </h3>
+          <ul className="flex flex-col gap-2 text-[15px] text-[#737373] md:text-[16px]">
+            <li {...detail(620)}>
+              <BedIcon />
+              <span>{project.category}</span>
+            </li>
+            <li {...detail(720)}>
+              <MapPinIcon />
+              <span>{project.location}</span>
+            </li>
+            <li {...detail(820)}>
+              <AreaIcon />
+              <span>{project.area}</span>
+            </li>
+            <li {...detail(920)}>
+              <StatusIcon />
+              <span>{statusLabel(project.status)}</span>
+            </li>
+          </ul>
         </div>
       </div>
     </Link>
