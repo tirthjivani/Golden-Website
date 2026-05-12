@@ -9,6 +9,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { HeroRise, WordReveal, useFromHome } from "@/components/HeroIntro";
 import { RecognitionSection } from "@/components/RecognitionSection";
 import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -34,9 +35,15 @@ export default function CommercialIndustrialPage() {
 }
 
 function Hero() {
+  const fromHome = useFromHome();
+  const headlineText = "Spaces Built for the Business of Tomorrow";
+  const headlineStart = fromHome ? 250 : 450;
+  const titleWords = headlineText.split(/\s+/).length;
+  const ctaDelay = headlineStart + titleWords * 70 + 200;
+
   return (
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
-      <div className="hero-expand absolute inset-0">
+      <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand"}`}>
         <Image
           src="/commercial-hero.png"
           alt=""
@@ -50,18 +57,15 @@ function Hero() {
 
       <div className="relative z-10 flex h-full w-full flex-col p-[30px]">
         <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
-          <h2
-            className="reveal is-in max-w-[14ch] text-[44px] font-medium leading-[1.02] tracking-tight lg:text-[88px]"
-            style={{ "--reveal-delay": "350ms" } as CSSProperties}
-          >
-            Spaces Built for the Business of Tomorrow
-          </h2>
-          <div
-            className="reveal is-in"
-            style={{ "--reveal-delay": "700ms" } as CSSProperties}
-          >
+          <WordReveal
+            as="h2"
+            text={headlineText}
+            startDelay={headlineStart}
+            className="max-w-[14ch] text-[44px] font-medium leading-[1.02] tracking-tight lg:text-[88px]"
+          />
+          <HeroRise delay={ctaDelay}>
             <Pill href="/projects" label="See latest projects" />
-          </div>
+          </HeroRise>
         </div>
       </div>
     </section>

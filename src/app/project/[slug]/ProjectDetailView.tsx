@@ -53,7 +53,7 @@ function Hero({ project }: { project: Project }) {
   return (
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
       {heroSrc ? (
-        <div className="absolute inset-0">
+        <div className="hero-expand absolute inset-0">
           <Image
             src={heroSrc}
             alt={detail.hero.image.alt ?? project.name}
@@ -71,13 +71,19 @@ function Hero({ project }: { project: Project }) {
       <div className="relative z-10 flex h-full w-full flex-col p-[30px] pt-[110px] md:pt-[140px]">
         <div className="mt-auto flex flex-col gap-10">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
-            <Reveal>
+            <div
+              className="hero-rise"
+              style={{ "--hero-rise-delay": "450ms" } as CSSProperties}
+            >
               <h1 className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]">
                 {project.name}
               </h1>
-            </Reveal>
+            </div>
 
-            <Reveal delay={150}>
+            <div
+              className="hero-rise"
+              style={{ "--hero-rise-delay": "650ms" } as CSSProperties}
+            >
               <dl className="flex w-full max-w-[420px] flex-col divide-y divide-white/10 border border-white/10 bg-black/40 backdrop-blur-sm sm:w-[420px]">
                 <HeroFact label="Location" value={project.location} />
                 <HeroFact label="Type" value={project.category} />
@@ -85,19 +91,25 @@ function Hero({ project }: { project: Project }) {
                 <HeroFact label="Carpet Area" value={project.area} />
                 <HeroFact label="Status" value={project.status} />
               </dl>
-            </Reveal>
+            </div>
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
-            <Reveal delay={300}>
+            <div
+              className="hero-rise"
+              style={{ "--hero-rise-delay": "850ms" } as CSSProperties}
+            >
               <p className="max-w-[360px] text-sm leading-[1.4] text-white/75">
                 Scroll down to explore everything from amenities to floor plans, gallery, and location.
               </p>
-            </Reveal>
+            </div>
             {detail.intro.brochureUrl ? (
-              <Reveal delay={420}>
+              <div
+                className="hero-rise"
+                style={{ "--hero-rise-delay": "1000ms" } as CSSProperties}
+              >
                 <BrochurePill href={detail.intro.brochureUrl} />
-              </Reveal>
+              </div>
             ) : null}
           </div>
         </div>

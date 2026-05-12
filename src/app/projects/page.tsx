@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
@@ -16,6 +17,10 @@ const REVEAL_STAGGER = 140;
 
 type Filter = "all" | ProjectType;
 
+function parseFilter(value: string | null): Filter {
+  if (value === "residential" || value === "commercial-industrial") return value;
+  return "all";
+}
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "All" },
@@ -24,7 +29,21 @@ const FILTERS: { id: Filter; label: string }[] = [
 ];
 
 export default function ProjectsPage() {
-  const [filter, setFilter] = useState<Filter>("all");
+  return (
+    <Suspense fallback={<ProjectsBody initialFilter="all" />}>
+      <ProjectsBodyWithSearchParams />
+    </Suspense>
+  );
+}
+
+function ProjectsBodyWithSearchParams() {
+  const searchParams = useSearchParams();
+  const initialFilter = parseFilter(searchParams.get("type"));
+  return <ProjectsBody initialFilter={initialFilter} />;
+}
+
+function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
+  const [filter, setFilter] = useState<Filter>(initialFilter);
   const projects = listProjects();
 
   const filtered = projects.filter(
@@ -84,7 +103,7 @@ export default function ProjectsPage() {
 }
 
 function ProjectRow({ project }: { project: Project }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLAnchorElement>(null);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -107,70 +126,64 @@ function ProjectRow({ project }: { project: Project }) {
   }, []);
 
   return (
-    <div
+    <Link
       ref={ref}
-      className="grid grid-cols-1 gap-8 border-b border-[#464646] px-[30px] py-10 md:grid-cols-12 md:gap-10 md:py-14"
+      href={`/project/${project.slug}`}
+      aria-label={`Open ${project.name} details`}
+      className="card-hover relative block overflow-hidden border-b border-[#464646] bg-black"
     >
-      <div className="md:col-span-4 lg:col-span-3">
-        <Link
-          href={`/project/${project.slug}`}
-          className="group inline-block"
-        >
-          <h3 className="text-[28px] font-medium leading-[1.05] tracking-tight transition-colors group-hover:text-[#C19B4D] md:text-[36px]">
+      <span
+        aria-hidden
+        className="card-fill pointer-events-none absolute inset-0 z-0 bg-[#1a1a1a]"
+      />
+      <div className="relative z-10 grid grid-cols-1 gap-8 px-[30px] py-10 md:grid-cols-12 md:gap-10 md:py-14">
+        <div className="md:col-span-4 lg:col-span-3">
+          <h3 className="text-[28px] font-medium leading-[1.05] tracking-tight md:text-[36px]">
             {project.name}
           </h3>
-        </Link>
-        <ul className="mt-6 flex flex-col gap-2 text-[16px] text-[#737373]">
-          <li className="flex items-center gap-1.5">
-            <BedIcon />
-            <span>{project.category}</span>
-          </li>
-          <li className="flex items-center gap-1.5">
-            <MapPinIcon />
-            <span>{project.location}</span>
-          </li>
-          <li className="flex items-center gap-1.5">
-            <AreaIcon />
-            <span>{project.area}</span>
-          </li>
-          <li className="flex items-center gap-1.5">
-            <StatusIcon />
-            <span>{project.status}</span>
-          </li>
-        </ul>
-        <Link
-          href={`/project/${project.slug}`}
-          className="mt-6 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.08em] text-white/80 transition-colors hover:text-[#C19B4D]"
-        >
-          View Details
-          <span aria-hidden>→</span>
-        </Link>
-      </div>
+          <ul className="mt-6 flex flex-col gap-2 text-[16px] text-[#737373]">
+            <li className="flex items-center gap-1.5">
+              <BedIcon />
+              <span>{project.category}</span>
+            </li>
+            <li className="flex items-center gap-1.5">
+              <MapPinIcon />
+              <span>{project.location}</span>
+            </li>
+            <li className="flex items-center gap-1.5">
+              <AreaIcon />
+              <span>{project.area}</span>
+            </li>
+            <li className="flex items-center gap-1.5">
+              <StatusIcon />
+              <span>{project.status}</span>
+            </li>
+          </ul>
+        </div>
 
-      <div className="md:col-span-8 lg:col-span-9">
-        <Link
-          href={`/project/${project.slug}`}
-          aria-label={`Open ${project.name} details`}
-          className={`grid grid-cols-2 gap-2 md:gap-3 ${
-            project.images.length >= 4 ? "sm:grid-cols-4" : "sm:grid-cols-3"
-          }`}
-        >
-          {project.images.map((img, i) => (
-            <RevealImage
-              key={`${project.id}-${i}`}
-              src={projectImage(img.src)}
-              alt={img.alt ?? `${project.name} — image ${i + 1}`}
-              fill
-              sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
-              className="object-cover"
-              containerClassName="relative aspect-[4/3] w-full"
-              shown={shown}
-              delay={i * REVEAL_STAGGER}
-            />
-          ))}
-        </Link>
+        <div className="md:col-span-8 lg:col-span-9">
+          <div
+            className={`grid grid-cols-2 gap-2 md:gap-3 ${
+              project.images.length >= 4 ? "sm:grid-cols-4" : "sm:grid-cols-3"
+            }`}
+          >
+            {project.images.map((img, i) => (
+              <RevealImage
+                key={`${project.id}-${i}`}
+                src={projectImage(img.src)}
+                alt={img.alt ?? `${project.name} — image ${i + 1}`}
+                fill
+                sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
+                className="object-cover"
+                containerClassName="relative aspect-[4/3] w-full"
+                shown={shown}
+                delay={i * REVEAL_STAGGER}
+              />
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

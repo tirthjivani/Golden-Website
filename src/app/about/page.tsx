@@ -484,39 +484,51 @@ function WhyChooseUs() {
     },
   ];
   return (
-    <section className="border-t border-[#464646] bg-black px-[30px] py-16 md:py-20">
-      <Reveal>
-        <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-          Why Choose Us?
-        </h3>
-      </Reveal>
-
-      <div className="mt-10 grid grid-cols-1 gap-3 md:mt-14 md:grid-cols-3">
-        {items.map((item, i) => (
-          <Reveal
-            key={item.title}
-            delay={120 + i * 120}
-            className="flex h-full flex-col justify-between gap-12 overflow-hidden bg-[#111] p-[30px]"
-          >
-            <div className="relative flex h-[64px] w-[64px] shrink-0 items-center justify-center">
-              <Image
-                src={item.icon}
-                alt=""
-                width={64}
-                height={64}
-                className="h-full w-full object-contain"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-[20px] font-normal leading-[1.6] text-white">
-                {item.title}
-              </h4>
-              <p className="text-[14px] leading-[1.4] text-[#aaa]">
-                {item.body}
-              </p>
-            </div>
+    <section className="border-t border-[#464646] bg-black">
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0">
+        <div className="px-[30px] pt-16 md:pr-16 md:pt-20">
+          <Reveal>
+            <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+              Why Choose Us?
+            </h3>
           </Reveal>
-        ))}
+        </div>
+
+        <div className="md:border-l md:border-[#464646]">
+          <ul>
+            {items.map((item, i) => {
+              const isLast = i === items.length - 1;
+              return (
+                <li
+                  key={item.title}
+                  className={isLast ? "" : "border-b border-[#464646]"}
+                >
+                  <Reveal delay={120 + i * 120}>
+                    <div className="flex items-start gap-8 px-[30px] py-10 md:px-8 md:py-12">
+                      <div className="relative h-[48px] w-[48px] shrink-0 md:h-[56px] md:w-[56px]">
+                        <Image
+                          src={item.icon}
+                          alt=""
+                          width={56}
+                          height={56}
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-[20px] font-normal leading-[1.4] text-white">
+                          {item.title}
+                        </h4>
+                        <p className="text-[14px] leading-[1.5] text-white/65 md:text-[15px]">
+                          {item.body}
+                        </p>
+                      </div>
+                    </div>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </section>
   );

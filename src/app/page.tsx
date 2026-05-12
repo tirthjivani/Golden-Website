@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
@@ -9,10 +10,13 @@ type Side = "left" | "right";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 const DURATION = "900ms";
+const TRANSITION_MS = 850;
 
 export default function Home() {
+  const router = useRouter();
   const [hovered, setHovered] = useState<Side>("left");
   const [isDesktop, setIsDesktop] = useState(false);
+  const [transitioning, setTransitioning] = useState<Side | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -22,26 +26,77 @@ export default function Home() {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  const leftWidth = hovered === "left" ? "60%" : "40%";
-  const rightWidth = hovered === "right" ? "60%" : "40%";
+  // Prefetch destinations so the navigation feels instant after the expand.
+  useEffect(() => {
+    router.prefetch("/residential");
+    router.prefetch("/commercial-industrial");
+  }, [router]);
 
-  const sideTransition = `width ${DURATION} ${EASE}, flex-basis ${DURATION} ${EASE}`;
+  const startTransition = (side: Side, href: string) =>
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      // Let modifier-clicks open in new tab normally.
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      if (transitioning) return;
+      sessionStorage.setItem("golden-from-home", "1");
+      setTransitioning(side);
+      window.setTimeout(() => router.push(href), TRANSITION_MS);
+    };
+
+  let leftWidth: string;
+  let rightWidth: string;
+  if (transitioning === "left") {
+    leftWidth = "100%";
+    rightWidth = "0%";
+  } else if (transitioning === "right") {
+    leftWidth = "0%";
+    rightWidth = "100%";
+  } else {
+    leftWidth = hovered === "left" ? "60%" : "40%";
+    rightWidth = hovered === "right" ? "60%" : "40%";
+  }
+
+  const sideTransition = transitioning
+    ? `width ${TRANSITION_MS}ms ${EASE}, flex-basis ${TRANSITION_MS}ms ${EASE}`
+    : `width ${DURATION} ${EASE}, flex-basis ${DURATION} ${EASE}`;
   const fadeTransition = `opacity ${DURATION} ${EASE}, transform ${DURATION} ${EASE}`;
 
-  // Below the lg breakpoint (mobile + tablet), both images stay at full
-  // opacity and natural scale so the user can clearly distinguish each side.
-  const leftOpacity = isDesktop ? (hovered === "right" ? 0 : 1) : 1;
-  const rightOpacity = isDesktop ? (hovered === "right" ? 1 : 0) : 1;
-  const leftScale =
-    isDesktop && hovered === "left" ? "scale(1.04)" : "scale(1)";
-  const rightScale =
-    isDesktop && hovered === "right" ? "scale(1.04)" : "scale(1)";
+  const leftOpacity = transitioning
+    ? transitioning === "left"
+      ? 1
+      : 0
+    : isDesktop
+    ? hovered === "right"
+      ? 0
+      : 1
+    : 1;
+  const rightOpacity = transitioning
+    ? transitioning === "right"
+      ? 1
+      : 0
+    : isDesktop
+    ? hovered === "right"
+      ? 1
+      : 0
+    : 1;
+  const leftScale = transitioning
+    ? "scale(1)"
+    : isDesktop && hovered === "left"
+    ? "scale(1.04)"
+    : "scale(1)";
+  const rightScale = transitioning
+    ? "scale(1)"
+    : isDesktop && hovered === "right"
+    ? "scale(1.04)"
+    : "scale(1)";
+
+  const overlayTransition = `opacity 320ms ${EASE}`;
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black text-white">
       <main className="flex min-h-screen w-full flex-col lg:flex-row">
         <div
-          onMouseEnter={() => setHovered("left")}
+          onMouseEnter={() => !transitioning && setHovered("left")}
           className="group relative flex h-[50vh] w-full items-end overflow-hidden lg:h-screen lg:min-h-screen lg:w-[var(--side-width)] lg:flex-none lg:will-change-[width]"
           style={
             {
@@ -53,6 +108,7 @@ export default function Home() {
           <Link
             href="/residential"
             aria-label="Residential"
+            onClick={startTransition("left", "/residential")}
             className="absolute inset-0 z-0"
           />
           <Image
@@ -69,18 +125,24 @@ export default function Home() {
               willChange: "opacity, transform",
             }}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-          <div className="pointer-events-none relative z-10 flex w-full flex-col gap-6 px-8 pb-10 sm:flex-row sm:items-end sm:justify-between sm:gap-8 lg:px-14 lg:pb-14">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
+          <div
+            className="pointer-events-none relative z-10 flex w-full flex-col gap-6 px-8 pb-10 sm:flex-row sm:items-end sm:justify-between sm:gap-8 lg:px-14 lg:pb-14"
+            style={{
+              opacity: transitioning ? 0 : 1,
+              transition: overlayTransition,
+            }}
+          >
             <h2 className="text-[40px] font-medium leading-none tracking-tight md:text-[56px]">
               Residential
             </h2>
-            <ProjectsLinkMobile />
-            <ProjectsPill />
+            <ProjectsLinkMobile filter="residential" />
+            <ProjectsPill filter="residential" />
           </div>
         </div>
 
         <div
-          onMouseEnter={() => setHovered("right")}
+          onMouseEnter={() => !transitioning && setHovered("right")}
           className="group relative flex h-[50vh] w-full items-end overflow-hidden bg-black lg:h-screen lg:min-h-screen lg:w-[var(--side-width)] lg:flex-none lg:will-change-[width]"
           style={
             {
@@ -92,6 +154,7 @@ export default function Home() {
           <Link
             href="/commercial-industrial"
             aria-label="Commercial & Industrial"
+            onClick={startTransition("right", "/commercial-industrial")}
             className="absolute inset-0 z-0"
           />
           <Image
@@ -107,15 +170,21 @@ export default function Home() {
               willChange: "opacity, transform",
             }}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-          <div className="pointer-events-none relative z-10 flex w-full flex-col gap-6 px-8 pb-10 sm:flex-row-reverse sm:items-end sm:justify-between sm:gap-8 lg:px-14 lg:pb-14">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
+          <div
+            className="pointer-events-none relative z-10 flex w-full flex-col gap-6 px-8 pb-10 sm:flex-row-reverse sm:items-end sm:justify-between sm:gap-8 lg:px-14 lg:pb-14"
+            style={{
+              opacity: transitioning ? 0 : 1,
+              transition: overlayTransition,
+            }}
+          >
             <h2 className="text-[40px] font-medium leading-[1.05] tracking-tight sm:text-right md:text-[56px]">
               Commercial
               <br />
               &amp; Industrial
             </h2>
-            <ProjectsLinkMobile />
-            <ProjectsPill />
+            <ProjectsLinkMobile filter="commercial-industrial" />
+            <ProjectsPill filter="commercial-industrial" />
           </div>
         </div>
       </main>
@@ -123,10 +192,16 @@ export default function Home() {
   );
 }
 
-function ProjectsLinkMobile() {
+type ProjectFilter = "residential" | "commercial-industrial";
+
+function projectsHref(filter?: ProjectFilter) {
+  return filter ? `/projects?type=${filter}` : "/projects";
+}
+
+function ProjectsLinkMobile({ filter }: { filter?: ProjectFilter }) {
   return (
     <Link
-      href="/projects"
+      href={projectsHref(filter)}
       className="cta-underline pointer-events-auto relative z-10 inline-flex w-fit items-center self-start pb-1 text-base font-medium text-white sm:hidden"
     >
       See latest projects
@@ -138,10 +213,10 @@ function ProjectsLinkMobile() {
   );
 }
 
-function ProjectsPill() {
+function ProjectsPill({ filter }: { filter?: ProjectFilter }) {
   return (
     <Link
-      href="/projects"
+      href={projectsHref(filter)}
       className="pill-hover pointer-events-auto relative z-10 hidden h-[75px] w-[245px] shrink-0 self-start overflow-hidden bg-white text-black group-hover:translate-y-0 group-hover:opacity-100 sm:block sm:self-end lg:translate-y-3 lg:opacity-0"
       style={{
         transition: `opacity 700ms ${EASE}, transform 700ms ${EASE}`,

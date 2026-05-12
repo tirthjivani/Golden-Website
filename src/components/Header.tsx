@@ -77,7 +77,10 @@ export default function Header({
   }
 
   return (
-    <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-6 md:px-10 md:py-7">
+    <header
+      key={pathname ?? ""}
+      className="nav-enter pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-6 md:px-10 md:py-7"
+    >
       <div className="pointer-events-auto flex items-center gap-4 md:gap-6">
         <Link href="/" aria-label="Golden Group">
           <Image
