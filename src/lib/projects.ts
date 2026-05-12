@@ -64,6 +64,20 @@ export type LocationPin = {
   category?: "Park" | "School" | "Hospital" | "Transit" | "Market" | "Other";
 };
 
+export type LandmarkCategory =
+  | "education"
+  | "healthcare"
+  | "recreation"
+  | "transit";
+
+export type Landmark = {
+  name: string;
+  category: LandmarkCategory;
+  distanceKm: number;
+  minutes: number;
+  bearing?: number;
+};
+
 export type Pillar = {
   id: string;
   title: string;
@@ -117,21 +131,21 @@ export type ProjectDetail = {
     body?: string;
     images: ImageRef[];
   };
-  location: {
+  location?: {
     headline: string;
     body?: string;
-    map: ImageRef;
+    coords: [number, number];
     address?: string;
-    pins: LocationPin[];
+    landmarks: Landmark[];
   };
   pillars: {
     items: Pillar[];
   };
-  walkthrough: {
+  walkthrough?: {
     headline: string;
     body?: string;
-    image: ImageRef;
-    videoUrl?: string;
+    image?: ImageRef;
+    videoUrl: string;
   };
 };
 
@@ -196,12 +210,116 @@ const AMENITIES_COMMERCIAL: ProjectDetail["amenities"]["items"] = [
   { key: "solar-power", label: "Power Backup" },
 ];
 
-const LOCATION_PINS_DEFAULT: LocationPin[] = [
-  { label: "Park", minutes: 5, category: "Park" },
-  { label: "School", minutes: 10, category: "School" },
-  { label: "Hospital", minutes: 15, category: "Hospital" },
-  { label: "Highway", minutes: 8, category: "Transit" },
-  { label: "Market", minutes: 6, category: "Market" },
+// Landmark sets reused by neighbouring projects in the same micro-market.
+const ANKLESHWAR_GIDC_LANDMARKS: Landmark[] = [
+  { name: "RMPS International School", category: "education", distanceKm: 5, minutes: 8 },
+  { name: "Ankleshwar Public School", category: "education", distanceKm: 5.2, minutes: 15 },
+  { name: "Unity English Medium School", category: "education", distanceKm: 4.7, minutes: 10 },
+  { name: "Sanatan International Academy", category: "education", distanceKm: 4.7, minutes: 9 },
+  { name: "Kendriya Vidyalaya ONGC", category: "education", distanceKm: 4.7, minutes: 9 },
+  { name: "Vision International School of Excellence", category: "education", distanceKm: 8.2, minutes: 19 },
+  { name: "ABC Hospital", category: "healthcare", distanceKm: 2.8, minutes: 5 },
+  { name: "Orange Multispeciality Hospital & ICU", category: "healthcare", distanceKm: 2.8, minutes: 5 },
+  { name: "Navjeevan Heart and Women's Hospital", category: "healthcare", distanceKm: 4.6, minutes: 11 },
+  { name: "Smt. Jayaben Mody Multispeciality Hospital", category: "healthcare", distanceKm: 5.1, minutes: 12 },
+  { name: "Narmada Lifeline Multispeciality Hospital", category: "healthcare", distanceKm: 5, minutes: 11 },
+  { name: "Sargam Multispeciality Hospital", category: "healthcare", distanceKm: 4.3, minutes: 9 },
+  { name: "Atalji Joggers Park", category: "recreation", distanceKm: 6.4, minutes: 15 },
+  { name: "GIDC Reservoir", category: "recreation", distanceKm: 6, minutes: 14 },
+  { name: "Swarnim Lakeview Park", category: "recreation", distanceKm: 4, minutes: 9 },
+  { name: "Jawahar Bag", category: "recreation", distanceKm: 4.2, minutes: 10 },
+  { name: "Pashupatinath Mahadev Temple GIDC", category: "recreation", distanceKm: 7.5, minutes: 16 },
+  { name: "BAPS Swaminarayan Mandir", category: "recreation", distanceKm: 7.2, minutes: 15 },
+  { name: "Ankleshwar Railway Station", category: "transit", distanceKm: 3.9, minutes: 8 },
+  { name: "Ankleshwar Bus Depot", category: "transit", distanceKm: 5.1, minutes: 11 },
+];
+
+const BHARUCH_TAVRA_LANDMARKS_LUXURIA: Landmark[] = [
+  { name: "THE i-SCHOOL by eduMETA, Juna Tavra", category: "education", distanceKm: 0.75, minutes: 4 },
+  { name: "Gaytri School", category: "education", distanceKm: 1.5, minutes: 5 },
+  { name: "Atmiya Green School", category: "education", distanceKm: 3.7, minutes: 9 },
+  { name: "Jay Ambe International School", category: "education", distanceKm: 5.5, minutes: 11 },
+  { name: "GNFC Narmada Vidyalaya", category: "education", distanceKm: 5.8, minutes: 11 },
+  { name: "Delhi Public School", category: "education", distanceKm: 11.6, minutes: 22 },
+  { name: "Vardaan Multispeciality Hospital", category: "healthcare", distanceKm: 0.8, minutes: 2 },
+  { name: "Care and Cure Hospital", category: "healthcare", distanceKm: 1.6, minutes: 3 },
+  { name: "Sankalp Hospital", category: "healthcare", distanceKm: 2.4, minutes: 4 },
+  { name: "Jai Jhulelal Hospital", category: "healthcare", distanceKm: 2.6, minutes: 5 },
+  { name: "Bharuch Multispeciality Hospital", category: "healthcare", distanceKm: 3, minutes: 6 },
+  { name: "Apex Multispeciality & Trauma Centre", category: "healthcare", distanceKm: 9.5, minutes: 23 },
+  { name: "The Maple Square", category: "recreation", distanceKm: 1.3, minutes: 3 },
+  { name: "Garden GNFC Township", category: "recreation", distanceKm: 5.4, minutes: 12 },
+  { name: "GNFC Sports & Recreation Club", category: "recreation", distanceKm: 6.2, minutes: 15 },
+  { name: "Shuklatirth", category: "recreation", distanceKm: 8.3, minutes: 13 },
+  { name: "Narmada River Stretch (Bharuch Side)", category: "recreation", distanceKm: 8.8, minutes: 21 },
+  { name: "GNFC Bus Station", category: "transit", distanceKm: 4.2, minutes: 10 },
+  { name: "Bharuch Junction Railway", category: "transit", distanceKm: 7.9, minutes: 20 },
+];
+
+const BHARUCH_TAVRA_LANDMARKS_RESIDENCY: Landmark[] = [
+  { name: "THE i-SCHOOL by eduMETA, Juna Tavra", category: "education", distanceKm: 1.6, minutes: 4 },
+  { name: "Gaytri School", category: "education", distanceKm: 2.2, minutes: 6 },
+  { name: "Atmiya Green School", category: "education", distanceKm: 2.2, minutes: 6 },
+  { name: "Jay Ambe International School", category: "education", distanceKm: 4.4, minutes: 11 },
+  { name: "GNFC Narmada Vidyalaya", category: "education", distanceKm: 4.7, minutes: 11 },
+  { name: "Delhi Public School", category: "education", distanceKm: 10.6, minutes: 21 },
+  { name: "Care and Cure Hospital", category: "healthcare", distanceKm: 0.55, minutes: 1 },
+  { name: "Sankalp Hospital", category: "healthcare", distanceKm: 1.3, minutes: 2 },
+  { name: "Vardaan Multispeciality Hospital", category: "healthcare", distanceKm: 1.4, minutes: 3 },
+  { name: "Jai Jhulelal Hospital", category: "healthcare", distanceKm: 1.5, minutes: 3 },
+  { name: "Bharuch Multispeciality Hospital", category: "healthcare", distanceKm: 2, minutes: 5 },
+  { name: "Apex Multispeciality & Trauma Centre", category: "healthcare", distanceKm: 8.5, minutes: 21 },
+  { name: "The Maple Square", category: "recreation", distanceKm: 0.2, minutes: 1 },
+  { name: "Garden GNFC Township", category: "recreation", distanceKm: 4.4, minutes: 11 },
+  { name: "GNFC Sports & Recreation Club", category: "recreation", distanceKm: 5.1, minutes: 14 },
+  { name: "Shuklatirth", category: "recreation", distanceKm: 8.9, minutes: 13 },
+  { name: "Narmada River Stretch (Bharuch Side)", category: "recreation", distanceKm: 9.2, minutes: 21 },
+  { name: "GNFC Bus Station", category: "transit", distanceKm: 3.1, minutes: 8 },
+  { name: "Bharuch Junction Railway", category: "transit", distanceKm: 6.8, minutes: 17 },
+];
+
+const GOLDEN_HEAVEN_LANDMARKS: Landmark[] = [
+  { name: "Ashadeep School 4", category: "education", distanceKm: 0.12, minutes: 1 },
+  { name: "Mauni International School", category: "education", distanceKm: 0.75, minutes: 3 },
+  { name: "Janani Kids International Pre-school", category: "education", distanceKm: 1.1, minutes: 4 },
+  { name: "Gajera International School", category: "education", distanceKm: 1.4, minutes: 5 },
+  { name: "Vidyadhish International School", category: "education", distanceKm: 1.4, minutes: 6 },
+  { name: "Om Hospital & ICU", category: "healthcare", distanceKm: 0.55, minutes: 2 },
+  { name: "Pavasiya Hospital", category: "healthcare", distanceKm: 0.55, minutes: 2 },
+  { name: "Amidhara Hospital & Prasutigruh", category: "healthcare", distanceKm: 0.6, minutes: 2 },
+  { name: "Satyam Hospital", category: "healthcare", distanceKm: 0.9, minutes: 3 },
+  { name: "Kiran Multi Super Speciality Hospital", category: "healthcare", distanceKm: 5.4, minutes: 15 },
+  { name: "Moon Garden", category: "recreation", distanceKm: 0.55, minutes: 2 },
+  { name: "Oxygen Park Uttran", category: "recreation", distanceKm: 0.7, minutes: 3 },
+  { name: "Utran Lake Garden", category: "recreation", distanceKm: 2.1, minutes: 6 },
+  { name: "Sarthana Nature Park & Zoo", category: "recreation", distanceKm: 6, minutes: 13 },
+  { name: "Dumas Beach", category: "recreation", distanceKm: 25, minutes: 50 },
+  { name: "Local Bus Stop", category: "transit", distanceKm: 1.5, minutes: 5 },
+  { name: "Surat Railway Station", category: "transit", distanceKm: 5.4, minutes: 15 },
+  { name: "Surat International Airport", category: "transit", distanceKm: 22, minutes: 44 },
+];
+
+const GOLDEN_HOMES_LANDMARKS: Landmark[] = [
+  { name: "Ascent School", category: "education", distanceKm: 3.3, minutes: 6 },
+  { name: "Swami Vivekanand English Medium School", category: "education", distanceKm: 4.6, minutes: 10 },
+  { name: "Unity English Medium School", category: "education", distanceKm: 4.8, minutes: 10 },
+  { name: "Ankleshwar Public School", category: "education", distanceKm: 5.3, minutes: 15 },
+  { name: "Little Flower School", category: "education", distanceKm: 6.8, minutes: 15 },
+  { name: "National High School, Ankleshwar", category: "education", distanceKm: 7.8, minutes: 16 },
+  { name: "Sargam Multispeciality Hospital", category: "healthcare", distanceKm: 4.4, minutes: 9 },
+  { name: "Sardar Patel Hospital & Heart Institute", category: "healthcare", distanceKm: 4.8, minutes: 10 },
+  { name: "Navjeevan Heart and Women's Hospital", category: "healthcare", distanceKm: 4.8, minutes: 11 },
+  { name: "Ankleshwar Hospital & ICU Center", category: "healthcare", distanceKm: 4.9, minutes: 10 },
+  { name: "Smt. Jayaben Mody Multispeciality Hospital", category: "healthcare", distanceKm: 5.2, minutes: 12 },
+  { name: "Care and Cure Hospital", category: "healthcare", distanceKm: 6.1, minutes: 13 },
+  { name: "Ankleshwar Gymkhana", category: "recreation", distanceKm: 1.5, minutes: 5 },
+  { name: "Atalji Joggers Park", category: "recreation", distanceKm: 6.5, minutes: 14 },
+  { name: "D.A. Anandpura Sports & Cultural Centre", category: "recreation", distanceKm: 7, minutes: 15 },
+  { name: "Sardar Park", category: "recreation", distanceKm: 7.7, minutes: 15 },
+  { name: "GIDC Garden", category: "recreation", distanceKm: 8.6, minutes: 16 },
+  { name: "Ankleshwar Railway Station", category: "transit", distanceKm: 4, minutes: 9 },
+  { name: "Ankleshwar City Bus Stand", category: "transit", distanceKm: 5.2, minutes: 11 },
+  { name: "Golden Bridge Road", category: "transit", distanceKm: 6, minutes: 12 },
 ];
 
 function specs(...rows: [string, string][]): SpecificationItem[] {
@@ -373,15 +491,15 @@ const goldenLuxuria: Project = {
     location: {
       headline: "Location",
       body: "Strategically located for connectivity and convenience in Bharuch.",
-      map: { src: "" },
-      address: "Bharuch, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
+      address: "Tavra, Bharuch, Gujarat",
+      coords: [73.0508129, 21.7359627],
+      landmarks: BHARUCH_TAVRA_LANDMARKS_LUXURIA,
     },
     pillars: { items: PILLARS_DEFAULT },
     walkthrough: {
       headline: "Walkthrough",
       body: "Every detail, orchestrated for a life of balance and beauty.",
-      image: { src: "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg" },
+      videoUrl: "https://youtu.be/hAIiPv4OS5o",
     },
   },
 };
@@ -531,15 +649,15 @@ const goldenHeaven: Project = {
     },
     location: {
       headline: "Location",
-      body: "Located in Surat with quick access to schools, parks and the highway.",
-      map: { src: "" },
-      address: "Surat, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
+      body: "Located in Uttran, Surat — every essential within minutes.",
+      address: "Uttran, Surat, Gujarat",
+      coords: [72.8672866, 21.2349075],
+      landmarks: GOLDEN_HEAVEN_LANDMARKS,
     },
     pillars: { items: PILLARS_DEFAULT },
     walkthrough: {
       headline: "Walkthrough",
-      image: { src: "golden-heaven/Building_Full_Elevation_Twilight.jpg" },
+      videoUrl: "https://youtu.be/w1ELvy18oVo",
     },
   },
 };
@@ -682,15 +800,15 @@ const goldenNirvana: Project = {
     },
     location: {
       headline: "Location",
-      body: "Strategically connected to the rest of Surat.",
-      map: { src: "" },
-      address: "Surat, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
+      body: "Set in the GIDC corridor of Ankleshwar with the conveniences of city access.",
+      address: "Ankleshwar, Gujarat",
+      coords: [73.011434, 21.658467],
+      landmarks: ANKLESHWAR_GIDC_LANDMARKS,
     },
     pillars: { items: PILLARS_DEFAULT },
     walkthrough: {
       headline: "Walkthrough",
-      image: { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg" },
+      videoUrl: "https://youtu.be/lZ6MIcvPNvM",
     },
   },
 };
@@ -829,14 +947,14 @@ const goldenVilla: Project = {
     location: {
       headline: "Location",
       body: "Located in Ankleshwar with quick access to GIDC and the city centre.",
-      map: { src: "" },
       address: "Ankleshwar, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
+      coords: [73.0110044, 21.6562983],
+      landmarks: ANKLESHWAR_GIDC_LANDMARKS,
     },
     pillars: { items: PILLARS_DEFAULT },
     walkthrough: {
       headline: "Walkthrough",
-      image: { src: "golden-villa/Bungalow_Main_Front_Elevation_Night.jpg" },
+      videoUrl: "https://youtu.be/obwXrp_ZAh4",
     },
   },
 };
@@ -964,14 +1082,14 @@ const goldenHomes: Project = {
     location: {
       headline: "Location",
       body: "Located in Ankleshwar, close to schools and arterial roads.",
-      map: { src: "" },
       address: "Ankleshwar, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
+      coords: [73.0118652, 21.6565431],
+      landmarks: GOLDEN_HOMES_LANDMARKS,
     },
     pillars: { items: PILLARS_DEFAULT },
     walkthrough: {
       headline: "Walkthrough",
-      image: { src: "golden-homes/Bungalow_Full_Front_View_Night.jpg" },
+      videoUrl: "https://youtu.be/VQ9TPW7A8GE",
     },
   },
 };
@@ -1077,15 +1195,11 @@ const goldenPalmVilla: Project = {
     location: {
       headline: "Location",
       body: "Set in Ankleshwar with the conveniences of city access.",
-      map: { src: "" },
       address: "Ankleshwar, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
+      coords: [73.0111577, 21.6578498],
+      landmarks: ANKLESHWAR_GIDC_LANDMARKS,
     },
     pillars: { items: PILLARS_DEFAULT },
-    walkthrough: {
-      headline: "Walkthrough",
-      image: { src: "golden-palm-villa/Bungalow_Main_Front_Elevation_Night.jpg" },
-    },
   },
 };
 
@@ -1206,14 +1320,14 @@ const goldenResidency: Project = {
     location: {
       headline: "Location",
       body: "Located in Bharuch with quick access to schools and the city centre.",
-      map: { src: "" },
-      address: "Bharuch, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
+      address: "Tavra, Bharuch, Gujarat",
+      coords: [73.0489034, 21.7303693],
+      landmarks: BHARUCH_TAVRA_LANDMARKS_RESIDENCY,
     },
     pillars: { items: PILLARS_DEFAULT },
     walkthrough: {
       headline: "Walkthrough",
-      image: { src: "golden-residency/Residential_Complex_Birdview_Aerial.jpg" },
+      videoUrl: "https://youtu.be/bAC1K9kYdF8",
     },
   },
 };
@@ -1319,18 +1433,7 @@ const goldenPalmPlaza: Project = {
         { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png" },
       ],
     },
-    location: {
-      headline: "Location",
-      body: "Anchored in the commercial hub of Ankleshwar.",
-      map: { src: "" },
-      address: "Ankleshwar, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
-    },
     pillars: { items: PILLARS_DEFAULT },
-    walkthrough: {
-      headline: "Walkthrough",
-      image: { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png" },
-    },
   },
 };
 
@@ -1439,18 +1542,7 @@ const goldenSquareAnk: Project = {
         { src: "golden-square/Interior_Office_Block_Atrium.png" },
       ],
     },
-    location: {
-      headline: "Location",
-      body: "Anchored in the commercial heart of Ankleshwar.",
-      map: { src: "" },
-      address: "Ankleshwar, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
-    },
     pillars: { items: PILLARS_DEFAULT },
-    walkthrough: {
-      headline: "Walkthrough",
-      image: { src: "golden-square/Building_Main_Front_Elevation_Day.png" },
-    },
   },
 };
 
@@ -1591,18 +1683,7 @@ const goldenSquareBharuch: Project = {
         { src: "golden-square-bharuch/Exterior_Walkway_Ivy_Lights.jpg" },
       ],
     },
-    location: {
-      headline: "Location",
-      body: "Anchored in the commercial centre of Bharuch.",
-      map: { src: "" },
-      address: "Bharuch, Gujarat",
-      pins: LOCATION_PINS_DEFAULT,
-    },
     pillars: { items: PILLARS_DEFAULT },
-    walkthrough: {
-      headline: "Walkthrough",
-      image: { src: "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.jpg" },
-    },
   },
 };
 
@@ -1697,22 +1778,7 @@ const goldenIndustrialEstate: Project = {
       body: "A look at the estate.",
       images: [{ src: "/commercial-hero.png" }],
     },
-    location: {
-      headline: "Location",
-      body: "Connected directly to National Highway 48 in Delad, Surat.",
-      map: { src: "" },
-      address: "Delad, Surat",
-      pins: [
-        { label: "NH 48", minutes: 2, category: "Transit" },
-        { label: "Surat City", minutes: 35, category: "Transit" },
-        { label: "Hazira Port", minutes: 50, category: "Transit" },
-      ],
-    },
     pillars: { items: PILLARS_DEFAULT },
-    walkthrough: {
-      headline: "Walkthrough",
-      image: { src: "/commercial-hero.png" },
-    },
   },
 };
 
@@ -1772,14 +1838,14 @@ export function getProjectSections(project: Project): SectionItem[] {
   if (d.gallery.images.length > 0) {
     sections.push({ key: "gallery", label: "Gallery" });
   }
-  if (d.walkthrough.image.src || d.walkthrough.videoUrl) {
-    sections.push({ key: "walkthrough", label: "Walkthrough" });
-  }
   if (d.specifications.items.length > 0) {
     sections.push({ key: "specifications", label: "Specifications" });
   }
-  if (d.location.body || d.location.address || d.location.pins.length > 0 || d.location.map.src) {
+  if (d.location && d.location.landmarks.length > 0) {
     sections.push({ key: "location", label: "Location" });
+  }
+  if (d.walkthrough && d.walkthrough.videoUrl) {
+    sections.push({ key: "walkthrough", label: "Walkthrough" });
   }
 
   return sections;

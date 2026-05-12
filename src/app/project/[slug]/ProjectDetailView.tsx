@@ -2,12 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { MinimalMap } from "@/components/MinimalMap";
 import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
+  GraduationCap,
+  FirstAid,
+  Tree,
+  Train,
+} from "@phosphor-icons/react";
+import {
   projectImage,
   type AmenityKey,
+  type LandmarkCategory,
   type Pillar,
   type Project,
 } from "@/lib/projects";
@@ -28,10 +36,10 @@ export function ProjectDetailView({ project }: { project: Project }) {
       <MasterPlan project={project} />
       <FloorPlans project={project} />
       <Gallery project={project} />
-      <Walkthrough project={project} />
       <Specifications project={project} />
       <LocationSection project={project} />
       <Pillars project={project} />
+      <Walkthrough project={project} />
       <SiteFooter />
     </main>
   );
@@ -61,40 +69,37 @@ function Hero({ project }: { project: Project }) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
 
       <div className="relative z-10 flex h-full w-full flex-col p-[30px] pt-[110px] md:pt-[140px]">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto] sm:items-start">
-          <Reveal>
-            <p className="text-[12px] uppercase tracking-[0.18em] text-white/60">
-              {detail.hero.eyebrow ?? `${project.type === "residential" ? "Residential" : "Commercial & Industrial"}`}
-            </p>
-            <h1 className="mt-3 text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]">
-              {project.name}
-            </h1>
-            <p className="mt-3 text-[16px] text-white/80 md:text-[18px]">
-              {project.location}
-            </p>
-          </Reveal>
-
-          <Reveal delay={150}>
-            <dl className="flex w-full max-w-[420px] flex-col divide-y divide-white/10 border border-white/10 bg-black/40 backdrop-blur-sm sm:w-[420px]">
-              <HeroFact label="Type" value={project.category} />
-              <HeroFact label="RERA" value={project.rera ?? "Pending"} />
-              <HeroFact label="Carpet Area" value={project.area} />
-              <HeroFact label="Status" value={project.status} />
-            </dl>
-          </Reveal>
-        </div>
-
-        <div className="mt-auto flex flex-col gap-4 pt-10 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
-          <Reveal delay={300}>
-            <p className="max-w-[360px] text-sm leading-[1.4] text-white/75">
-              Scroll down to explore everything from amenities to floor plans, gallery, and location.
-            </p>
-          </Reveal>
-          {detail.intro.brochureUrl ? (
-            <Reveal delay={420}>
-              <BrochurePill href={detail.intro.brochureUrl} />
+        <div className="mt-auto flex flex-col gap-10">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
+            <Reveal>
+              <h1 className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]">
+                {project.name}
+              </h1>
             </Reveal>
-          ) : null}
+
+            <Reveal delay={150}>
+              <dl className="flex w-full max-w-[420px] flex-col divide-y divide-white/10 border border-white/10 bg-black/40 backdrop-blur-sm sm:w-[420px]">
+                <HeroFact label="Location" value={project.location} />
+                <HeroFact label="Type" value={project.category} />
+                <HeroFact label="RERA" value={project.rera ?? "Pending"} />
+                <HeroFact label="Carpet Area" value={project.area} />
+                <HeroFact label="Status" value={project.status} />
+              </dl>
+            </Reveal>
+          </div>
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+            <Reveal delay={300}>
+              <p className="max-w-[360px] text-sm leading-[1.4] text-white/75">
+                Scroll down to explore everything from amenities to floor plans, gallery, and location.
+              </p>
+            </Reveal>
+            {detail.intro.brochureUrl ? (
+              <Reveal delay={420}>
+                <BrochurePill href={detail.intro.brochureUrl} />
+              </Reveal>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>
@@ -182,44 +187,68 @@ function Intro({ project }: { project: Project }) {
 
 function Highlights({ project }: { project: Project }) {
   const block = project.detail?.highlights;
+  const [active, setActive] = useState(0);
   if (!block || block.items.length === 0) return null;
+  const items = block.items.slice(0, 3);
+  const activeItem = items[active] ?? items[0];
   return (
-    <section id="highlights" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
-      <div className="flex flex-col gap-2">
-        <Reveal>
-          <h2 className="text-[24px] font-medium leading-[1.2] tracking-tight md:text-[32px]">
-            {block.headline}
-          </h2>
-        </Reveal>
-        {block.body ? (
-          <Reveal delay={150}>
-            <p className="max-w-[60ch] text-sm leading-[1.6] text-white/70 md:text-base">
-              {block.body}
-            </p>
+    <section
+      id="highlights"
+      className="relative scroll-mt-24 border-t border-[#464646] bg-black"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="flex flex-col px-[30px] py-16 md:py-24">
+          <Reveal>
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
+              {items.map((img, i) => {
+                const isActive = i === active;
+                const label = img.caption ?? `Highlight ${i + 1}`;
+                return (
+                  <button
+                    key={`tab-${i}`}
+                    type="button"
+                    onClick={() => setActive(i)}
+                    className={`pb-2 text-[14px] tracking-tight transition-colors ${
+                      isActive
+                        ? "border-b border-white font-medium text-white"
+                        : "border-b border-transparent text-white/55 hover:text-white/80"
+                    }`}
+                    aria-pressed={isActive}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
           </Reveal>
-        ) : null}
-      </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-14 md:gap-6">
-        {block.items.map((img, i) => (
-          <Reveal key={`highlight-${i}`} delay={i * 120}>
-            <figure className="flex flex-col gap-3">
-              <RevealImage
-                src={projectImage(img.src)}
-                alt={img.alt ?? img.caption ?? `${project.name} highlight ${i + 1}`}
-                fill
-                sizes="(min-width: 640px) 50vw, 100vw"
-                className="object-cover"
-                containerClassName="relative aspect-[4/3] w-full"
-              />
-              {img.caption ? (
-                <figcaption className="text-[14px] text-white/85">
-                  {img.caption}
-                </figcaption>
-              ) : null}
-            </figure>
-          </Reveal>
-        ))}
+          <div className="mt-auto pt-16 md:pt-24">
+            <Reveal delay={120}>
+              <h2 className="max-w-[18ch] text-[32px] font-medium leading-[1.1] tracking-tight md:text-[44px]">
+                {block.headline}
+              </h2>
+            </Reveal>
+            {block.body ? (
+              <Reveal delay={200}>
+                <p className="mt-6 max-w-[52ch] text-sm leading-[1.6] text-white/70 md:text-base">
+                  {block.body}
+                </p>
+              </Reveal>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="relative md:border-l md:border-[#464646]">
+          <RevealImage
+            key={`highlight-image-${active}`}
+            src={projectImage(activeItem.src)}
+            alt={activeItem.alt ?? activeItem.caption ?? `${project.name} highlight`}
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+            containerClassName="relative aspect-[4/5] w-full md:aspect-auto md:h-full md:min-h-[640px]"
+          />
+        </div>
       </div>
     </section>
   );
@@ -231,7 +260,10 @@ function Amenities({ project }: { project: Project }) {
   const detail = project.detail!;
   const featureSrc = detail.amenities.feature?.src ? projectImage(detail.amenities.feature.src) : null;
   return (
-    <section id="amenities" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
+    <section
+      id="amenities"
+      className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:flex md:h-[90vh] md:min-h-[640px] md:flex-col md:py-24"
+    >
       <Reveal>
         <h2 className="max-w-[16ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
           {detail.amenities.headline}
@@ -245,8 +277,8 @@ function Amenities({ project }: { project: Project }) {
         </Reveal>
       ) : null}
 
-      <div className="mt-10 grid grid-cols-1 gap-4 md:mt-14 md:grid-cols-12 md:gap-6">
-        <div className="md:col-span-7">
+      <div className="mt-10 grid grid-cols-1 gap-4 md:mt-10 md:min-h-0 md:flex-1 md:grid-cols-12 md:gap-16">
+        <div className="md:col-span-7 md:h-full">
           {featureSrc ? (
             <RevealImage
               src={featureSrc}
@@ -254,19 +286,19 @@ function Amenities({ project }: { project: Project }) {
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover"
-              containerClassName="relative aspect-[4/3] w-full md:aspect-[4/5]"
+              containerClassName="relative aspect-[4/3] w-full md:aspect-auto md:h-full"
             />
           ) : (
-            <div className="aspect-[4/3] w-full bg-[#111] md:aspect-[4/5]" />
+            <div className="aspect-[4/3] w-full bg-[#111] md:aspect-auto md:h-full" />
           )}
         </div>
 
-        <div className="md:col-span-5">
-          <ul className="grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-3">
+        <div className="md:col-span-5 md:h-full">
+          <ul className="grid h-full grid-cols-2 gap-2 md:grid-cols-2 md:gap-3">
             {detail.amenities.items.map((item) => (
               <li
                 key={item.key}
-                className="flex flex-col items-start gap-3 bg-[#111] p-5 md:p-6"
+                className="flex flex-col items-start gap-3 p-5 md:p-6"
               >
                 <AmenityIcon iconKey={item.key} />
                 <span className="text-[14px] leading-[1.3] text-white/85">
@@ -449,41 +481,38 @@ function Specifications({ project }: { project: Project }) {
   const detail = project.detail!;
   const [openId, setOpenId] = useState<string | null>(detail.specifications.items[0]?.id ?? null);
   return (
-    <section id="specifications" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10">
-        <div className="md:col-span-5">
+    <section id="specifications" className="scroll-mt-24 border-t border-[#464646] bg-black">
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0">
+        <div className="px-[30px] pt-12 md:pr-16 md:pt-16">
           <Reveal>
-            <h2 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+            <h2 className="max-w-[16ch] text-[34px] font-medium leading-[1.1] tracking-tight md:text-[52px]">
               {detail.specifications.headline}
             </h2>
           </Reveal>
-          {detail.specifications.body ? (
-            <Reveal delay={150}>
-              <p className="mt-4 max-w-[44ch] text-sm leading-[1.6] text-white/70 md:text-base">
-                {detail.specifications.body}
-              </p>
-            </Reveal>
-          ) : null}
         </div>
 
-        <div className="md:col-span-7">
-          <ul className="border-t border-[#2a2a2a]">
-            {detail.specifications.items.map((item) => {
+        <div className="md:border-l md:border-[#464646]">
+          <ul>
+            {detail.specifications.items.map((item, i) => {
               const open = item.id === openId;
+              const isLast = i === detail.specifications.items.length - 1;
               return (
-                <li key={item.id} className="border-b border-[#2a2a2a]">
+                <li
+                  key={item.id}
+                  className={isLast ? "" : "border-b border-[#464646]"}
+                >
                   <button
                     type="button"
                     onClick={() => setOpenId(open ? null : item.id)}
-                    className="flex w-full items-center justify-between gap-4 py-5 text-left"
+                    className="flex w-full items-center justify-between gap-4 px-[30px] py-7 text-left md:px-8 md:py-8"
                     aria-expanded={open}
                   >
-                    <span className="text-[16px] font-normal text-white/95 md:text-[18px]">
+                    <span className="text-[18px] font-normal text-white md:text-[20px]">
                       {item.title}
                     </span>
                     <span
                       aria-hidden
-                      className="text-[20px] text-white/55 transition-transform"
+                      className="text-[28px] font-light leading-none text-white/70 transition-transform"
                       style={{ transform: open ? "rotate(45deg)" : "rotate(0deg)" }}
                     >
                       +
@@ -494,7 +523,7 @@ function Specifications({ project }: { project: Project }) {
                     style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
                   >
                     <div className="min-h-0 overflow-hidden">
-                      <p className="pb-5 pr-12 text-sm leading-[1.6] text-white/65">
+                      <p className="px-[30px] pb-7 text-[15px] leading-[1.6] text-white/65 md:px-8 md:text-base">
                         {item.body}
                       </p>
                     </div>
@@ -552,60 +581,83 @@ function Gallery({ project }: { project: Project }) {
 
 // -------------------- Location --------------------
 
+const LANDMARK_CATEGORIES: { key: LandmarkCategory; label: string }[] = [
+  { key: "education", label: "Education" },
+  { key: "healthcare", label: "Healthcare" },
+  { key: "recreation", label: "Leisure" },
+  { key: "transit", label: "Connectivity" },
+];
+
+const LANDMARK_ICONS: Record<LandmarkCategory, typeof GraduationCap> = {
+  education: GraduationCap,
+  healthcare: FirstAid,
+  recreation: Tree,
+  transit: Train,
+};
+
 function LocationSection({ project }: { project: Project }) {
-  const detail = project.detail!;
+  const location = project.detail?.location;
+  const availableCategories = useMemo(() => {
+    if (!location) return [] as LandmarkCategory[];
+    return LANDMARK_CATEGORIES.filter((c) =>
+      location.landmarks.some((l) => l.category === c.key),
+    ).map((c) => c.key);
+  }, [location]);
+
+  const [active, setActive] = useState<LandmarkCategory | null>(
+    () => availableCategories[0] ?? null,
+  );
+
+  if (!location || location.landmarks.length === 0) return null;
+
   return (
-    <section id="location" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
-      <div className="flex flex-col gap-2">
+    <section
+      id="location"
+      className="scroll-mt-24 border-t border-[#464646] bg-black py-16 md:py-24"
+    >
+      <div className="flex flex-col gap-2 px-[30px]">
         <Reveal>
           <h2 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-            {detail.location.headline}
+            {location.headline}
           </h2>
         </Reveal>
-        {detail.location.body ? (
+        {location.body ? (
           <Reveal delay={150}>
             <p className="max-w-[60ch] text-sm leading-[1.6] text-white/70 md:text-base">
-              {detail.location.body}
+              {location.body}
             </p>
           </Reveal>
         ) : null}
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-8 md:mt-14 md:grid-cols-12 md:gap-10">
-        <div className="md:col-span-8">
-          {detail.location.map.src ? (
-            <RevealImage
-              src={projectImage(detail.location.map.src)}
-              alt={detail.location.map.alt ?? `${project.name} location map`}
-              fill
-              sizes="(min-width: 768px) 60vw, 100vw"
-              className="object-cover"
-              containerClassName="relative aspect-[16/10] w-full bg-white/[0.03]"
-            />
-          ) : (
-            <div className="flex aspect-[16/10] w-full items-center justify-center bg-white/[0.03] text-sm text-white/35">
-              Location map coming soon
-            </div>
-          )}
-        </div>
-
-        <div className="md:col-span-4">
-          <p className="text-[12px] uppercase tracking-[0.12em] text-white/55">
-            {detail.location.address ?? project.location}
-          </p>
-          <ul className="mt-4 flex flex-col divide-y divide-[#2a2a2a] border-y border-[#2a2a2a]">
-            {detail.location.pins.map((pin) => (
-              <li
-                key={`${pin.label}-${pin.minutes}`}
-                className="flex items-baseline justify-between gap-4 py-3"
+      <div className="relative mt-10 md:mt-14">
+        <MinimalMap
+          coords={location.coords}
+          landmarks={location.landmarks}
+          activeCategory={active ?? undefined}
+          className="aspect-[3/4] md:aspect-auto md:h-[80vh] md:min-h-[640px]"
+        />
+        <div className="golden-map-tabs absolute left-[19px] top-[22px] z-10 sm:left-[30px] sm:top-[30px]">
+          {availableCategories.map((key) => {
+            const Icon = LANDMARK_ICONS[key];
+            const label = LANDMARK_CATEGORIES.find((c) => c.key === key)!.label;
+            const isActive = key === active;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setActive(key)}
+                className="golden-map-tab"
+                data-active={isActive}
+                aria-pressed={isActive}
               >
-                <span className="text-sm text-white/85">{pin.label}</span>
-                <span className="text-[13px] text-white/55">
-                  {pin.minutes} min
+                <span className="golden-map-tab__icon">
+                  <Icon size={24} weight="regular" color="currentColor" />
                 </span>
-              </li>
-            ))}
-          </ul>
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -638,40 +690,69 @@ function Pillars({ project }: { project: Project }) {
 
 // -------------------- Walkthrough --------------------
 
+function youTubeEmbedSrc(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (u.hostname === "youtu.be") {
+      return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
+    }
+    if (u.hostname.endsWith("youtube.com")) {
+      const id = u.searchParams.get("v");
+      if (id) return `https://www.youtube.com/embed/${id}`;
+      if (u.pathname.startsWith("/embed/")) return url;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 function Walkthrough({ project }: { project: Project }) {
-  const detail = project.detail!;
-  const src = detail.walkthrough.image.src ? projectImage(detail.walkthrough.image.src) : null;
+  const walkthrough = project.detail?.walkthrough;
+  if (!walkthrough?.videoUrl) return null;
+  const embed = youTubeEmbedSrc(walkthrough.videoUrl);
+
   return (
-    <section id="walkthrough" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
+    <section
+      id="walkthrough"
+      className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24"
+    >
       <div className="flex flex-col gap-2">
         <Reveal>
           <h2 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-            {detail.walkthrough.headline}
+            {walkthrough.headline}
           </h2>
         </Reveal>
-        {detail.walkthrough.body ? (
+        {walkthrough.body ? (
           <Reveal delay={150}>
             <p className="max-w-[60ch] text-sm leading-[1.6] text-white/70 md:text-base">
-              {detail.walkthrough.body}
+              {walkthrough.body}
             </p>
           </Reveal>
         ) : null}
       </div>
 
       <div className="mt-10 md:mt-14">
-        {src ? (
-          <RevealImage
-            src={src}
-            alt={detail.walkthrough.image.alt ?? `${project.name} walkthrough`}
-            fill
-            sizes="100vw"
-            className="object-cover"
-            containerClassName="relative aspect-[16/10] w-full bg-white/[0.03]"
-          />
-        ) : (
-          <div className="flex aspect-[16/10] w-full items-center justify-center bg-white/[0.03] text-sm text-white/35">
-            Walkthrough video coming soon
+        {embed ? (
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-black">
+            <iframe
+              src={embed}
+              title={`${project.name} walkthrough`}
+              className="absolute inset-0 h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+            />
           </div>
+        ) : (
+          <a
+            href={walkthrough.videoUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex aspect-[16/9] w-full items-center justify-center bg-white/[0.03] text-sm text-white/60 underline"
+          >
+            Watch walkthrough
+          </a>
         )}
       </div>
 

@@ -48,7 +48,7 @@ export function TestimonialCarousel({
   return (
     <section className="border-y border-[#464646] bg-black text-white">
       <div className="grid grid-cols-1 md:grid-cols-[30%_70%]">
-        <div className="relative flex min-h-[420px] items-end p-[30px] md:min-h-[665px] md:justify-end md:border-r md:border-[#464646]">
+        <div className="relative flex min-h-[269px] items-end p-[30px] md:min-h-[665px] md:justify-end md:border-r md:border-[#464646]">
           <Reveal>
             <div className="flex items-end gap-4 md:flex-col md:items-end md:gap-3">
               <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">

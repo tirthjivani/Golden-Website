@@ -70,7 +70,7 @@ function Hero() {
 
 function IntroSection() {
   return (
-    <section className="relative h-[70vh] min-h-[480px] w-full border-b border-[#464646] bg-black">
+    <section className="relative w-full border-b border-[#464646] bg-black py-20 md:h-[70vh] md:min-h-[480px] md:py-0">
       <div className="grid h-full grid-cols-1 md:grid-cols-2">
         <div className="hidden md:block" aria-hidden />
         <div className="relative flex h-full flex-col p-[30px] md:border-l md:border-[#464646]">
@@ -81,7 +81,7 @@ function IntroSection() {
             </h3>
           </Reveal>
 
-          <div className="mt-auto flex flex-col gap-6 pt-12 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+          <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-10 md:mt-auto md:pt-12">
             <Reveal delay={350}>
               <p className="max-w-sm text-sm leading-snug text-white/75 md:text-base">
                 Future-ready infrastructure backed by two decades of delivery
@@ -585,7 +585,7 @@ function FinalCta() {
   return (
     <section className="relative overflow-hidden border-t border-[#464646] bg-black">
       <div className="grid grid-cols-1 gap-10 p-[30px] md:grid-cols-2 md:gap-[30px]">
-        <div className="flex min-h-[480px] flex-col md:min-h-[780px]">
+        <div className="flex min-h-[336px] flex-col md:min-h-[780px]">
           <Reveal>
             <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
               If you can dream it, we can build it!

@@ -22,7 +22,7 @@ export function SiteFooter() {
   return (
     <footer className="relative grid grid-cols-1 border-t border-[#464646] bg-black md:h-[80vh] md:min-h-[640px] md:grid-cols-2">
       {/* LEFT */}
-      <div className="relative flex flex-col gap-10 p-[30px] md:flex-row md:gap-12">
+      <div className="relative flex flex-col gap-10 p-[30px] lg:flex-row lg:gap-12">
         {/* Mobile: icon + logo, vertically aligned, anchored to the left */}
         <div className="flex items-center gap-4 md:hidden">
           <Image
@@ -48,7 +48,7 @@ export function SiteFooter() {
           height={70}
           className="hidden h-[34px] w-auto md:block md:h-[45px]"
         />
-        <div className="flex w-full flex-col justify-between gap-12 md:ml-auto md:w-[230px]">
+        <div className="flex w-full flex-col justify-between gap-12 lg:ml-auto lg:w-[230px]">
           <ul className="flex flex-col gap-2 text-[24px] leading-[1.2] text-white">
             {navLinks.map((l) => (
               <li key={l.label}>
@@ -82,11 +82,7 @@ export function SiteFooter() {
               className="hidden h-[180px] w-auto md:block md:h-[200px]"
             />
             <div className="flex w-full flex-col gap-6 md:w-1/2 md:max-w-none">
-              <p className="text-base leading-[1.5] text-white/55">
-                Building Better Lives since 2011. Residential, Commercial, and
-                Industrial developments across Gujarat.
-              </p>
-              <div className="flex flex-col gap-2 pb-6 pt-6 md:pb-0">
+              <div className="flex flex-col gap-2 pb-6 md:pb-0">
                 <p className="text-base leading-[1.5] text-white">
                   3rd Floor, Part-B, Plot No-5, Block No-4, Kohinoor Industrial
                   Estate, Varachha Road, Varachha, Surat, Gujarat - 395006
