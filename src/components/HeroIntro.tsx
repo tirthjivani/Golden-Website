@@ -18,7 +18,7 @@ export function useFromProjects(): boolean {
 function useTransitionFlag(key: string): boolean {
   // Lazy initializer locks the value on first render. The only flow that sets
   // the flag is a client-side click followed by client-side navigation, so
-  // there's no SSR/hydration mismatch in practice — the destination renders
+  // there's no SSR/hydration mismatch in practice - the destination renders
   // fresh on the client when arriving from the trigger page.
   const [flag] = useState(
     () =>

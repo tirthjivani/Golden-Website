@@ -367,7 +367,7 @@ function ProjectRow({
               <div key={`${project.id}-${i}`} {...(i === 0 ? { "data-row-hero": "" } : {})}>
                 <RevealImage
                   src={projectImage(img.src)}
-                  alt={img.alt ?? `${project.name} — image ${i + 1}`}
+                  alt={img.alt ?? `${project.name} - image ${i + 1}`}
                   fill
                   sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
                   className="object-cover"

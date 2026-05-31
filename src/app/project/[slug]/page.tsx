@@ -11,10 +11,12 @@ export async function generateMetadata(
 ) {
   const { slug } = await props.params;
   const project = getProjectBySlug(slug);
-  if (!project) return { title: "Project — Golden Group" };
+  if (!project) return { title: "Project - Golden Group" };
+  const tagline = project.detail?.hero?.tagline;
+  const baseDesc = `${project.name} by Golden Group - ${project.category} in ${project.location}. ${project.area}. Status: ${project.status}.`;
   return {
-    title: `${project.name} — Golden Group`,
-    description: `${project.category} in ${project.location}. ${project.area}.`,
+    title: `${project.name} - Golden Group`,
+    description: tagline ? `${baseDesc} ${tagline}` : baseDesc,
   };
 }
 

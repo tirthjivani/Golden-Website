@@ -1,4 +1,4 @@
-// Central project catalogue. Treat this file as the database snapshot — the
+// Central project catalogue. Treat this file as the database snapshot - the
 // shape here mirrors the CMS schema we'll back it with later. Image paths are
 // stored as keys under `projects/<slug>/...` so they can resolve to the local
 // `public/` tree today and a Cloudflare CDN tomorrow without touching pages.
@@ -22,6 +22,15 @@ export type ImageRef = {
   src: string;
   alt?: string;
   caption?: string;
+  metric?: string;
+  label?: string;
+};
+
+export type SummaryCard = {
+  src: string;
+  alt?: string;
+  metric: string;
+  label: string;
 };
 
 export type AmenityKey =
@@ -99,6 +108,10 @@ export type ProjectDetail = {
     headline: string;
     body?: string;
     brochureUrl?: string;
+  };
+  summary?: {
+    headline?: string;
+    cards: SummaryCard[];
   };
   highlights?: {
     headline: string;
@@ -351,7 +364,7 @@ const goldenLuxuria: Project = {
     hero: {
       image: { src: "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg" },
       eyebrow: "Premium Residences",
-      tagline: "For those who never settled — this is the reward.",
+      tagline: "For those who never settled - this is the reward.",
     },
     firstLook: {
       headline: "First Look",
@@ -362,7 +375,15 @@ const goldenLuxuria: Project = {
     },
     intro: {
       headline: "Premium residences designed for a life that has outgrown the ordinary.",
-      body: "Welcome to the extraordinary everyday. Golden Luxuria brings together sweeping architecture, premium interiors, and resort-style amenities — for those who believe every day should feel like one worth remembering.",
+      body: "Welcome to the extraordinary everyday. Golden Luxuria brings together sweeping architecture, premium interiors, and resort-style amenities - for those who believe every day should feel like one worth remembering.",
+    },
+    summary: {
+      cards: [
+        { src: "golden-luxuria/Main_Entrance_Gate_Day_Perspective.jpg", metric: "Tavra, Bharuch", label: "Location" },
+        { src: "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg", metric: "1600 - 2400 Sq.Ft.", label: "SBUA" },
+        { src: "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg", metric: "3 & 4 BHK", label: "Type" },
+        { src: "golden-luxuria/Residential_Complex_Birdview_Aerial.jpg", metric: "3 Towers", label: "A, B & C" },
+      ],
     },
     highlights: {
       headline: "Visual Highlights",
@@ -410,7 +431,7 @@ const goldenLuxuria: Project = {
                 "Dedicated standing deck (5'0\" wide) for outdoor views.",
                 "Large Kitchen with 3'4.5\" wide platform and connected wash area.",
               ],
-              image: { src: "golden-luxuria/3bhk_typical_unit.png" },
+              image: { src: "golden-luxuria/ground_floor_plan.webp" },
               note: "*SBUA estimated at ~1.36x Carpet. Final dimensions may vary on site.",
             },
           ],
@@ -433,7 +454,7 @@ const goldenLuxuria: Project = {
                 "Massive Living Room (13'0\" x 23'0\") with attached premium deck.",
                 "Four dedicated bathrooms plus additional powder/servant facilities.",
               ],
-              image: { src: "golden-luxuria/2bhk_typical_unit.png" },
+              image: { src: "golden-luxuria/2bhk_typical_unit.webp" },
               note: "*SBUA estimated at ~1.35x Carpet.",
             },
           ],
@@ -453,7 +474,7 @@ const goldenLuxuria: Project = {
                 "Tower B: 4 BHK units.",
                 "Connected lobby and high-speed lifts on every floor.",
               ],
-              image: { src: "golden-luxuria/typical_floor_plan.png" },
+              image: { src: "golden-luxuria/typical_floor_plan.webp" },
             },
           ],
         },
@@ -534,7 +555,15 @@ const goldenHeaven: Project = {
     },
     intro: {
       headline: "Where modern living meets the warmth every home should carry.",
-      body: "Welcome to Golden Heaven. A community that rises above the ordinary — where purposeful layouts meet lush open grounds and every amenity is a reason to come home.",
+      body: "Welcome to Golden Heaven. A community that rises above the ordinary - where purposeful layouts meet lush open grounds and every amenity is a reason to come home.",
+    },
+    summary: {
+      cards: [
+        { src: "golden-heaven/Main_Entrance_Gate_Day_View.jpg", metric: "Uttran, Surat", label: "Location" },
+        { src: "golden-heaven/Building_Front_Perspective_Daylight.jpg", metric: "615 - 1000 Sq.Ft.", label: "SBUA" },
+        { src: "golden-heaven/Building_Full_Elevation_Twilight.jpg", metric: "1 & 2 BHK", label: "Type" },
+        { src: "golden-heaven/Residential_Complex_Birdview_Aerial.jpg", metric: "5 Towers", label: "A - E" },
+      ],
     },
     highlights: {
       headline: "Visual Highlights",
@@ -573,7 +602,7 @@ const goldenHeaven: Project = {
                 "Master Bedroom (10'0\" x 12'0\") with attached ventilation balcony.",
                 "Large common toilet (4'0\" x 6'6\") design.",
               ],
-              image: { src: "golden-heaven/typical_plan.png" },
+              image: { src: "golden-heaven/typical_plan.webp" },
               note: "*SBUA estimated at ~1.35x Carpet.",
             },
           ],
@@ -596,7 +625,7 @@ const goldenHeaven: Project = {
                 "Master Bedroom features an attached toilet (4'0\" x 6'6\").",
                 "Expansive Wash area (9'0\" x 4'6\") connected to the Kitchen.",
               ],
-              image: { src: "golden-heaven/layout_plan.png" },
+              image: { src: "golden-heaven/layout_plan.webp" },
               note: "*SBUA estimated at ~1.37x Carpet.",
             },
           ],
@@ -613,7 +642,7 @@ const goldenHeaven: Project = {
                 "1 BHK in Towers B & C, 2 BHK in Towers A, D & E.",
                 "Tower core with two elevators and stair lobbies.",
               ],
-              image: { src: "golden-heaven/typical_plan.png" },
+              image: { src: "golden-heaven/typical_plan.webp" },
             },
           ],
         },
@@ -645,11 +674,11 @@ const goldenHeaven: Project = {
     masterPlan: {
       headline: "Master Plan",
       body: "Township site layout across all 5 towers.",
-      image: { src: "golden-heaven/layout_plan.png" },
+      image: { src: "golden-heaven/layout_plan.webp" },
     },
     location: {
       headline: "Location",
-      body: "Located in Uttran, Surat — every essential within minutes.",
+      body: "Located in Uttran, Surat - every essential within minutes.",
       address: "Uttran, Surat, Gujarat",
       coords: [72.8672866, 21.2349075],
       landmarks: GOLDEN_HEAVEN_LANDMARKS,
@@ -694,6 +723,14 @@ const goldenNirvana: Project = {
       headline: "Where tower homes and private bungalows share a community worth coming home to.",
       body: "Find your pace. Find your place. Golden Nirvana is a full-scale township where verdant parks stretch between streetscapes and every corner is planned to bring peace to your daily life.",
     },
+    summary: {
+      cards: [
+        { src: "golden-nirvana/Building_Low_Angle_Street_View.jpg", metric: "GIDC, Ankleshwar", label: "Location" },
+        { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg", metric: "950 - 1800 Sq.Ft.", label: "SBUA" },
+        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.png", metric: "2 BHK + Bungalow", label: "Type" },
+        { src: "golden-nirvana/Community_Park_Aerial_Birdview.jpg", metric: "5 Blocks", label: "A - E" },
+      ],
+    },
     highlights: {
       headline: "Visual Highlights",
       items: [
@@ -705,7 +742,7 @@ const goldenNirvana: Project = {
     },
     amenities: {
       headline: "Township Amenities",
-      body: "Open parks, walking loops, and recreational pockets — all woven into the daily route.",
+      body: "Open parks, walking loops, and recreational pockets - all woven into the daily route.",
       feature: { src: "golden-nirvana/Garden_and_Tower_View.png" },
       items: AMENITIES_RESIDENTIAL,
     },
@@ -731,8 +768,17 @@ const goldenNirvana: Project = {
                 "Generous Kitchen/Dining combo (9'0\" x 13'6\") for modern workflows.",
                 "Massive wash area (9'0\" x 4'6\") to accommodate all utility needs.",
               ],
-              image: { src: "golden-nirvana/2bhk_typical_floor_plan_2nd_to_7th_floor_block_a,b,c,d,e.png" },
+              image: { src: "golden-nirvana/2bhk_typical_floor_plan_2nd_to_7th_floor_block_a,b,c,d,e.webp" },
               note: "*SBUA estimated at ~1.35x Carpet.",
+            },
+            {
+              id: "2bhk-first-floor",
+              label: "1st Floor Plate",
+              metrics: [{ label: "Floor", value: "1st" }],
+              features: [
+                "First-floor layout for blocks A–E, with utility access and lobby core.",
+              ],
+              image: { src: "golden-nirvana/1st_floor_plan.webp" },
             },
           ],
         },
@@ -751,7 +797,7 @@ const goldenNirvana: Project = {
                 "Triple Bedroom private layout with ground and first floor separation.",
                 "Private 8'0\" x 15'9\" parking and dedicated 6'0\" x 6'1.5\" garden space.",
               ],
-              image: { src: "golden-nirvana/bungalow_ground_floor_layout_plan.png" },
+              image: { src: "golden-nirvana/bungalow_ground_floor_layout_plan.webp" },
             },
             {
               id: "bungalow-first",
@@ -764,7 +810,7 @@ const goldenNirvana: Project = {
                 "Dedicated First Floor Store Room (6'0\" x 6'6\") for organized storage.",
                 "Private Terrace (90 SQ.FT.) for outdoor relaxation and expansion.",
               ],
-              image: { src: "golden-nirvana/bungalow_first_floor_layout_plan.png" },
+              image: { src: "golden-nirvana/bungalow_first_floor_layout_plan.webp" },
             },
           ],
         },
@@ -795,8 +841,8 @@ const goldenNirvana: Project = {
     },
     masterPlan: {
       headline: "Master Plan",
-      body: "Township layout — towers and bungalow plots.",
-      image: { src: "golden-nirvana/ground_layout_plan_bungalow.png" },
+      body: "Township layout - towers and bungalow plots.",
+      image: { src: "golden-nirvana/ground_layout_plan_bungalow.webp" },
     },
     location: {
       headline: "Location",
@@ -845,6 +891,14 @@ const goldenVilla: Project = {
       headline: "Premium row villas where your family has room to live, grow, and thrive.",
       body: "Built wide. Built free. Golden Villa is a carefully planned row villa community with individual plots, landscaped common areas, and space that turns a neighbourhood into a home your family is proud of.",
     },
+    summary: {
+      cards: [
+        { src: "golden-villa/Main_Entrance_Gate_Day_Perspective.jpg", metric: "Ankleshwar", label: "Location" },
+        { src: "golden-villa/Bungalow_Main_Front_Elevation_Day.jpg", metric: "2000 Sq.Ft.", label: "Carpet Area" },
+        { src: "golden-villa/Community_Park_Aerial_Birdview.jpg", metric: "4 BHK", label: "Row Villas" },
+        { src: "golden-villa/Residential_Layout_Birdview_Aerial.jpg", metric: "G + 2", label: "Floors" },
+      ],
+    },
     highlights: {
       headline: "Visual Highlights",
       items: [
@@ -870,7 +924,7 @@ const goldenVilla: Project = {
           plans: [
             {
               id: "villa-ground",
-              label: "4 BHK Row Villa — Ground",
+              label: "4 BHK Row Villa - Ground",
               metrics: [
                 { label: "SBUA", value: "2000 SQ.FT." },
                 { label: "TCA", value: "1500 SQ.FT." },
@@ -880,7 +934,7 @@ const goldenVilla: Project = {
                 "Expansive Ground Floor Living Room (12'0\" x 16'0\") with 10'10\" x 15' parking.",
                 "Integrated Shopping Arcade (Golden Square) within the project vicinity.",
               ],
-              image: { src: "golden-villa/ground_floor_plan.png" },
+              image: { src: "golden-villa/ground_floor_plan.webp" },
             },
           ],
         },
@@ -890,12 +944,12 @@ const goldenVilla: Project = {
           plans: [
             {
               id: "villa-first",
-              label: "4 BHK Row Villa — First",
+              label: "4 BHK Row Villa - First",
               metrics: [{ label: "Plate", value: "~500-600 SQ.FT." }],
               features: [
                 "Dual Bedroom private floor including a 13'6\" x 10' master suite.",
               ],
-              image: { src: "golden-villa/first_floor_plan.png" },
+              image: { src: "golden-villa/first_floor_plan.webp" },
             },
           ],
         },
@@ -905,12 +959,12 @@ const goldenVilla: Project = {
           plans: [
             {
               id: "villa-second",
-              label: "4 BHK Row Villa — Second",
+              label: "4 BHK Row Villa - Second",
               metrics: [{ label: "Terrace", value: "~190 SQ.FT." }],
               features: [
                 "Exclusive Second Floor Master Suite with 18'10.5\" x 10' open terrace.",
               ],
-              image: { src: "golden-villa/1st_and_2nd_floor_plan.png" },
+              image: { src: "golden-villa/second_floor_plan.webp" },
             },
           ],
         },
@@ -942,7 +996,7 @@ const goldenVilla: Project = {
     masterPlan: {
       headline: "Master Plan",
       body: "Site layout across the row villa community.",
-      image: { src: "golden-villa/layout_plan.png" },
+      image: { src: "golden-villa/layout_plan.webp" },
     },
     location: {
       headline: "Location",
@@ -989,7 +1043,15 @@ const goldenHomes: Project = {
     },
     intro: {
       headline: "Row villas for families who want their own ground, their own gate, and their own story.",
-      body: "Built for those who choose ground over sky. Golden Homes is a community of independent bungalows — each plot a private world, each street a shared sense of belonging.",
+      body: "Built for those who choose ground over sky. Golden Homes is a community of independent bungalows - each plot a private world, each street a shared sense of belonging.",
+    },
+    summary: {
+      cards: [
+        { src: "golden-homes/Bungalow_Entrance_Parking_View.jpg", metric: "Ankleshwar", label: "Location" },
+        { src: "golden-homes/Bungalow_Main_Front_Elevation_Day.jpg", metric: "1400 Sq.Ft.", label: "SBUA" },
+        { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg", metric: "3 BHK Villa", label: "Type" },
+        { src: "golden-homes/Residential_Layout_Birdview_Aerial.jpg", metric: "G + 1", label: "Floors" },
+      ],
     },
     highlights: {
       headline: "Visual Highlights",
@@ -1016,7 +1078,7 @@ const goldenHomes: Project = {
           plans: [
             {
               id: "homes-ground",
-              label: "3 BHK Villa — Ground",
+              label: "3 BHK Villa - Ground",
               metrics: [
                 { label: "SBUA", value: "1400 SQ.FT." },
                 { label: "TCA", value: "1029 SQ.FT." },
@@ -1027,7 +1089,7 @@ const goldenHomes: Project = {
                 "Ground floor Bedroom (10x10) plus multi-bedroom setups on 1F.",
                 "Front Garden area and dedicated 8'9\" x 18'0\" private parking slot.",
               ],
-              image: { src: "golden-homes/ground_floor_unit_plan.png" },
+              image: { src: "golden-homes/ground_floor_unit_plan.webp" },
             },
           ],
         },
@@ -1037,7 +1099,7 @@ const goldenHomes: Project = {
           plans: [
             {
               id: "homes-first",
-              label: "3 BHK Villa — First",
+              label: "3 BHK Villa - First",
               metrics: [
                 { label: "First Built-up", value: "484 SQ.FT." },
                 { label: "Total Built-up", value: "1029 SQ.FT." },
@@ -1046,7 +1108,7 @@ const goldenHomes: Project = {
                 "Dedicated First Floor Puja Room for spiritual privacy.",
                 "Multi-bedroom configuration with dedicated common toilet.",
               ],
-              image: { src: "golden-homes/first_floor_unit_plan.png" },
+              image: { src: "golden-homes/first_floor_unit_plan.webp" },
               note: "*SBUA estimated at ~1.36x Built-up.",
             },
           ],
@@ -1077,7 +1139,7 @@ const goldenHomes: Project = {
     masterPlan: {
       headline: "Master Plan",
       body: "Plotted layout of the bungalow community.",
-      image: { src: "golden-homes/master_layout_plan.png" },
+      image: { src: "golden-homes/master_layout_plan.webp" },
     },
     location: {
       headline: "Location",
@@ -1124,7 +1186,15 @@ const goldenPalmVilla: Project = {
     },
     intro: {
       headline: "A private bungalow community where space, greenery and good neighbours come as standard.",
-      body: "Open land. Private life. Golden Palm Villa offers families the rare combination of bungalow ownership, curated landscaping, and a clubhouse community — where your home has room to breathe.",
+      body: "Open land. Private life. Golden Palm Villa offers families the rare combination of bungalow ownership, curated landscaping, and a clubhouse community - where your home has room to breathe.",
+    },
+    summary: {
+      cards: [
+        { src: "golden-palm-villa/Bungalow_Street_Level_Day_View.jpg", metric: "Ankleshwar", label: "Location" },
+        { src: "golden-palm-villa/Bungalow_Main_Front_Elevation_Night.jpg", metric: "74 Homes", label: "Community" },
+        { src: "golden-palm-villa/Community_Park_And_Landscaping_Aerial.jpg", metric: "3 BHK", label: "Bungalow" },
+        { src: "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.jpg", metric: "Club House", label: "Amenities" },
+      ],
     },
     highlights: {
       headline: "Visual Highlights",
@@ -1232,15 +1302,23 @@ const goldenResidency: Project = {
     },
     intro: {
       headline: "Straightforward, solid, and built for families that value quality in every square foot.",
-      body: "A home that earns its place in your life. Golden Residency is built on the belief that great homes shouldn't ask you to compromise — clean layouts, solid construction, and a well-connected address for families investing in today.",
+      body: "A home that earns its place in your life. Golden Residency is built on the belief that great homes shouldn't ask you to compromise - clean layouts, solid construction, and a well-connected address for families investing in today.",
+    },
+    summary: {
+      cards: [
+        { src: "golden-residency/Building_Side_Elevation_Daylight.jpg", metric: "Tavra, Bharuch", label: "Location" },
+        { src: "golden-residency/Building_Full_Front_Elevation_Day.jpg", metric: "1000 Sq.Ft.", label: "Carpet Area" },
+        { src: "golden-residency/Residential_Complex_Birdview_Aerial.jpg", metric: "1 & 2 BHK", label: "Type" },
+        { src: "golden-residency/Building_Side_Elevation_Daylight.jpg", metric: "8 Wings", label: "A - H Blocks" },
+      ],
     },
     highlights: {
       headline: "Visual Highlights",
       items: [
         { src: "golden-residency/Residential_Complex_Birdview_Aerial.jpg", caption: "Multi-block gated complex" },
-        { src: "golden-residency/Project_1BHK_Typical_Floor_Plan.png", caption: "1 BHK & 2 BHK layouts" },
-        { src: "golden-residency/typical_floor_plan_2bhk_wing_a,b,c,d,g-h.png", caption: "2 BHK across Wings A–H" },
-        { src: "golden-residency/basement_parking_plan.png", caption: "Covered basement parking" },
+        { src: "golden-residency/typical_floor_plan_wing_f,e_1bhk.webp", caption: "1 BHK & 2 BHK layouts" },
+        { src: "golden-residency/typical_first_floor_plan.webp", caption: "2 BHK across Wings A–H" },
+        { src: "golden-residency/basement_parking_plan.webp", caption: "Covered basement parking" },
       ],
     },
     amenities: {
@@ -1271,7 +1349,7 @@ const goldenResidency: Project = {
                 "Integrated balcony area for natural light and cross-ventilation.",
                 "Compact yet functional kitchen with attached utility/wash space.",
               ],
-              image: { src: "golden-residency/typical_floor_plan_2bhk_wing_a,b,c,d,g-h.png" },
+              image: { src: "golden-residency/typical_first_floor_plan.webp" },
               note: "*SBUA estimated at ~1.37x Carpet.",
             },
           ],
@@ -1288,7 +1366,7 @@ const goldenResidency: Project = {
                 "Compact 1 BHK plan tuned for value-conscious buyers.",
                 "Cross-ventilated layout with attached toilet and balcony.",
               ],
-              image: { src: "golden-residency/typical_floor_plan_wing_f,e_1bhk.png" },
+              image: { src: "golden-residency/typical_floor_plan_wing_f,e_1bhk.webp" },
             },
           ],
         },
@@ -1363,6 +1441,14 @@ const goldenPalmPlaza: Project = {
     intro: {
       headline: "Designed to give your business the wings it deserves with maximum visibility.",
       body: "Maximum Light. Maximum Impact. Located in the heart of Ankleshwar, Golden Palm Plaza offers 100 Shops and Offices across 5 floors. The building is designed specifically to ensure every unit gets noticed.",
+    },
+    summary: {
+      cards: [
+        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png", metric: "Ankleshwar", label: "Location" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.png", metric: "100 Units", label: "Total Inventory" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png", metric: "Shops + Offices", label: "Mix Use" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.png", metric: "5 Floors", label: "Levels" },
+      ],
     },
     highlights: {
       headline: "Visual Highlights",
@@ -1440,7 +1526,7 @@ const goldenPalmPlaza: Project = {
 const goldenSquareAnk: Project = {
   id: "golden-square",
   slug: "golden-square",
-  name: "Golden Square — Ankleshwar",
+  name: "Golden Square - Ankleshwar",
   type: "commercial-industrial",
   category: "Commercial Shops & Offices",
   location: "Ankleshwar",
@@ -1468,6 +1554,14 @@ const goldenSquareAnk: Project = {
     intro: {
       headline: "Situated in the heart of the city for maximum business visibility.",
       body: "The Heart of Business. Boost your business with Golden Group's state-of-the-art commercial project. Situated in the heart of Ankleshwar, offering modern elevation and efficient retail and office spaces.",
+    },
+    summary: {
+      cards: [
+        { src: "golden-square/Building_Main_Front_Elevation_Day.png", metric: "Ankleshwar", label: "Location" },
+        { src: "golden-square/Building_Street_Perspective_View.png", metric: "Shops + Offices", label: "Mix Use" },
+        { src: "golden-square/Interior_Mall_Retail_Floor.png", metric: "Retail Hub", label: "Ground Floor" },
+        { src: "golden-square/Interior_Office_Block_Atrium.png", metric: "Luxury Offices", label: "Upper Floors" },
+      ],
     },
     highlights: {
       headline: "Visual Highlights",
@@ -1549,7 +1643,7 @@ const goldenSquareAnk: Project = {
 const goldenSquareBharuch: Project = {
   id: "golden-square-bharuch",
   slug: "golden-square-bharuch",
-  name: "Golden Square — Bharuch",
+  name: "Golden Square - Bharuch",
   type: "commercial-industrial",
   category: "150 Shops & 102 Offices",
   location: "Bharuch",
@@ -1578,6 +1672,14 @@ const goldenSquareBharuch: Project = {
       headline: "Most stylish commercial project designed for those who won't settle for less than the best.",
       body: "Where business meets luxury. Designed by India's famous architect Sanjay Joshi, Golden Square Bharuch is a landmark structure offering massive 102 Offices and 150 Shops with world-class facilities.",
     },
+    summary: {
+      cards: [
+        { src: "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.jpg", metric: "Bharuch", label: "Location" },
+        { src: "golden-square-bharuch/Entrance_Parking_Ramp_Close_up.jpg", metric: "252 Units", label: "150 Shops + 102 Offices" },
+        { src: "golden-square-bharuch/Interior_Atrium_Mall_View.jpg", metric: "G + 9", label: "Floors" },
+        { src: "golden-square-bharuch/Cinemas entry-01.jpg", metric: "Mall + Cinema", label: "Mix Use" },
+      ],
+    },
     highlights: {
       headline: "Visual Highlights",
       items: [
@@ -1589,7 +1691,7 @@ const goldenSquareBharuch: Project = {
     },
     amenities: {
       headline: "Building Amenities",
-      body: "From triple-height atrium to dedicated cinema and food court — designed for footfall.",
+      body: "From triple-height atrium to dedicated cinema and food court - designed for footfall.",
       feature: { src: "golden-square-bharuch/Interior_Atrium_Mall_View.jpg" },
       items: AMENITIES_COMMERCIAL,
     },
@@ -1609,7 +1711,7 @@ const goldenSquareBharuch: Project = {
                 "State-of-the-art structure with triple-height atrium.",
                 "Dedicated floors for retail, food court, and multiplex.",
               ],
-              image: { src: "golden-square-bharuch/ground_floor_plan.png" },
+              image: { src: "golden-square-bharuch/ground_floor_plan.webp" },
             },
           ],
         },
@@ -1624,7 +1726,22 @@ const goldenSquareBharuch: Project = {
               features: [
                 "High-speed elevators and wide corridors for smooth traffic flow.",
               ],
-              image: { src: "golden-square-bharuch/first_floor_plan.png" },
+              image: { src: "golden-square-bharuch/first_floor_plan.webp" },
+            },
+          ],
+        },
+        {
+          id: "second",
+          label: "Second Floor",
+          plans: [
+            {
+              id: "second-plan",
+              label: "Second Floor Retail",
+              metrics: [{ label: "Status", value: "Available" }],
+              features: [
+                "Continuous retail concourse linked by the central atrium.",
+              ],
+              image: { src: "golden-square-bharuch/second_floor.webp" },
             },
           ],
         },
@@ -1640,7 +1757,7 @@ const goldenSquareBharuch: Project = {
                 "Premium location with massive visibility and frontage.",
                 "Modular floor plates suit corporate and boutique tenants.",
               ],
-              image: { src: "golden-square-bharuch/4th_to_9th_floor_plan.png" },
+              image: { src: "golden-square-bharuch/4th_to_9th_floor_plan.webp" },
             },
           ],
         },
@@ -1655,7 +1772,7 @@ const goldenSquareBharuch: Project = {
               features: [
                 "Wide visitor and tenant parking provisions.",
               ],
-              image: { src: "golden-square-bharuch/basement_parking_layout.png" },
+              image: { src: "golden-square-bharuch/basement_parking_layout.webp" },
             },
           ],
         },
@@ -1718,6 +1835,14 @@ const goldenIndustrialEstate: Project = {
     intro: {
       headline: "Massive scale, perfect connectivity, and all-inclusive infrastructure.",
       body: "Industrial Excellence at Delad. Spanning across a strategic location connected to NH 48, this estate provides 468 plots designed for efficiency and growth. With full infrastructure from gas lines to RCC roads.",
+    },
+    summary: {
+      cards: [
+        { src: "/commercial-hero.png", metric: "Delad, Surat", label: "Location" },
+        { src: "/commercial-hero.png", metric: "468 Plots", label: "Inventory" },
+        { src: "/commercial-hero.png", metric: "17x100 / 17x120 ft", label: "Plot Sizes" },
+        { src: "/commercial-hero.png", metric: "NH 48", label: "Connectivity" },
+      ],
     },
     highlights: {
       headline: "Visual Highlights",
@@ -1823,9 +1948,6 @@ export function getProjectSections(project: Project): SectionItem[] {
 
   const sections: SectionItem[] = [{ key: "overview", label: "Overview" }];
 
-  if (d.highlights && d.highlights.items.length > 0) {
-    sections.push({ key: "highlights", label: "Highlights" });
-  }
   if (d.amenities.items.length > 0) {
     sections.push({ key: "amenities", label: "Amenities" });
   }

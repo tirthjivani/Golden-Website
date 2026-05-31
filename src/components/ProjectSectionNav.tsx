@@ -5,8 +5,8 @@ import { scrollToId } from "@/lib/smooth-scroll";
 import type { SectionItem } from "@/lib/projects";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
-const ROW_HEIGHT = 28; // px — matches each row in the rolling list
-const SCROLL_OFFSET = -90; // px — how far above the section header to land
+const ROW_HEIGHT = 28; // px - matches each row in the rolling list
+const SCROLL_OFFSET = -90; // px - how far above the section header to land
 
 export function ProjectSectionNav({ sections }: { sections: SectionItem[] }) {
   const [open, setOpen] = useState(false);

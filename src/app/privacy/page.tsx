@@ -9,6 +9,8 @@ import {
 
 export const metadata = {
   title: "Privacy Policy | Golden Group",
+  description:
+    "How Golden Lifespace Developers LLP collects, uses and protects personal information shared via the Golden Group website and project enquiries.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -293,7 +295,7 @@ export default function PrivacyPolicyPage() {
       </P>
       <UL>
         <LI>Email: [insert email]</LI>
-        <LI>Phone: [+91 — insert number]</LI>
+        <LI>Phone: [+91 - insert number]</LI>
       </UL>
       <P>
         Please note that even after opting out of promotional communication,

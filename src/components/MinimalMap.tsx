@@ -101,12 +101,14 @@ export function MinimalMap({
   activeCategory,
   className = "",
   zoom,
+  projectName,
 }: {
   coords: Coords;
   landmarks?: Landmark[];
   activeCategory?: LandmarkCategory;
   className?: string;
   zoom?: number;
+  projectName?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -145,10 +147,23 @@ export function MinimalMap({
 
     const mainEl = document.createElement("div");
     mainEl.className = "golden-main-pin";
-    mainEl.setAttribute("aria-label", "Project location");
-    mainEl.innerHTML = `<span class="golden-main-pin__inner">${renderToStaticMarkup(
+    mainEl.setAttribute(
+      "aria-label",
+      projectName ? `${projectName} location` : "Project location",
+    );
+    const pinIcon = renderToStaticMarkup(
       <MapPin weight="fill" size={18} color="#0a0a0a" />,
-    )}</span>`;
+    );
+    const labelHtml = projectName
+      ? `<span class="golden-main-pin__label"></span>`
+      : "";
+    mainEl.innerHTML = `<span class="golden-main-pin__inner">${pinIcon}</span>${labelHtml}`;
+    if (projectName) {
+      const labelEl = mainEl.querySelector(
+        ".golden-main-pin__label",
+      ) as HTMLElement | null;
+      if (labelEl) labelEl.textContent = projectName;
+    }
     const mainMarker = new maplibregl.Marker({
       element: mainEl,
       anchor: "center",
@@ -171,7 +186,7 @@ export function MinimalMap({
     // We intentionally exclude landmarks/activeCategory from deps so the map
     // doesn't tear down when switching tabs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coords, zoom]);
+  }, [coords, zoom, projectName]);
 
   // Manage landmark markers reactively. Filtered by activeCategory.
   useEffect(() => {

@@ -23,9 +23,9 @@ const satoshi = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Golden Group",
+  title: "Golden Group | Residential & Commercial Real Estate in Gujarat",
   description:
-    "Golden Group creates warm, thoughtfully designed residential, commercial and industrial spaces across India.",
+    "Golden Group develops trusted residential apartments, row villas, commercial plazas and industrial estates across Bharuch, Ankleshwar and Surat. Three generations of building communities in Gujarat.",
 };
 
 export default function RootLayout({

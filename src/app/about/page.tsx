@@ -621,7 +621,7 @@ function GroupOfCompanies() {
           </h3>
           <p className="max-w-[1200px] text-[16px] leading-[1.5] text-white">
             Golden Group spans real estate, diamond manufacturing, and the
-            textile industry — three sectors built on the same foundation. With
+            textile industry - three sectors built on the same foundation. With
             over 2,500 people employed across Gujarat, ours is an organisation
             that has grown steadily since 2005 not by chasing scale, but by
             maintaining standards across everything we do.

@@ -9,6 +9,8 @@ import {
 
 export const metadata = {
   title: "Terms & Conditions | Golden Group",
+  description:
+    "Terms and conditions for using the Golden Group website, owned and operated by Golden Lifespace Developers LLP. Covers acceptable use, project information and applicable RERA jurisdictions.",
 };
 
 export default function TermsPage() {
@@ -97,8 +99,8 @@ export default function TermsPage() {
       <P>
         All project-related communication shall be subject to applicable real
         estate laws, RERA regulations (including the Gujarat Real Estate
-        Regulatory Authority — GujRERA — and the Karnataka Real Estate
-        Regulatory Authority — K-RERA — as applicable to the respective
+        Regulatory Authority - GujRERA - and the Karnataka Real Estate
+        Regulatory Authority - K-RERA - as applicable to the respective
         project location), and other statutory requirements.
       </P>
       <P>

@@ -27,12 +27,8 @@ export function ProjectDetailView({ project }: { project: Project }) {
 
   return (
     <main className="relative min-h-screen w-full bg-black text-white">
-      <div id="overview">
-        <Hero project={project} />
-        <FirstLook project={project} />
-        <Intro project={project} />
-      </div>
-      <Highlights project={project} />
+      <Hero project={project} />
+      <Overview project={project} />
       <Amenities project={project} />
       <MasterPlan project={project} />
       <FloorPlans project={project} />
@@ -110,76 +106,164 @@ function HeroFact({ label, value }: { label: string; value: string }) {
   );
 }
 
-// -------------------- First Look --------------------
+// -------------------- Overview --------------------
 
-function FirstLook({ project }: { project: Project }) {
-  const block = project.detail?.firstLook;
-  if (!block || block.items.length === 0) return null;
+type OverviewCardData = {
+  src: string;
+  alt?: string;
+  metric: string;
+  label: string;
+};
+
+function Overview({ project }: { project: Project }) {
+  const detail = project.detail!;
+  const rawCards = detail.summary?.cards ?? [];
+  const cards: OverviewCardData[] = rawCards.slice(0, 4);
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    if (cards.length === 0) return;
+    let raf = 0;
+    let scheduled = false;
+
+    const apply = () => {
+      scheduled = false;
+      const sec = sectionRef.current;
+      if (!sec) return;
+      const rect = sec.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const total = rect.height + vh;
+      const passed = vh - rect.top;
+      const progress = Math.max(0, Math.min(1, passed / total));
+      const centered = progress - 0.5;
+
+      if (textRef.current) {
+        textRef.current.style.transform = `translate3d(0, ${centered * -40}px, 0)`;
+      }
+      cardRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const speed = 130 + (i % 2) * 40 + Math.floor(i / 2) * 20;
+        el.style.transform = `translate3d(0, ${centered * -speed}px, 0)`;
+      });
+    };
+
+    const onScroll = () => {
+      if (scheduled) return;
+      scheduled = true;
+      raf = requestAnimationFrame(apply);
+    };
+
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [cards.length]);
+
+  if (cards.length === 0) return null;
+
   return (
-    <section className="border-t border-[#464646] bg-black px-[30px] py-12 md:py-16">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
-        {block.items.map((img, i) => (
-          <Reveal key={`first-look-${i}`} delay={i * 120}>
-            <figure className="flex flex-col gap-3">
-              <RevealImage
-                src={projectImage(img.src)}
-                alt={img.alt ?? img.caption ?? `${project.name} ${i + 1}`}
-                fill
-                sizes="(min-width: 640px) 50vw, 100vw"
-                className="object-cover"
-                containerClassName="relative aspect-[16/10] w-full"
-              />
-              {img.caption ? (
-                <figcaption className="text-[12px] uppercase tracking-[0.12em] text-white/55">
-                  {img.caption}
-                </figcaption>
-              ) : null}
-            </figure>
+    <section
+      id="overview"
+      ref={sectionRef}
+      className="relative scroll-mt-24 overflow-hidden bg-black px-[30px] py-20 md:flex md:h-[100vh] md:min-h-[720px] md:items-center md:py-0"
+    >
+      <div className="relative mx-auto grid w-full max-w-[1500px] grid-cols-2 gap-6 md:h-full md:grid-cols-12 md:grid-rows-[1fr_auto_1fr] md:gap-x-10 md:gap-y-10 md:py-20">
+        <OverviewCard
+          card={cards[0]}
+          align="left"
+          cardRef={(el) => { cardRefs.current[0] = el; }}
+          className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-1 md:self-start"
+        />
+        {cards[1] ? (
+          <OverviewCard
+            card={cards[1]}
+            align="right"
+            cardRef={(el) => { cardRefs.current[1] = el; }}
+            className="col-span-1 md:col-span-3 md:col-start-10 md:row-start-1 md:self-start"
+          />
+        ) : null}
+
+        <div
+          ref={textRef}
+          className="col-span-2 flex flex-col items-center justify-center text-center will-change-transform md:col-span-6 md:col-start-4 md:row-start-2"
+        >
+          <Reveal>
+            <h2 className="max-w-[24ch] whitespace-pre-line text-[28px] font-medium leading-[1.15] tracking-tight md:text-[44px]">
+              {detail.intro.headline}
+            </h2>
           </Reveal>
-        ))}
+        </div>
+
+        {cards[2] ? (
+          <OverviewCard
+            card={cards[2]}
+            align="left"
+            cardRef={(el) => { cardRefs.current[2] = el; }}
+            className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-3 md:self-end"
+          />
+        ) : null}
+        {cards[3] ? (
+          <OverviewCard
+            card={cards[3]}
+            align="right"
+            cardRef={(el) => { cardRefs.current[3] = el; }}
+            className="col-span-1 md:col-span-3 md:col-start-10 md:row-start-3 md:self-end"
+          />
+        ) : null}
       </div>
     </section>
   );
 }
 
-// -------------------- Intro --------------------
-
-function Intro({ project }: { project: Project }) {
-  const detail = project.detail!;
+function OverviewCard({
+  card,
+  align,
+  cardRef,
+  className = "",
+}: {
+  card: OverviewCardData;
+  align: "left" | "right";
+  cardRef: (el: HTMLDivElement | null) => void;
+  className?: string;
+}) {
   return (
-    <section className="border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-10">
-        <div className="md:col-span-7">
-          <Reveal>
-            <h2 className="max-w-[24ch] text-[28px] font-medium leading-[1.2] tracking-tight md:text-[40px]">
-              {detail.intro.headline}
-            </h2>
-          </Reveal>
-          {detail.intro.body ? (
-            <Reveal delay={150}>
-              <p className="mt-6 max-w-[60ch] text-sm leading-[1.6] text-white/70 md:text-base">
-                {detail.intro.body}
-              </p>
-            </Reveal>
-          ) : null}
-        </div>
-
-        <div className="flex md:col-span-5 md:items-end md:justify-end">
-          {detail.intro.brochureUrl ? (
-            <Reveal delay={260}>
-              <BrochurePill href={detail.intro.brochureUrl} />
-            </Reveal>
-          ) : null}
+    <div ref={cardRef} className={`relative will-change-transform ${className}`}>
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
+        <Image
+          src={projectImage(card.src)}
+          alt={card.alt ?? `${card.metric} ${card.label}`}
+          fill
+          sizes="(min-width: 768px) 22vw, 50vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent" />
+        <div
+          className={`absolute bottom-3 ${align === "right" ? "right-3 text-right" : "left-3 text-left"} text-white drop-shadow`}
+        >
+          <div className="text-[16px] font-medium leading-[1.05] tracking-tight md:text-[20px]">
+            {card.metric}
+          </div>
+          <div className="mt-1 text-[12px] leading-[1.3] text-white/85 md:text-[13px]">
+            {card.label}
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
 // -------------------- Highlights --------------------
 
 function Highlights({ project }: { project: Project }) {
-  const block = project.detail?.highlights;
+  const detail = project.detail!;
+  const block = detail.highlights;
   const [active, setActive] = useState(0);
   if (!block || block.items.length === 0) return null;
   const items = block.items.slice(0, 3);
@@ -563,7 +647,7 @@ function Gallery({ project }: { project: Project }) {
             fill
             sizes="(min-width: 768px) 22vw, 50vw"
             className="object-cover"
-            containerClassName={`relative w-full ${i === 0 ? "aspect-[4/3] md:col-span-2 md:row-span-2 md:aspect-square" : "aspect-[4/3]"}`}
+            containerClassName={`relative w-full ${i === 0 ? "aspect-[4/3] md:col-span-2 md:row-span-2 md:aspect-square" : "aspect-[4/3] md:aspect-square"}`}
             delay={(i % 4) * 120}
           />
         ))}
@@ -629,6 +713,7 @@ function LocationSection({ project }: { project: Project }) {
           landmarks={location.landmarks}
           activeCategory={active ?? undefined}
           className="aspect-[3/4] md:aspect-auto md:h-[80vh] md:min-h-[640px]"
+          projectName={project.name}
         />
         <div className="golden-map-tabs absolute left-[19px] top-[22px] z-10 sm:left-[30px] sm:top-[30px]">
           {availableCategories.map((key) => {

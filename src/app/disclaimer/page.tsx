@@ -9,6 +9,8 @@ import {
 
 export const metadata = {
   title: "Disclaimer | Golden Group",
+  description:
+    "Disclaimer for the Golden Group website. Project visuals, plans and specifications are representational and subject to variation during execution.",
 };
 
 export default function DisclaimerPage() {

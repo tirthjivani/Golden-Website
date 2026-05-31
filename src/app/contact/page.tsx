@@ -17,21 +17,21 @@ export default function ContactPage() {
 function ContactSection() {
   return (
     <section className="relative w-full pt-[120px] md:pt-[140px]">
-      {/* Vertical center divider — desktop only; aligns with footer's central border */}
+      {/* Vertical center divider - desktop only; aligns with footer's central border */}
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px bg-[#464646] md:block"
       />
 
       <div className="relative grid grid-cols-1 md:grid-cols-2">
-        {/* LEFT — Contact title */}
+        {/* LEFT - Contact title */}
         <div className="flex items-start px-[30px] pb-12 pt-6 md:pt-12">
           <h1 className="text-[40px] font-medium leading-[1.1] tracking-tight text-white md:text-[52px]">
             Contact
           </h1>
         </div>
 
-        {/* RIGHT — info cards + form */}
+        {/* RIGHT - info cards + form */}
         <div className="flex flex-col">
           <InfoGrid />
           <ContactForm />
@@ -197,7 +197,7 @@ function ContactForm() {
       {submitted ? (
         <div className="flex min-h-[480px] items-center justify-center text-center text-white/70">
           <p>
-            Thanks — we&apos;ve received your message and will be in touch
+            Thanks - we&apos;ve received your message and will be in touch
             shortly.
           </p>
         </div>
