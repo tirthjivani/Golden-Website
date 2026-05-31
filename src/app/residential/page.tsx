@@ -163,7 +163,7 @@ function StatsGallery() {
         </Reveal>
       </div>
 
-      <div className="relative h-[85vh] min-h-[480px] w-full overflow-hidden">
+      <div className="relative h-[100vh] min-h-[480px] w-full overflow-hidden">
         {PROJECT_IMAGES.map((src, i) => (
           <RevealImage
             key={src}
