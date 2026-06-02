@@ -44,33 +44,14 @@ export default function Header({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 md:gap-6">
-            <Link href="/" aria-label="Golden Group">
-              <Image
-                src="/logo.svg"
-                alt="Golden"
-                width={148}
-                height={32}
-                className="h-7 w-auto md:h-8"
-              />
-            </Link>
+            <LogoLink />
             {sectionItems.length > 0 ? (
               <ProjectSectionNav sections={sectionItems} />
             ) : active ? (
               <SegmentSwitcher current={active.href} />
             ) : null}
           </div>
-          <button
-            type="button"
-            onClick={onMenuClick}
-            className="flex items-center gap-3 text-sm font-medium tracking-wide text-white"
-            aria-label="Open menu"
-          >
-            <span>Menu</span>
-            <span className="flex flex-col gap-[5px]">
-              <span className="block h-[1.5px] w-5 bg-current" />
-              <span className="block h-[1.5px] w-5 bg-current" />
-            </span>
-          </button>
+          <MenuButton onClick={onMenuClick} />
         </div>
       </header>
     );
@@ -82,31 +63,60 @@ export default function Header({
       className="nav-enter pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-6 md:px-10 md:py-7"
     >
       <div className="pointer-events-auto flex items-center gap-4 md:gap-6">
-        <Link href="/" aria-label="Golden Group">
-          <Image
-            src="/logo.svg"
-            alt="Golden"
-            width={148}
-            height={32}
-            priority
-            className="h-7 w-auto md:h-8"
-          />
-        </Link>
+        <LogoLink priority />
         {active ? <SegmentSwitcher current={active.href} /> : null}
       </div>
-      <button
-        type="button"
-        onClick={onMenuClick}
-        className="pointer-events-auto flex items-center gap-3 text-sm font-medium tracking-wide text-white"
-        aria-label="Open menu"
-      >
-        <span>Menu</span>
-        <span className="flex flex-col gap-[5px]">
-          <span className="block h-[1.5px] w-5 bg-current" />
-          <span className="block h-[1.5px] w-5 bg-current" />
-        </span>
-      </button>
+      <MenuButton onClick={onMenuClick} className="pointer-events-auto" />
     </header>
+  );
+}
+
+function LogoLink({ priority = false }: { priority?: boolean }) {
+  return (
+    <Link
+      href="/"
+      aria-label="Golden Group"
+      className="logo-link inline-flex"
+    >
+      <Image
+        src="/logo.svg"
+        alt="Golden"
+        width={148}
+        height={32}
+        priority={priority}
+        className="h-7 w-auto transition-[filter] duration-300 ease-out md:h-8"
+      />
+    </Link>
+  );
+}
+
+function MenuButton({
+  onClick,
+  className = "",
+}: {
+  onClick: () => void;
+  className?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group/menu flex items-center gap-3 text-sm font-medium tracking-wide text-white ${className}`}
+      aria-label="Open menu"
+    >
+      <span className="relative inline-block h-[1.2em] overflow-hidden leading-[1.2]">
+        <span className="block transition-transform duration-300 ease-out group-hover/menu:-translate-y-full">
+          Menu
+        </span>
+        <span className="absolute inset-0 translate-y-full transition-transform duration-300 ease-out group-hover/menu:translate-y-0">
+          Menu
+        </span>
+      </span>
+      <span className="flex flex-col gap-[5px] transition-transform duration-300 ease-out group-hover/menu:scale-110">
+        <span className="block h-[1.5px] w-5 bg-current transition-[width] duration-300 ease-out group-hover/menu:w-6" />
+        <span className="block h-[1.5px] w-5 bg-current transition-[width] duration-300 ease-out group-hover/menu:w-3" />
+      </span>
+    </button>
   );
 }
 

@@ -645,7 +645,8 @@ function Gallery({ project }: { project: Project }) {
             src={projectImage(img.src)}
             alt={img.alt ?? `${project.name} gallery ${i + 1}`}
             fill
-            sizes="(min-width: 768px) 22vw, 50vw"
+            sizes={i === 0 ? "(min-width: 768px) 45vw, 100vw" : "(min-width: 768px) 22vw, 50vw"}
+            quality={90}
             className="object-cover"
             containerClassName={`relative w-full ${i === 0 ? "aspect-[4/3] md:col-span-2 md:row-span-2 md:aspect-square" : "aspect-[4/3] md:aspect-square"}`}
             delay={(i % 4) * 120}

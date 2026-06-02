@@ -353,7 +353,7 @@ const goldenLuxuria: Project = {
   category: "3 & 4 BHK Flats",
   location: "Bharuch",
   area: "1600 - 2400 Sq. Ft. (SBUA)",
-  status: "Ongoing",
+  status: "Completed",
   images: [
     { src: "golden-luxuria/Main_Entrance_Gate_Day_Perspective.jpg" },
     { src: "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg" },
@@ -699,7 +699,7 @@ const goldenNirvana: Project = {
   category: "2 BHK Flats & 3 BHK Bungalows",
   location: "Surat",
   area: "950 - 1800 Sq. Ft. (SBUA)",
-  status: "Ongoing",
+  status: "Completed",
   images: [
     { src: "golden-nirvana/Building_Low_Angle_Street_View.jpg" },
     { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg" },
@@ -1910,14 +1910,14 @@ const goldenIndustrialEstate: Project = {
 export const PROJECTS: Project[] = [
   goldenLuxuria,
   goldenHeaven,
+  goldenResidency,
+  goldenSquareBharuch,
   goldenNirvana,
   goldenVilla,
   goldenHomes,
   goldenPalmVilla,
-  goldenResidency,
-  goldenPalmPlaza,
-  goldenSquareBharuch,
   goldenSquareAnk,
+  goldenPalmPlaza,
   goldenIndustrialEstate,
 ];
 

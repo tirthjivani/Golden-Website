@@ -35,23 +35,32 @@ export default function MenuPanel({
       }}
       aria-hidden={!open}
     >
+      <Image
+        src="/icon.svg"
+        alt=""
+        width={43}
+        height={109}
+        className="pointer-events-none absolute left-8 top-8 h-[125px] w-auto md:left-10 md:top-10 md:h-[150px]"
+      />
       <div className="flex h-full flex-col p-8 md:p-10">
-        <div className="flex items-start justify-between">
-          <Image
-            src="/icon.svg"
-            alt=""
-            width={43}
-            height={109}
-            className="h-20 w-auto md:h-24"
-          />
+        <div className="flex items-start justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center gap-3 text-base font-medium"
+            className="group/close flex items-center gap-3 text-base font-medium"
             aria-label="Close menu"
           >
-            <span>Close</span>
-            <CloseIcon />
+            <span className="relative inline-block h-[1.2em] overflow-hidden leading-[1.2]">
+              <span className="block transition-transform duration-300 ease-out group-hover/close:-translate-y-full">
+                Close
+              </span>
+              <span className="absolute inset-0 translate-y-full transition-transform duration-300 ease-out group-hover/close:translate-y-0">
+                Close
+              </span>
+            </span>
+            <span className="inline-flex transition-transform duration-300 ease-out group-hover/close:rotate-90 group-hover/close:scale-110">
+              <CloseIcon />
+            </span>
           </button>
         </div>
 
@@ -72,7 +81,7 @@ export default function MenuPanel({
               >
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute left-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 -translate-x-3 items-center justify-center text-white opacity-0 group-hover/nav:translate-x-0 group-hover/nav:opacity-100"
+                  className="pointer-events-none absolute left-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 -translate-x-3 items-center justify-center text-[#C19B4D] opacity-0 group-hover/nav:translate-x-0 group-hover/nav:opacity-100"
                   style={{
                     transition: `opacity 400ms ${EASE}, transform 500ms ${EASE}`,
                     willChange: "opacity, transform",

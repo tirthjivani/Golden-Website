@@ -13,7 +13,7 @@ import ScrollLottie from "@/components/ScrollLottie";
 import { SiteFooter } from "@/components/SiteFooter";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
-const ACCENT_BLUE = { r: 100, g: 184, b: 240 }; // #64B8F0
+const ACCENT_BLUE = { r: 78, g: 166, b: 228 }; // #4EA6E4
 const BLACK = { r: 0, g: 0, b: 0 };
 const WHITE = { r: 255, g: 255, b: 255 };
 
@@ -95,10 +95,12 @@ function IntroSection() {
             transform: `scale(${scale})`,
             transformOrigin: "center center",
             opacity: iconOpacity,
-            willChange: "transform, opacity",
           }}
         >
-          <LogoIconSvg color={rgbCss(iconColor)} className="absolute inset-0 h-full w-full" />
+          <LogoIconSvg
+            color={rgbCss(iconColor)}
+            className="absolute inset-0 h-full w-full"
+          />
         </div>
 
         {/* Meaning labels (overlay; fade with scroll) */}
@@ -111,26 +113,28 @@ function IntroSection() {
           </div>
         </div>
 
-        {/* Clouds drifting in from the left (behind the buildings) */}
+        {/* Clouds drifting in from various sides (behind the buildings) */}
         <div
-          className="pointer-events-none absolute left-0 right-0 top-[14%] mx-auto h-[26%] max-w-[820px] px-[30px]"
-          style={{
-            opacity: cloudsP,
-            transform: `translateX(${(1 - cloudsP) * -120}px)`,
-            willChange: "transform, opacity",
-          }}
+          className="pointer-events-none absolute inset-0"
+          style={{ opacity: cloudsP }}
         >
-          <div className="relative h-full w-full">
-            <Image
-              src="/about/clouds.png"
-              alt=""
-              fill
-              sizes="(min-width:768px) 760px, 100vw"
-              className="object-contain"
-              priority
-              fetchPriority="high"
-            />
-          </div>
+          <RealCloud
+            top="4%"
+            left="-12%"
+            width={560}
+            from={-280}
+            progress={cloudsP}
+            opacity={0.95}
+            flipY
+          />
+          <RealCloud
+            top="-6%"
+            left="52%"
+            width={900}
+            from={300}
+            progress={cloudsP}
+            opacity={0.9}
+          />
         </div>
 
         {/* Buildings rising from bottom */}
@@ -152,16 +156,17 @@ function IntroSection() {
             priority
             fetchPriority="high"
           />
-          <Image
-            src="/about/building-wide.webp"
-            alt=""
-            width={9656}
-            height={5754}
-            sizes="100vw"
-            className="hidden h-auto w-full min-[800px]:block"
-            priority
-            fetchPriority="high"
-          />
+          <div className="relative hidden h-[70vh] w-full overflow-hidden min-[800px]:block">
+            <Image
+              src="/about/building-wide.webp"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover object-top"
+              priority
+              fetchPriority="high"
+            />
+          </div>
         </div>
 
         {/* Scroll hint (visible at start, fades during scroll) */}
@@ -186,9 +191,9 @@ function Meanings({ shown }: { shown: boolean }) {
         shown={shown}
         delay={0}
         side="left"
-        lineWidth={223}
+        lineWidth={240}
         anchorX="50%"
-        anchorY="0%"
+        anchorY="-2%"
       >
         Central tallest line symbolizes
         <br />
@@ -198,8 +203,8 @@ function Meanings({ shown }: { shown: boolean }) {
         shown={shown}
         delay={140}
         side="right"
-        lineWidth={162}
-        anchorX="62%"
+        lineWidth={180}
+        anchorX="78%"
         anchorY="38%"
       >
         Star element represents excellence,
@@ -210,8 +215,8 @@ function Meanings({ shown }: { shown: boolean }) {
         shown={shown}
         delay={280}
         side="left"
-        lineWidth={181}
-        anchorX="22%"
+        lineWidth={200}
+        anchorX="-2%"
         anchorY="58%"
       >
         Vertical golden lines represent buildings,
@@ -222,9 +227,9 @@ function Meanings({ shown }: { shown: boolean }) {
         shown={shown}
         delay={420}
         side="right"
-        lineWidth={101}
+        lineWidth={130}
         anchorX="50%"
-        anchorY="99%"
+        anchorY="102%"
       >
         Curved base line symbolizes a strong
         <br />
@@ -290,6 +295,55 @@ function Meaning({
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+function RealCloud({
+  top,
+  left,
+  width,
+  from,
+  progress,
+  opacity = 1,
+  delayedBy = 0,
+  desktopOnly = false,
+  flipY = false,
+}: {
+  top: string;
+  left: string;
+  width: number;
+  from: number;
+  progress: number;
+  opacity?: number;
+  delayedBy?: number;
+  desktopOnly?: boolean;
+  flipY?: boolean;
+}) {
+  const p = clamp((progress - delayedBy) / (1 - delayedBy), 0, 1);
+  const e = ease(p);
+  return (
+    <div
+      className={`pointer-events-none absolute ${desktopOnly ? "hidden md:block" : ""}`}
+      style={{
+        top,
+        left,
+        width,
+        aspectRatio: "2000 / 1517",
+        opacity: e * opacity,
+        transform: `translateX(${(1 - e) * from}px)${flipY ? " scaleY(-1)" : ""}`,
+        willChange: "transform, opacity",
+      }}
+    >
+      <Image
+        src="/about/cloud-v2.png"
+        alt=""
+        fill
+        sizes="(min-width:768px) 520px, 60vw"
+        className="object-contain"
+        priority
+        fetchPriority="high"
+      />
     </div>
   );
 }
@@ -560,44 +614,44 @@ function Accreditations() {
 
 function Milestones() {
   const stats = [
-    { value: "+10M", label: "sq. ft. built since 2005", filled: false },
-    { value: "+6.3k", label: "Residential Units", filled: true },
-    { value: "+10k", label: "Happy Customers", filled: true },
-    { value: "+2.7k", label: "Commercial Units", filled: false },
+    { value: "+10M", label: "sq. ft. built since 2005" },
+    { value: "+6.3k", label: "Residential Units" },
+    { value: "+10k", label: "Happy Customers" },
+    { value: "+2.7k", label: "Commercial Units" },
   ];
   return (
-    <section className="border-t border-[#464646] bg-black px-[30px] py-16 md:py-20">
-      <div className="mx-auto grid w-full grid-cols-1 gap-10 md:grid-cols-[260px_1fr] md:gap-12 lg:grid-cols-[320px_1fr]">
-        <Reveal className="flex flex-col gap-4">
+    <section className="border-t border-[#464646] bg-black">
+      <div className="mx-auto grid w-full grid-cols-1 md:grid-cols-[30%_1fr]">
+        <Reveal className="flex flex-col gap-4 px-[30px] py-16 md:px-8 md:py-20">
           <p className="text-[32px] font-medium leading-[1.05] tracking-tight md:text-[42px]">
             Our Milestones
           </p>
-          <p className="max-w-[420px] text-[16px] leading-[1.5] text-white">
-            22 completed projects. 55 lakh square feet constructed. 9,000+
-            families and businesses served across Gujarat.
-          </p>
         </Reveal>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {stats.map((s, i) => (
-            <Reveal
-              key={s.label}
-              delay={120 + i * 120}
-              className={`flex aspect-[458/360] flex-col items-center justify-center gap-3 sm:aspect-[458/220] ${
-                s.filled
-                  ? "bg-[#111]"
-                  : "border border-[#464646]"
-              }`}
-            >
-              <CountUp
-                value={s.value}
-                className="text-[56px] font-medium leading-[0.9] tracking-tight text-white sm:text-[64px] lg:text-[120px] lg:tracking-[-4px]"
-              />
-              <span className="text-sm leading-[1.4] text-white/60">
-                {s.label}
-              </span>
-            </Reveal>
-          ))}
+        <div className="grid grid-cols-1 border-l border-[#464646] sm:grid-cols-2">
+          {stats.map((s, i) => {
+            const mobileBorder =
+              i < stats.length - 1 ? "border-b border-[#464646]" : "";
+            const desktopRight =
+              i % 2 === 0 ? "sm:border-r sm:border-[#464646]" : "sm:border-r-0";
+            const desktopBottom =
+              i < 2 ? "sm:border-b sm:border-[#464646]" : "sm:border-b-0";
+            return (
+              <Reveal
+                key={s.label}
+                delay={120 + i * 120}
+                className={`flex aspect-[458/360] flex-col items-center justify-center gap-3 sm:aspect-[458/220] ${mobileBorder} ${desktopRight} ${desktopBottom}`}
+              >
+                <CountUp
+                  value={s.value}
+                  className="text-[56px] font-medium leading-[0.9] tracking-tight text-white sm:text-[64px] lg:text-[120px] lg:tracking-[-4px]"
+                />
+                <span className="text-sm leading-[1.4] text-white/60">
+                  {s.label}
+                </span>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>

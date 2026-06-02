@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   Suspense,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -34,7 +35,7 @@ type TransitionState = {
 };
 
 type Filter = "all" | ProjectType;
-type StatusFilter = "all" | ProjectStatus;
+type CityFilter = "all" | string;
 type Layout = "row" | "gallery";
 
 function parseFilter(value: string | null): Filter {
@@ -48,20 +49,19 @@ const FILTERS: { id: Filter; label: string }[] = [
   { id: "commercial-industrial", label: "Commercial & Industrial" },
 ];
 
-const STATUS_FILTERS: { id: StatusFilter; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "Ongoing", label: "Under Construction" },
-  { id: "Upcoming", label: "New" },
-  { id: "Completed", label: "Completed" },
-];
-
 const LAYOUT_FILTERS: { id: Layout; label: string }[] = [
   { id: "row", label: "List" },
   { id: "gallery", label: "Gallery" },
 ];
 
+const STATUS_DISPLAY: Record<ProjectStatus, string> = {
+  Ongoing: "Under Construction",
+  Upcoming: "New",
+  Completed: "Completed",
+};
+
 function statusLabel(status: ProjectStatus): string {
-  return STATUS_FILTERS.find((s) => s.id === status)?.label ?? status;
+  return STATUS_DISPLAY[status] ?? status;
 }
 
 function projectHeroImage(project: Project) {
@@ -84,12 +84,28 @@ function ProjectsBodyWithSearchParams() {
 
 function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
   const [filter, setFilter] = useState<Filter>(initialFilter);
-  const [status, setStatus] = useState<StatusFilter>("all");
+  const [city, setCity] = useState<CityFilter>("all");
   const [layout, setLayout] = useState<Layout>("row");
   const [transition, setTransition] = useState<TransitionState | null>(null);
   const [cols, setCols] = useState(3);
   const projects = listProjects();
   const router = useRouter();
+
+  const cityFilters = useMemo<{ id: CityFilter; label: string }[]>(() => {
+    const seen = new Set<string>();
+    const cities: string[] = [];
+    for (const p of projects) {
+      if (!seen.has(p.location)) {
+        seen.add(p.location);
+        cities.push(p.location);
+      }
+    }
+    cities.sort();
+    return [
+      { id: "all", label: "All" },
+      ...cities.map((c) => ({ id: c, label: c })),
+    ];
+  }, [projects]);
 
   useEffect(() => {
     const compute = () => {
@@ -103,7 +119,7 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
 
   const filtered = projects
     .filter((p) => filter === "all" || p.type === filter)
-    .filter((p) => status === "all" || p.status === status);
+    .filter((p) => city === "all" || p.location === city);
 
   const remainder = filtered.length % cols;
   const fillerCount = remainder === 0 ? 0 : cols - remainder;
@@ -159,8 +175,8 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
               <FilterRow items={FILTERS} value={filter} onChange={setFilter} />
             </div>
             <div className="flex flex-col gap-3">
-              <span className="text-sm text-white/60">Status</span>
-              <FilterRow items={STATUS_FILTERS} value={status} onChange={setStatus} />
+              <span className="text-sm text-white/60">City</span>
+              <FilterRow items={cityFilters} value={city} onChange={setCity} />
             </div>
             <div className="flex flex-col gap-3">
               <span className="text-sm text-white/60">Layout</span>

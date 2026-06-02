@@ -14,6 +14,7 @@ import { RecognitionSection } from "@/components/RecognitionSection";
 import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
+import { listProjects, projectImage } from "@/lib/projects";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -153,7 +154,7 @@ function StatsGallery() {
         <Reveal as="div" delay={260}>
           <div className="flex items-end gap-4">
             <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
-              +2.7k
+              +6.3k
             </span>
             <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
               <span>Units</span>
@@ -231,45 +232,19 @@ type Project = {
   location: string;
   size: string;
   image: string;
+  slug: string;
 };
 
-const PROJECTS: Project[] = [
-  {
-    name: "Golden Heaven",
-    bhk: "3 & 4 BHK",
-    location: "Surat",
-    size: "1901-2479 Sq. Ft.",
-    image: "/residential/gallery-1.jpg",
-  },
-  {
-    name: "Golden Nirvana",
-    bhk: "3 & 4 BHK",
-    location: "Surat",
-    size: "1900-2500 Sq. Ft.",
-    image: "/residential/gallery-2.jpg",
-  },
-  {
-    name: "Golden Heights",
-    bhk: "2 & 3 BHK",
-    location: "Surat",
-    size: "1200-1750 Sq. Ft.",
-    image: "/residential/gallery-3.jpg",
-  },
-  {
-    name: "Golden Aura",
-    bhk: "3 BHK",
-    location: "Vadodara",
-    size: "1650-2100 Sq. Ft.",
-    image: "/residential/gallery-4.jpg",
-  },
-  {
-    name: "Golden Bloom",
-    bhk: "2 & 3 BHK",
-    location: "Ahmedabad",
-    size: "1100-1600 Sq. Ft.",
-    image: "/residential/gallery-5.jpg",
-  },
-];
+const PROJECTS: Project[] = listProjects()
+  .filter((p) => p.type === "residential")
+  .map((p) => ({
+    name: p.name,
+    bhk: p.category,
+    location: p.location,
+    size: p.area,
+    image: projectImage(p.images[0]?.src ?? ""),
+    slug: p.slug,
+  }));
 
 const CARD_GAP = 14;
 
@@ -291,8 +266,10 @@ function useResponsiveCardWidth() {
 
 function ProjectsSection() {
   const [active, setActive] = useState(0);
-  const total = PROJECTS.length;
+  const total = PROJECTS.length + 1;
   const cardW = useResponsiveCardWidth();
+  const sectionRef = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
   const next = () => setActive((i) => Math.min(total - 1, i + 1));
   const prev = () => setActive((i) => Math.max(0, i - 1));
   const touchStartX = useRef<number | null>(null);
@@ -308,8 +285,38 @@ function ProjectsSection() {
     else prev();
   };
 
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) setInView(e.isIntersecting);
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setActive((i) => Math.min(total - 1, i + 1));
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setActive((i) => Math.max(0, i - 1));
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [inView, total]);
+
   return (
-    <section className="relative overflow-hidden bg-black py-12 md:py-16">
+    <section ref={sectionRef} className="relative overflow-hidden bg-black py-12 md:py-16">
       <div className="flex flex-col gap-10 px-[30px] min-[560px]:flex-row min-[560px]:items-end min-[560px]:justify-between">
         <Reveal>
           <div className="flex items-end gap-4">
@@ -365,31 +372,10 @@ function ProjectsSection() {
               cardW={cardW}
             />
           ))}
+          <ViewAllCard active={active === PROJECTS.length} cardW={cardW} />
         </div>
       </div>
 
-      <div className="mt-10 flex flex-col gap-6 px-[30px] sm:flex-row sm:items-end sm:justify-between md:mt-12">
-        <Reveal>
-          <p className="max-w-[150px] text-sm leading-[1.4] text-white">
-            Our portfolio speaks for itself
-          </p>
-        </Reveal>
-        <Reveal delay={150}>
-          <Link
-            href="/projects"
-            className="pill-hover relative block h-[75px] w-full shrink-0 overflow-hidden bg-white text-black sm:w-[300px]"
-          >
-            <span
-              aria-hidden
-              className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
-            />
-            <span className="relative z-10 flex h-full w-full items-end justify-between p-[12px] text-base font-medium">
-              View All Projects
-              <StarIcon />
-            </span>
-          </Link>
-        </Reveal>
-      </div>
     </section>
   );
 }
@@ -442,6 +428,38 @@ function ProjectCard({
         </ul>
       </div>
     </article>
+  );
+}
+
+function ViewAllCard({ active, cardW }: { active: boolean; cardW: number }) {
+  return (
+    <Link
+      href="/projects"
+      className="group flex shrink-0 flex-col gap-2 pt-5"
+      style={{
+        width: cardW,
+        borderTop: "2px solid",
+        borderTopColor: active ? "#fff" : "transparent",
+        transition: `border-color 350ms ${EASE}, opacity 500ms ${EASE}`,
+        opacity: active ? 1 : 0.55,
+      }}
+    >
+      <div className="card-hover relative aspect-[380/370] w-full overflow-hidden bg-[#1a1a1a]">
+        <span
+          aria-hidden
+          className="card-fill pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
+        />
+        <span className="relative z-10 flex h-full w-full items-end justify-between p-[16px] text-[22px] font-medium leading-[1.2] text-white transition-colors group-hover:text-black">
+          View All Projects
+          <StarIcon />
+        </span>
+      </div>
+      <div className="mt-2 flex w-full flex-col gap-3 pr-4">
+        <p className="text-[16px] leading-[1.4] text-[#737373]">
+          Our portfolio speaks for itself
+        </p>
+      </div>
+    </Link>
   );
 }
 
@@ -528,39 +546,51 @@ function WhyChooseUs() {
     },
   ];
   return (
-    <section className="border-t border-[#464646] bg-black px-[30px] py-20 md:py-24">
-      <Reveal>
-        <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-          Why Choose Us?
-        </h3>
-      </Reveal>
-
-      <div className="mt-10 grid grid-cols-1 gap-3 md:mt-14 md:grid-cols-3">
-        {items.map((item, i) => (
-          <Reveal
-            key={item.title}
-            delay={150 + i * 130}
-            className="flex h-full flex-col justify-between gap-12 overflow-hidden bg-[#111] p-[30px]"
-          >
-            <div className="relative flex h-[64px] w-[64px] shrink-0 items-center justify-center">
-              <Image
-                src={item.icon}
-                alt=""
-                width={64}
-                height={64}
-                className="h-full w-full object-contain"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-[20px] font-normal leading-[1.6] text-white">
-                {item.title}
-              </h4>
-              <p className="line-clamp-2 min-h-[2.8em] text-[14px] leading-[1.4] text-[#aaa]">
-                {item.body}
-              </p>
-            </div>
+    <section className="border-t border-[#464646] bg-black">
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0">
+        <div className="px-[30px] pt-16 md:pr-16 md:pt-20">
+          <Reveal>
+            <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+              Why Choose Us?
+            </h3>
           </Reveal>
-        ))}
+        </div>
+
+        <div className="md:border-l md:border-[#464646]">
+          <ul>
+            {items.map((item, i) => {
+              const isLast = i === items.length - 1;
+              return (
+                <li
+                  key={item.title}
+                  className={isLast ? "" : "border-b border-[#464646]"}
+                >
+                  <Reveal delay={120 + i * 120}>
+                    <div className="flex items-start gap-8 px-[30px] py-10 md:px-8 md:py-12">
+                      <div className="relative h-[48px] w-[48px] shrink-0 md:h-[56px] md:w-[56px]">
+                        <Image
+                          src={item.icon}
+                          alt=""
+                          width={56}
+                          height={56}
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <h4 className="text-[20px] font-normal leading-[1.4] text-white">
+                          {item.title}
+                        </h4>
+                        <p className="text-[14px] leading-[1.5] text-white/65 md:text-[15px]">
+                          {item.body}
+                        </p>
+                      </div>
+                    </div>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </section>
   );
