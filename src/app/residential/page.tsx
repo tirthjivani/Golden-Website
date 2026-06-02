@@ -434,7 +434,7 @@ function ProjectCard({
 function ViewAllCard({ active, cardW }: { active: boolean; cardW: number }) {
   return (
     <Link
-      href="/projects"
+      href="/projects?type=residential"
       className="group flex shrink-0 flex-col gap-2 pt-5"
       style={{
         width: cardW,

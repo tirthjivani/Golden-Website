@@ -383,7 +383,7 @@ function ProjectsSection() {
 function ViewAllCard({ active, cardW }: { active: boolean; cardW: number }) {
   return (
     <Link
-      href="/projects"
+      href="/projects?type=commercial-industrial"
       className="group flex shrink-0 flex-col gap-2 pt-5"
       style={{
         width: cardW,

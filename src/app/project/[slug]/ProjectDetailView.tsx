@@ -12,7 +12,7 @@ import {
   Tree,
   Train,
 } from "@phosphor-icons/react";
-import { HeroRise, WordReveal, useFromProjects } from "@/components/HeroIntro";
+import { WordReveal, useFromProjects } from "@/components/HeroIntro";
 import {
   projectImage,
   type AmenityKey,
@@ -29,6 +29,7 @@ export function ProjectDetailView({ project }: { project: Project }) {
     <main className="relative min-h-screen w-full bg-black text-white">
       <Hero project={project} />
       <Overview project={project} />
+      <ProjectFacts project={project} />
       <Amenities project={project} />
       <MasterPlan project={project} />
       <FloorPlans project={project} />
@@ -50,8 +51,6 @@ function Hero({ project }: { project: Project }) {
   const fromProjects = useFromProjects();
 
   const titleStart = fromProjects ? 250 : 450;
-  const titleWords = project.name.split(/\s+/).filter(Boolean).length;
-  const factsDelay = titleStart + titleWords * 70 + 80;
 
   return (
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
@@ -63,7 +62,7 @@ function Hero({ project }: { project: Project }) {
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            className="object-cover object-top"
           />
         </div>
       ) : (
@@ -72,37 +71,205 @@ function Hero({ project }: { project: Project }) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
 
       <div className="relative z-10 flex h-full w-full flex-col p-[30px] pt-[110px] md:pt-[140px]">
-        <div className="mt-auto grid grid-cols-1 gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
+        <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
           <WordReveal
             as="h1"
             text={project.name}
             startDelay={titleStart}
             className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]"
           />
-
-          <HeroRise delay={factsDelay}>
-            <dl className="flex w-full max-w-[420px] flex-col divide-y divide-white/10 border border-white/10 bg-black/40 backdrop-blur-sm sm:w-[420px]">
-              <HeroFact label="Location" value={project.location} />
-              <HeroFact label="Type" value={project.category} />
-              <HeroFact label="RERA" value={project.rera ?? "Pending"} />
-              <HeroFact label="Carpet Area" value={project.area} />
-              <HeroFact label="Status" value={project.status} />
-            </dl>
-          </HeroRise>
+          {project.type === "residential" && detail.intro.brochureUrl ? (
+            <Reveal delay={titleStart + 200}>
+              <a
+                href={detail.intro.brochureUrl}
+                download
+                className="pill-hover relative block h-[75px] w-full shrink-0 overflow-hidden bg-white text-black sm:w-[300px]"
+              >
+                <span
+                  aria-hidden
+                  className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
+                />
+                <span className="relative z-10 flex h-full w-full items-end justify-between p-[12px] text-base font-medium">
+                  Download Brochure
+                  <DownloadIcon />
+                </span>
+              </a>
+            </Reveal>
+          ) : null}
         </div>
       </div>
     </section>
   );
 }
 
-function HeroFact({ label, value }: { label: string; value: string }) {
+function DownloadIcon() {
   return (
-    <div className="flex items-baseline justify-between gap-4 px-4 py-3">
-      <dt className="text-[11px] uppercase tracking-[0.12em] text-white/55">
-        {label}
-      </dt>
-      <dd className="text-right text-[13px] text-white/95">{value}</dd>
-    </div>
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      aria-hidden
+    >
+      <path
+        d="M11 3v12m0 0-5-5m5 5 5-5M4 19h14"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ProjectFacts({ project }: { project: Project }) {
+  const facts: { label: string; value: string }[] = [
+    { label: "Location", value: project.location },
+    { label: "Type", value: project.category },
+    { label: "RERA", value: project.rera ?? "Pending" },
+  ];
+  const cellClass = (i: number, last: boolean) =>
+    `flex flex-col gap-3 px-[30px] py-10 md:py-14 ${
+      !last ? "md:border-r md:border-[#464646]" : ""
+    } ${i < 2 ? "border-b border-[#464646] md:border-b-0" : ""} ${
+      i === 0 || i === 2 ? "border-r border-[#464646]" : ""
+    }`;
+  return (
+    <section className="border-t border-[#464646] bg-black">
+      <dl className="grid grid-cols-2 md:grid-cols-4">
+        {facts.map((f, i) => (
+          <Reveal
+            key={f.label}
+            delay={120 + i * 100}
+            className={cellClass(i, false)}
+          >
+            <dt className="text-[13px] tracking-tight text-white/55">
+              {f.label}
+            </dt>
+            <dd className="text-[20px] font-medium leading-[1.2] tracking-tight text-white md:text-[24px]">
+              {f.value}
+            </dd>
+          </Reveal>
+        ))}
+        <CarpetAreaCell
+          project={project}
+          delay={120 + facts.length * 100}
+          className={cellClass(facts.length, true)}
+        />
+      </dl>
+    </section>
+  );
+}
+
+function extractAreaRange(project: Project, key: string): string | null {
+  const plans = project.detail?.floorPlans.groups.flatMap((g) => g.plans) ?? [];
+  const nums: number[] = [];
+  for (const p of plans) {
+    for (const m of p.metrics) {
+      if (m.label.toUpperCase().includes(key)) {
+        const n = parseFloat(m.value.replace(/,/g, "").replace(/[^\d.]/g, ""));
+        if (Number.isFinite(n) && n > 0) nums.push(n);
+      }
+    }
+  }
+  if (nums.length === 0) return null;
+  const min = Math.min(...nums);
+  const max = Math.max(...nums);
+  const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
+  if (min === max) return `${fmt(min)} Sq. Ft.`;
+  return `${fmt(min)} - ${fmt(max)} Sq. Ft.`;
+}
+
+function CarpetAreaCell({
+  project,
+  delay,
+  className,
+}: {
+  project: Project;
+  delay: number;
+  className: string;
+}) {
+  const sbua = useMemo(() => extractAreaRange(project, "SBUA"), [project]);
+  const tca = useMemo(() => extractAreaRange(project, "TCA"), [project]);
+  const hasBoth = Boolean(sbua && tca);
+  const [mode, setMode] = useState<"SBUA" | "TCA">("SBUA");
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
+
+  const value = hasBoth ? (mode === "SBUA" ? sbua! : tca!) : project.area;
+
+  return (
+    <Reveal delay={delay} className={`relative ${className}`}>
+      <div className="flex items-start justify-between gap-3">
+        <dt className="text-[13px] tracking-tight text-white/55">Carpet Area</dt>
+        {hasBoth ? (
+          <div ref={wrapRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              className="flex items-center gap-1 text-[11px] uppercase tracking-[0.14em] text-white/55 transition-colors hover:text-white"
+              aria-haspopup="listbox"
+              aria-expanded={open}
+            >
+              {mode}
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                fill="none"
+                aria-hidden
+                style={{
+                  transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 200ms ease",
+                }}
+              >
+                <path
+                  d="M2 3.5 5 6.5l3-3"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            {open ? (
+              <div
+                role="listbox"
+                className="absolute right-0 top-full z-20 mt-1 flex flex-col border border-white/15 bg-black"
+              >
+                {(["SBUA", "TCA"] as const).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    role="option"
+                    aria-selected={m === mode}
+                    onClick={() => {
+                      setMode(m);
+                      setOpen(false);
+                    }}
+                    className="px-3 py-1.5 text-left text-[11px] uppercase tracking-[0.14em] text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+      <dd className="text-[20px] font-medium leading-[1.2] tracking-tight text-white md:text-[24px]">
+        {value}
+      </dd>
+    </Reveal>
   );
 }
 
@@ -177,14 +344,12 @@ function Overview({ project }: { project: Project }) {
       <div className="relative mx-auto grid w-full max-w-[1500px] grid-cols-2 gap-6 md:h-full md:grid-cols-12 md:grid-rows-[1fr_auto_1fr] md:gap-x-10 md:gap-y-10 md:py-20">
         <OverviewCard
           card={cards[0]}
-          align="left"
           cardRef={(el) => { cardRefs.current[0] = el; }}
           className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-1 md:self-start"
         />
         {cards[1] ? (
           <OverviewCard
             card={cards[1]}
-            align="right"
             cardRef={(el) => { cardRefs.current[1] = el; }}
             className="col-span-1 md:col-span-3 md:col-start-10 md:row-start-1 md:self-start"
           />
@@ -204,7 +369,6 @@ function Overview({ project }: { project: Project }) {
         {cards[2] ? (
           <OverviewCard
             card={cards[2]}
-            align="left"
             cardRef={(el) => { cardRefs.current[2] = el; }}
             className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-3 md:self-end"
           />
@@ -212,7 +376,6 @@ function Overview({ project }: { project: Project }) {
         {cards[3] ? (
           <OverviewCard
             card={cards[3]}
-            align="right"
             cardRef={(el) => { cardRefs.current[3] = el; }}
             className="col-span-1 md:col-span-3 md:col-start-10 md:row-start-3 md:self-end"
           />
@@ -224,12 +387,10 @@ function Overview({ project }: { project: Project }) {
 
 function OverviewCard({
   card,
-  align,
   cardRef,
   className = "",
 }: {
   card: OverviewCardData;
-  align: "left" | "right";
   cardRef: (el: HTMLDivElement | null) => void;
   className?: string;
 }) {
@@ -243,17 +404,6 @@ function OverviewCard({
           sizes="(min-width: 768px) 22vw, 50vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent" />
-        <div
-          className={`absolute bottom-3 ${align === "right" ? "right-3 text-right" : "left-3 text-left"} text-white drop-shadow`}
-        >
-          <div className="text-[16px] font-medium leading-[1.05] tracking-tight md:text-[20px]">
-            {card.metric}
-          </div>
-          <div className="mt-1 text-[12px] leading-[1.3] text-white/85 md:text-[13px]">
-            {card.label}
-          </div>
-        </div>
       </div>
     </div>
   );

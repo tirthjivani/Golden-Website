@@ -376,6 +376,7 @@ const goldenLuxuria: Project = {
     intro: {
       headline: "Premium residences designed for a life that has outgrown the ordinary.",
       body: "Welcome to the extraordinary everyday. Golden Luxuria brings together sweeping architecture, premium interiors, and resort-style amenities - for those who believe every day should feel like one worth remembering.",
+      brochureUrl: "/brochures/golden-luxuria.pdf",
     },
     summary: {
       cards: [
@@ -556,6 +557,7 @@ const goldenHeaven: Project = {
     intro: {
       headline: "Where modern living meets the warmth every home should carry.",
       body: "Welcome to Golden Heaven. A community that rises above the ordinary - where purposeful layouts meet lush open grounds and every amenity is a reason to come home.",
+      brochureUrl: "/brochures/golden-heaven.pdf",
     },
     summary: {
       cards: [
@@ -722,6 +724,7 @@ const goldenNirvana: Project = {
     intro: {
       headline: "Where tower homes and private bungalows share a community worth coming home to.",
       body: "Find your pace. Find your place. Golden Nirvana is a full-scale township where verdant parks stretch between streetscapes and every corner is planned to bring peace to your daily life.",
+      brochureUrl: "/brochures/golden-nirvana.pdf",
     },
     summary: {
       cards: [
@@ -890,6 +893,7 @@ const goldenVilla: Project = {
     intro: {
       headline: "Premium row villas where your family has room to live, grow, and thrive.",
       body: "Built wide. Built free. Golden Villa is a carefully planned row villa community with individual plots, landscaped common areas, and space that turns a neighbourhood into a home your family is proud of.",
+      brochureUrl: "/brochures/golden-villa.pdf",
     },
     summary: {
       cards: [
@@ -1044,6 +1048,7 @@ const goldenHomes: Project = {
     intro: {
       headline: "Row villas for families who want their own ground, their own gate, and their own story.",
       body: "Built for those who choose ground over sky. Golden Homes is a community of independent bungalows - each plot a private world, each street a shared sense of belonging.",
+      brochureUrl: "/brochures/golden-homes.pdf",
     },
     summary: {
       cards: [
@@ -1303,6 +1308,7 @@ const goldenResidency: Project = {
     intro: {
       headline: "Straightforward, solid, and built for families that value quality in every square foot.",
       body: "A home that earns its place in your life. Golden Residency is built on the belief that great homes shouldn't ask you to compromise - clean layouts, solid construction, and a well-connected address for families investing in today.",
+      brochureUrl: "/brochures/golden-residency.pdf",
     },
     summary: {
       cards: [
