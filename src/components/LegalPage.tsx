@@ -33,7 +33,7 @@ export function LegalPage({
 
 export function H2({ children }: { children: ReactNode }) {
   return (
-    <h2 className="mt-6 text-[22px] font-medium leading-[1.3] tracking-tight text-white md:text-[26px]">
+    <h2 className="mt-6 text-[22px] font-normal leading-[1.3] tracking-tight text-white md:text-[26px]">
       {children}
     </h2>
   );

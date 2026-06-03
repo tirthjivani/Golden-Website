@@ -61,7 +61,7 @@ function Hero() {
             as="h2"
             text={headlineText}
             startDelay={headlineStart}
-            className="max-w-[22ch] text-[44px] font-medium leading-[1.02] tracking-tight lg:text-[88px]"
+            className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
           />
           <HeroRise delay={ctaDelay}>
             <Pill href="/projects" label="See latest projects" />
@@ -631,7 +631,7 @@ function FinalCta() {
       <div className="grid grid-cols-1 gap-10 p-[30px] md:grid-cols-2 md:gap-[30px]">
         <div className="flex min-h-[336px] flex-col md:min-h-[780px]">
           <Reveal>
-            <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+            <h3 className="max-w-[20ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
               If you can dream it, we can build it!
             </h3>
           </Reveal>

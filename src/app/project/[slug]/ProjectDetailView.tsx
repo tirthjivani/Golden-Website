@@ -367,7 +367,7 @@ function Overview({ project }: { project: Project }) {
           className="col-span-2 flex flex-col items-center justify-center text-center will-change-transform md:col-span-6 md:col-start-4 md:row-start-2"
         >
           <Reveal>
-            <h2 className="max-w-[24ch] whitespace-pre-line text-[28px] font-medium leading-[1.15] tracking-tight md:text-[44px]">
+            <h2 className="max-w-[24ch] whitespace-pre-line text-[28px] font-normal leading-[1.15] tracking-tight md:text-[44px]">
               {detail.intro.headline}
             </h2>
           </Reveal>
@@ -458,7 +458,7 @@ function Highlights({ project }: { project: Project }) {
 
           <div className="mt-auto pt-16 md:pt-24">
             <Reveal delay={120}>
-              <h2 className="max-w-[18ch] text-[32px] font-medium leading-[1.1] tracking-tight md:text-[44px]">
+              <h2 className="max-w-[18ch] text-[32px] font-normal leading-[1.1] tracking-tight md:text-[44px]">
                 {block.headline}
               </h2>
             </Reveal>
@@ -499,7 +499,7 @@ function Amenities({ project }: { project: Project }) {
       className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:flex md:h-[90vh] md:min-h-[640px] md:flex-col md:py-24"
     >
       <Reveal>
-        <h2 className="max-w-[16ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+        <h2 className="max-w-[16ch] text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
           {detail.amenities.headline}
         </h2>
       </Reveal>
@@ -556,7 +556,7 @@ function MasterPlan({ project }: { project: Project }) {
     <section id="master-plan" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
       <div className="flex flex-col gap-2">
         <Reveal>
-          <h2 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+          <h2 className="text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
             {block.headline}
           </h2>
         </Reveal>
@@ -601,7 +601,7 @@ function FloorPlans({ project }: { project: Project }) {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10">
         <div className="md:col-span-5">
           <Reveal>
-            <h2 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+            <h2 className="text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
               {detail.floorPlans.headline}
             </h2>
           </Reveal>
@@ -719,7 +719,7 @@ function Specifications({ project }: { project: Project }) {
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0">
         <div className="px-[30px] pt-12 md:pr-16 md:pt-16">
           <Reveal>
-            <h2 className="max-w-[16ch] text-[34px] font-medium leading-[1.1] tracking-tight md:text-[52px]">
+            <h2 className="max-w-[16ch] text-[34px] font-normal leading-[1.1] tracking-tight md:text-[52px]">
               {detail.specifications.headline}
             </h2>
           </Reveal>
@@ -782,7 +782,7 @@ function Gallery({ project }: { project: Project }) {
     <section id="gallery" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
       <div className="flex flex-col gap-2">
         <Reveal>
-          <h2 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+          <h2 className="text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
             {detail.gallery.headline}
           </h2>
         </Reveal>
@@ -852,7 +852,7 @@ function LocationSection({ project }: { project: Project }) {
     >
       <div className="flex flex-col gap-2 px-[30px]">
         <Reveal>
-          <h2 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+          <h2 className="text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
             {location.headline}
           </h2>
         </Reveal>
@@ -955,7 +955,7 @@ function Walkthrough({ project }: { project: Project }) {
     >
       <div className="flex flex-col gap-2">
         <Reveal>
-          <h2 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+          <h2 className="text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
             {walkthrough.headline}
           </h2>
         </Reveal>

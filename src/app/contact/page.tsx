@@ -190,7 +190,7 @@ function ContactForm() {
 
   return (
     <div className="flex flex-col gap-6 border-t border-[#464646] p-[30px] md:border-l md:border-t-0">
-      <h2 className="text-[28px] font-medium leading-[1.2] tracking-tight text-white md:text-[36px]">
+      <h2 className="text-[28px] font-normal leading-[1.2] tracking-tight text-white md:text-[36px]">
         Get in touch
       </h2>
 

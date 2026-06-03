@@ -386,7 +386,7 @@ function StorySection() {
               </span>
             </Reveal>
             <Reveal as="div" delay={120} className="mt-auto">
-              <h2 className="max-w-[18ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+              <h2 className="max-w-[18ch] text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
                 Two Decades of Shaping Spaces That Last
               </h2>
             </Reveal>

@@ -133,7 +133,7 @@ export default function Home() {
               transition: overlayTransition,
             }}
           >
-            <h2 className="text-[40px] font-medium leading-none tracking-tight md:text-[56px]">
+            <h2 className="text-[40px] font-normal leading-none tracking-tight md:text-[56px]">
               Residential
             </h2>
             <ProjectsLinkMobile filter="residential" />
@@ -179,7 +179,7 @@ export default function Home() {
               transition: overlayTransition,
             }}
           >
-            <h2 className="text-[40px] font-medium leading-[1.05] tracking-tight sm:text-right md:text-[56px]">
+            <h2 className="text-[40px] font-normal leading-[1.05] tracking-tight sm:text-right md:text-[56px]">
               Commercial
               <br />
               &amp; Industrial

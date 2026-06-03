@@ -37,7 +37,7 @@ export function RecognitionSection() {
       <div className="px-[30px] py-16 md:py-20">
         <div className="grid grid-cols-1 items-end gap-8 md:grid-cols-12 md:gap-10">
           <Reveal className="md:col-span-7">
-            <h3 className="max-w-[18ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+            <h3 className="max-w-[26ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
               Trusted by thousands. Recognized by the industry.
             </h3>
           </Reveal>
