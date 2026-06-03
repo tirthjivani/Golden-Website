@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { MinimalMap } from "@/components/MinimalMap";
 import { RevealImage } from "@/components/RevealImage";
+import { setProjectTransition } from "@/lib/projectTransition";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
   GraduationCap,
@@ -51,6 +52,12 @@ function Hero({ project }: { project: Project }) {
   const fromProjects = useFromProjects();
 
   const titleStart = fromProjects ? 250 : 450;
+
+  useEffect(() => {
+    if (!fromProjects) return;
+    const id = window.setTimeout(() => setProjectTransition(null), 60);
+    return () => window.clearTimeout(id);
+  }, [fromProjects]);
 
   return (
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import SiteShell from "@/components/SiteShell";
 import SmoothScroll from "@/components/SmoothScroll";
+import ProjectTransitionOverlay from "@/components/ProjectTransitionOverlay";
 import Agentation from "@/components/Agentation";
 import "./globals.css";
 
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body className="min-h-full bg-black text-white">
         <SmoothScroll />
         <SiteShell>{children}</SiteShell>
+        <ProjectTransitionOverlay />
         {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>

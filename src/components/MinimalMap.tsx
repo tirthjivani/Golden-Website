@@ -55,14 +55,16 @@ const CATEGORY_ICONS: Record<LandmarkCategory, typeof GraduationCap> = {
   transit: Train,
 };
 
-function hashString(s: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
+// Distribute landmarks across the northern hemisphere of the project (away
+// from the Narmada / Tapi to the south of most sites). Each category gets a
+// home bearing and items in that category fan out across a narrow arc.
+const CATEGORY_BEARING: Record<LandmarkCategory, number> = {
+  education: 25,
+  healthcare: 335,
+  recreation: 95,
+  transit: 265,
+};
+const CATEGORY_ARC = 50;
 
 function offsetCoords(
   base: Coords,
@@ -78,8 +80,19 @@ function offsetCoords(
   return [lng + dLng, lat + dLat];
 }
 
-function landmarkPosition(landmark: Landmark, base: Coords): Coords {
-  const bearing = landmark.bearing ?? (hashString(landmark.name) % 360);
+function landmarkPosition(
+  landmark: Landmark,
+  base: Coords,
+  indexInCategory: number,
+  totalInCategory: number,
+): Coords {
+  if (landmark.bearing !== undefined) {
+    return offsetCoords(base, landmark.distanceKm, landmark.bearing);
+  }
+  const home = CATEGORY_BEARING[landmark.category];
+  const t =
+    totalInCategory <= 1 ? 0.5 : indexInCategory / (totalInCategory - 1);
+  const bearing = home - CATEGORY_ARC / 2 + CATEGORY_ARC * t;
   return offsetCoords(base, landmark.distanceKm, bearing);
 }
 
@@ -200,7 +213,17 @@ export function MinimalMap({
       ? landmarks.filter((l) => l.category === activeCategory)
       : landmarks;
 
+    const categoryCounts = new Map<LandmarkCategory, number>();
+    for (const l of visible) {
+      categoryCounts.set(l.category, (categoryCounts.get(l.category) ?? 0) + 1);
+    }
+    const categoryIndex = new Map<LandmarkCategory, number>();
+
     for (const landmark of visible) {
+      const i = categoryIndex.get(landmark.category) ?? 0;
+      categoryIndex.set(landmark.category, i + 1);
+      const total = categoryCounts.get(landmark.category) ?? 1;
+
       const el = document.createElement("div");
       el.className = "golden-landmark";
       el.setAttribute(
@@ -226,7 +249,7 @@ export function MinimalMap({
       el.append(icon, pop);
 
       const marker = new maplibregl.Marker({ element: el, anchor: "center" })
-        .setLngLat(landmarkPosition(landmark, coords))
+        .setLngLat(landmarkPosition(landmark, coords, i, total))
         .addTo(map);
       landmarkMarkersRef.current.push(marker);
     }

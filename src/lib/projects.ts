@@ -1027,14 +1027,14 @@ const goldenHomes: Project = {
   area: "1400 Sq. Ft. (SBUA)",
   status: "Completed",
   images: [
-    { src: "golden-homes/Bungalow_Entrance_Parking_View.jpg" },
-    { src: "golden-homes/Bungalow_Main_Front_Elevation_Day.jpg" },
     { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg" },
+    { src: "golden-homes/Bungalow_Entrance_Parking_View.jpg" },
+    { src: "golden-homes/Bungalow_Side_Elevation_Landscaping.jpg" },
     { src: "golden-homes/Residential_Layout_Birdview_Aerial.jpg" },
   ],
   detail: {
     hero: {
-      image: { src: "golden-homes/Bungalow_Main_Front_Elevation_Day.jpg" },
+      image: { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg" },
       eyebrow: "Independent Bungalows",
       tagline: "Independent living, the way it was always meant to be.",
     },
@@ -1042,7 +1042,7 @@ const goldenHomes: Project = {
       headline: "First Look",
       items: [
         { src: "golden-homes/Bungalow_Entrance_Parking_View.jpg", caption: "Main Entrance" },
-        { src: "golden-homes/Bungalow_Main_Front_Elevation_Day.jpg", caption: "Front Elevation" },
+        { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg", caption: "Front Elevation" },
       ],
     },
     intro: {
@@ -1053,7 +1053,7 @@ const goldenHomes: Project = {
     summary: {
       cards: [
         { src: "golden-homes/Bungalow_Entrance_Parking_View.jpg", metric: "Ankleshwar", label: "Location" },
-        { src: "golden-homes/Bungalow_Main_Front_Elevation_Day.jpg", metric: "1400 Sq.Ft.", label: "SBUA" },
+        { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg", metric: "1400 Sq.Ft.", label: "SBUA" },
         { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg", metric: "3 BHK Villa", label: "Type" },
         { src: "golden-homes/Residential_Layout_Birdview_Aerial.jpg", metric: "G + 1", label: "Floors" },
       ],

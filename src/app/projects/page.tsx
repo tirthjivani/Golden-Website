@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -14,6 +13,11 @@ import {
 } from "react";
 import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
+import { PROJECT_TRANSITION_MS } from "@/components/ProjectTransitionOverlay";
+import {
+  getProjectTransition,
+  setProjectTransition,
+} from "@/lib/projectTransition";
 import {
   listProjects,
   projectImage,
@@ -24,15 +28,6 @@ import {
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 const REVEAL_STAGGER = 140;
-const ROW_TRANSITION_MS = 850;
-
-type TransitionState = {
-  slug: string;
-  src: string;
-  alt: string;
-  startRect: { top: number; left: number; width: number; height: number };
-  expanded: boolean;
-};
 
 type Filter = "all" | ProjectType;
 type CityFilter = "all" | string;
@@ -86,8 +81,8 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
   const [filter, setFilter] = useState<Filter>(initialFilter);
   const [city, setCity] = useState<CityFilter>("all");
   const [layout, setLayout] = useState<Layout>("row");
-  const [transition, setTransition] = useState<TransitionState | null>(null);
   const [cols, setCols] = useState(3);
+  const [navigating, setNavigating] = useState(false);
   const projects = listProjects();
   const router = useRouter();
 
@@ -125,32 +120,33 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
   const fillerCount = remainder === 0 ? 0 : cols - remainder;
 
   const startTransition = (project: Project, imgEl: HTMLElement) => {
-    if (transition) return;
-    const heroRef = projectHeroImage(project);
+    if (getProjectTransition()) return;
+    const heroRef = project.detail?.hero.image ?? project.images[0];
     if (!heroRef?.src) return;
     const rect = imgEl.getBoundingClientRect();
-    const src = projectImage(heroRef.src);
     sessionStorage.setItem("golden-from-projects", "1");
-    setTransition({
+    setNavigating(true);
+    setProjectTransition({
       slug: project.slug,
-      src,
+      src: projectImage(heroRef.src),
       alt: heroRef.alt ?? project.name,
-      startRect: {
+      rect: {
         top: rect.top,
         left: rect.left,
         width: rect.width,
         height: rect.height,
       },
+      viewport: { w: window.innerWidth, h: window.innerHeight },
       expanded: false,
     });
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        setTransition((t) => (t ? { ...t, expanded: true } : null));
+        setProjectTransition((t) => (t ? { ...t, expanded: true } : null));
       });
     });
     window.setTimeout(() => {
       router.push(`/project/${project.slug}`);
-    }, ROW_TRANSITION_MS);
+    }, PROJECT_TRANSITION_MS);
   };
 
   return (
@@ -192,7 +188,7 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
             <ProjectRow
               key={p.id}
               project={p}
-              disabled={transition !== null}
+              disabled={navigating}
               onSelect={(imgEl) => startTransition(p, imgEl)}
             />
           ))}
@@ -204,7 +200,7 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
               <ProjectGalleryCard
                 key={p.id}
                 project={p}
-                disabled={transition !== null}
+                disabled={navigating}
                 onSelect={(imgEl) => startTransition(p, imgEl)}
               />
             ))}
@@ -220,29 +216,6 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
       )}
 
       <SiteFooter />
-
-      {transition ? (
-        <div
-          aria-hidden
-          className="pointer-events-none fixed z-50 overflow-hidden"
-          style={{
-            top: transition.expanded ? 0 : transition.startRect.top,
-            left: transition.expanded ? 0 : transition.startRect.left,
-            width: transition.expanded ? "100vw" : transition.startRect.width,
-            height: transition.expanded ? "100vh" : transition.startRect.height,
-            transition: `top ${ROW_TRANSITION_MS}ms ${EASE}, left ${ROW_TRANSITION_MS}ms ${EASE}, width ${ROW_TRANSITION_MS}ms ${EASE}, height ${ROW_TRANSITION_MS}ms ${EASE}`,
-          }}
-        >
-          <Image
-            src={transition.src}
-            alt={transition.alt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-        </div>
-      ) : null}
     </main>
   );
 }
@@ -312,9 +285,6 @@ function ProjectRow({
     return () => io.disconnect();
   }, []);
 
-  // Use the project detail's hero image as the first tile so the row image
-  // matches the destination page's background. Fall back to the gallery's
-  // first image if no detail is configured yet.
   const displayImages = (() => {
     const heroImg = project.detail?.hero.image;
     if (!heroImg) return project.images;
@@ -386,7 +356,7 @@ function ProjectRow({
                   alt={img.alt ?? `${project.name} - image ${i + 1}`}
                   fill
                   sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
-                  className="object-cover"
+                  className={`object-cover ${i === 0 ? "object-top" : ""}`}
                   containerClassName="relative aspect-[4/3] w-full"
                   shown={shown}
                   delay={i * REVEAL_STAGGER}
@@ -440,7 +410,9 @@ function ProjectGalleryCard({
       e.preventDefault();
       return;
     }
-    const el = e.currentTarget.querySelector("[data-row-hero]") as HTMLElement | null;
+    const el = e.currentTarget.querySelector(
+      "[data-row-hero]",
+    ) as HTMLElement | null;
     if (!el) return;
     e.preventDefault();
     onSelect(el);
@@ -472,7 +444,7 @@ function ProjectGalleryCard({
               alt={heroRef?.alt ?? project.name}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover"
+              className="object-cover object-top"
               containerClassName="absolute inset-0"
               shown={shown}
             />
