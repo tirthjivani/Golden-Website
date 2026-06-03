@@ -172,6 +172,7 @@ export type Project = {
   area: string;
   status: ProjectStatus;
   rera?: string;
+  reraIssuedOn?: string;
   images: ImageRef[];
   detail?: ProjectDetail;
 };
@@ -348,6 +349,8 @@ function specs(...rows: [string, string][]): SpecificationItem[] {
 const goldenLuxuria: Project = {
   id: "golden-luxuria",
   slug: "golden-luxuria",
+  rera: "RAA11279",
+  reraIssuedOn: "02/03/2023",
   name: "Golden Luxuria",
   type: "residential",
   category: "3 & 4 BHK Flats",
@@ -529,6 +532,8 @@ const goldenLuxuria: Project = {
 const goldenHeaven: Project = {
   id: "golden-heaven",
   slug: "golden-heaven",
+  rera: "RAA00363",
+  reraIssuedOn: "16/07/2022",
   name: "Golden Heaven",
   type: "residential",
   category: "1 & 2 BHK Flats",
@@ -696,6 +701,8 @@ const goldenHeaven: Project = {
 const goldenNirvana: Project = {
   id: "golden-nirvana",
   slug: "golden-nirvana",
+  rera: "MAA14155",
+  reraIssuedOn: "18/09/2024",
   name: "Golden Nirvana",
   type: "residential",
   category: "2 BHK Flats & 3 BHK Bungalows",
@@ -865,6 +872,8 @@ const goldenNirvana: Project = {
 const goldenVilla: Project = {
   id: "golden-villa",
   slug: "golden-villa",
+  rera: "PAA15865",
+  reraIssuedOn: "20/09/2025",
   name: "Golden Villa",
   type: "residential",
   category: "4 BHK Row Villas (G + 2)",
@@ -1020,6 +1029,8 @@ const goldenVilla: Project = {
 const goldenHomes: Project = {
   id: "golden-homes",
   slug: "golden-homes",
+  rera: "RAA06818",
+  reraIssuedOn: "02/03/2020",
   name: "Golden Homes",
   type: "residential",
   category: "3 BHK Row Bungalows",
@@ -1164,6 +1175,7 @@ const goldenHomes: Project = {
 const goldenPalmVilla: Project = {
   id: "golden-palm-villa",
   slug: "golden-palm-villa",
+  rera: "Pre-RERA project",
   name: "Golden Palm Villa",
   type: "residential",
   category: "3 BHK Bungalows",
@@ -1281,6 +1293,8 @@ const goldenPalmVilla: Project = {
 const goldenResidency: Project = {
   id: "golden-residency",
   slug: "golden-residency",
+  rera: "MAA07159",
+  reraIssuedOn: "07/01/2021",
   name: "Golden Residency",
   type: "residential",
   category: "1 & 2 BHK Flats",
@@ -1419,6 +1433,7 @@ const goldenResidency: Project = {
 const goldenPalmPlaza: Project = {
   id: "golden-palm-plaza",
   slug: "golden-palm-plaza",
+  rera: "Pre-RERA project",
   name: "Golden Palm Plaza",
   type: "commercial-industrial",
   category: "Shops & Offices",
@@ -1532,6 +1547,8 @@ const goldenPalmPlaza: Project = {
 const goldenSquareAnk: Project = {
   id: "golden-square",
   slug: "golden-square",
+  rera: "MAA10321",
+  reraIssuedOn: "16/06/2022",
   name: "Golden Square - Ankleshwar",
   type: "commercial-industrial",
   category: "Commercial Shops & Offices",
@@ -1649,6 +1666,8 @@ const goldenSquareAnk: Project = {
 const goldenSquareBharuch: Project = {
   id: "golden-square-bharuch",
   slug: "golden-square-bharuch",
+  rera: "CAA01767",
+  reraIssuedOn: "26/12/2018",
   name: "Golden Square - Bharuch",
   type: "commercial-industrial",
   category: "150 Shops & 102 Offices",
@@ -1813,6 +1832,8 @@ const goldenSquareBharuch: Project = {
 const goldenIndustrialEstate: Project = {
   id: "golden-industrial-estate",
   slug: "golden-industrial-estate",
+  rera: "PAA11690",
+  reraIssuedOn: "29/04/2023",
   name: "Golden Industrial Estate",
   type: "commercial-industrial",
   category: "Industrial Plots",

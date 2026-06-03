@@ -130,10 +130,14 @@ function DownloadIcon() {
 }
 
 function ProjectFacts({ project }: { project: Project }) {
-  const facts: { label: string; value: string }[] = [
+  const facts: { label: string; value: string; sub?: string }[] = [
     { label: "Location", value: project.location },
     { label: "Type", value: project.category },
-    { label: "RERA", value: project.rera ?? "Pending" },
+    {
+      label: "RERA",
+      value: project.rera ?? "Pending",
+      sub: project.reraIssuedOn ? `Issued ${project.reraIssuedOn}` : undefined,
+    },
   ];
   const cellClass = (i: number, last: boolean) =>
     `flex flex-col gap-3 px-[30px] py-10 md:py-14 ${
@@ -150,9 +154,16 @@ function ProjectFacts({ project }: { project: Project }) {
             delay={120 + i * 100}
             className={cellClass(i, false)}
           >
-            <dt className="text-[13px] tracking-tight text-white/55">
-              {f.label}
-            </dt>
+            <div className="flex items-start justify-between gap-3">
+              <dt className="text-[13px] tracking-tight text-white/55">
+                {f.label}
+              </dt>
+              {f.sub && (
+                <span className="text-[11px] tracking-[0.14em] text-white/55">
+                  {f.sub}
+                </span>
+              )}
+            </div>
             <dd className="text-[20px] font-medium leading-[1.2] tracking-tight text-white md:text-[24px]">
               {f.value}
             </dd>
