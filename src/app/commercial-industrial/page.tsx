@@ -50,7 +50,7 @@ function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover [object-position:center_-400px]"
+          className="object-cover min-[1440px]:[object-position:center_-400px]"
         />
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
