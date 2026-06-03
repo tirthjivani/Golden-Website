@@ -50,7 +50,7 @@ function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover [object-position:center_-400px]"
         />
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
@@ -61,7 +61,7 @@ function Hero() {
             as="h2"
             text={headlineText}
             startDelay={headlineStart}
-            className="max-w-[14ch] text-[44px] font-medium leading-[1.02] tracking-tight lg:text-[88px]"
+            className="max-w-[22ch] text-[44px] font-medium leading-[1.02] tracking-tight lg:text-[88px]"
           />
           <HeroRise delay={ctaDelay}>
             <Pill href="/projects" label="See latest projects" />
@@ -649,11 +649,11 @@ function FinalCta() {
 
         <Reveal delay={120} className="relative">
           <RevealImage
-            src="/commercial-hero.png"
+            src="/projects/golden-square-bharuch/Entrance Foyer-Final.jpg"
             alt=""
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
+            className="object-cover object-right"
             containerClassName="relative aspect-[590/840] w-full md:aspect-auto md:h-full md:min-h-[780px]"
           />
         </Reveal>

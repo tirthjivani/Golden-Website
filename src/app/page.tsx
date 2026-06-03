@@ -59,7 +59,7 @@ export default function Home() {
   const sideTransition = transitioning
     ? `width ${TRANSITION_MS}ms ${EASE}, flex-basis ${TRANSITION_MS}ms ${EASE}`
     : `width ${DURATION} ${EASE}, flex-basis ${DURATION} ${EASE}`;
-  const fadeTransition = `opacity ${DURATION} ${EASE}, transform ${DURATION} ${EASE}`;
+  const fadeTransition = `opacity ${DURATION} ${EASE}, transform ${DURATION} ${EASE}, object-position ${DURATION} linear`;
 
   const leftOpacity = transitioning
     ? transitioning === "left"
@@ -117,7 +117,7 @@ export default function Home() {
             fill
             priority
             sizes="(min-width: 1024px) 60vw, 100vw"
-            className="pointer-events-none object-cover"
+            className="pointer-events-none object-cover object-top"
             style={{
               opacity: leftOpacity,
               transform: leftScale,
@@ -166,8 +166,9 @@ export default function Home() {
             style={{
               opacity: rightOpacity,
               transform: rightScale,
+              objectPosition: transitioning === "right" ? "center -400px" : "center",
               transition: fadeTransition,
-              willChange: "opacity, transform",
+              willChange: "opacity, transform, object-position",
             }}
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />

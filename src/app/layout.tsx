@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Cormorant_Garamond } from "next/font/google";
 import SiteShell from "@/components/SiteShell";
 import SmoothScroll from "@/components/SmoothScroll";
 import ProjectTransitionOverlay from "@/components/ProjectTransitionOverlay";
@@ -23,6 +24,14 @@ const satoshi = localFont({
   display: "swap",
 });
 
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Golden Group | Residential & Commercial Real Estate in Gujarat",
   description:
@@ -37,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${satoshi.variable} h-full antialiased`}
+      className={`${satoshi.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-black text-white">
         <SmoothScroll />

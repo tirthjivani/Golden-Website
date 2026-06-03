@@ -50,7 +50,7 @@ function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover object-top"
         />
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
@@ -61,7 +61,7 @@ function Hero() {
             as="h2"
             text="Where Everyday Life Feels Extraordinary"
             startDelay={headlineStart}
-            className="max-w-[14ch] text-[44px] font-medium leading-[1.02] tracking-tight lg:text-[88px]"
+            className="max-w-[22ch] text-[44px] font-medium leading-[1.02] tracking-tight lg:text-[88px]"
           />
           <HeroRise delay={ctaDelay}>
             <Pill href="/projects" label="See latest projects" />
