@@ -14,7 +14,7 @@ export function LegalPage({
     <main className="relative min-h-screen w-full bg-black text-white">
       <article className="mx-auto max-w-3xl px-[30px] pb-24 pt-[120px] md:pt-[160px]">
         <header className="border-b border-[#464646] pb-8">
-          <h1 className="text-[36px] font-medium leading-[1.1] tracking-tight md:text-[56px]">
+          <h1 className="text-[36px] font-normal leading-[1.1] tracking-tight md:text-[56px]">
             {title}
           </h1>
           <p className="mt-4 text-sm text-white/60">

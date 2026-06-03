@@ -153,7 +153,7 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
     <main className="relative min-h-screen w-full bg-black text-white">
       <section className="px-[30px] pb-12 pt-[120px] md:pt-[140px]">
         <Reveal>
-          <h1 className="text-[44px] font-medium leading-[1] tracking-tight lg:text-[72px]">
+          <h1 className="text-[44px] font-normal leading-[1] tracking-tight lg:text-[72px]">
             Our Projects
           </h1>
         </Reveal>

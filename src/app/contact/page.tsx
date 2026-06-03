@@ -26,7 +26,7 @@ function ContactSection() {
       <div className="relative grid grid-cols-1 md:grid-cols-2">
         {/* LEFT - Contact title */}
         <div className="flex items-start px-[30px] pb-12 pt-6 md:pt-12">
-          <h1 className="text-[40px] font-medium leading-[1.1] tracking-tight text-white md:text-[52px]">
+          <h1 className="text-[40px] font-normal leading-[1.1] tracking-tight text-white md:text-[52px]">
             Contact
           </h1>
         </div>
