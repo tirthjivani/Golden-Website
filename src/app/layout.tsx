@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Cormorant_Garamond } from "next/font/google";
+import { Baskervville } from "next/font/google";
 import SiteShell from "@/components/SiteShell";
 import SmoothScroll from "@/components/SmoothScroll";
 import ProjectTransitionOverlay from "@/components/ProjectTransitionOverlay";
@@ -24,11 +24,11 @@ const satoshi = localFont({
   display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
+const baskervville = Baskervville({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
-  variable: "--font-cormorant",
+  variable: "--font-baskervville",
   display: "swap",
 });
 
@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${satoshi.variable} ${cormorant.variable} h-full antialiased`}
+      className={`${satoshi.variable} ${baskervville.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-black text-white">
         <SmoothScroll />
