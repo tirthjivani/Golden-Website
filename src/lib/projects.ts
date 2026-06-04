@@ -91,7 +91,7 @@ export type Pillar = {
   id: string;
   title: string;
   body: string;
-  iconKey: "zero-out" | "smart-power" | "climate-capsule";
+  iconKey: "zero-out" | "smart-power" | "climate-capsule" | "zero-waste";
 };
 
 export type ProjectDetail = {
@@ -196,7 +196,7 @@ const PILLARS_DEFAULT: Pillar[] = [
     id: "zero-waste",
     title: "Zero Waste",
     body: "Rainwater harvesting and on-site treatment loop water back into landscaping and amenities.",
-    iconKey: "zero-out",
+    iconKey: "zero-waste",
   },
   {
     id: "climate-capsule",

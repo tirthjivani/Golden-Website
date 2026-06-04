@@ -13,7 +13,7 @@ import {
   Tree,
   Train,
 } from "@phosphor-icons/react";
-import { WordReveal, useFromProjects } from "@/components/HeroIntro";
+import { HeroRise, WordReveal, useFromProjects } from "@/components/HeroIntro";
 import {
   projectImage,
   type AmenityKey,
@@ -21,20 +21,26 @@ import {
   type Pillar,
   type Project,
 } from "@/lib/projects";
+import { getProjectMedia } from "@/lib/projectMedia";
 
 export function ProjectDetailView({ project }: { project: Project }) {
   const detail = project.detail;
   if (!detail) return null;
+  const media = getProjectMedia(project.slug);
 
   return (
     <main className="relative min-h-screen w-full bg-black text-white">
-      <Hero project={project} />
-      <Overview project={project} />
+      <Hero project={project} mediaSrc={media?.hero} />
+      <Overview project={project} mediaSrcs={media?.overview} />
       <ProjectFacts project={project} />
-      <Amenities project={project} />
+      {!media?.hidden.amenities ? (
+        <Amenities project={project} mediaSrc={media?.amenities} />
+      ) : null}
       <MasterPlan project={project} />
       <FloorPlans project={project} />
-      <Gallery project={project} />
+      {!media?.hidden.gallery ? (
+        <Gallery project={project} mediaSrcs={media?.gallery} />
+      ) : null}
       <Specifications project={project} />
       <LocationSection project={project} />
       <Pillars project={project} />
@@ -46,9 +52,11 @@ export function ProjectDetailView({ project }: { project: Project }) {
 
 // -------------------- Hero --------------------
 
-function Hero({ project }: { project: Project }) {
+function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
   const detail = project.detail!;
-  const heroSrc = projectImage(detail.hero.image.src);
+  const heroSrc = mediaSrc
+    ? projectImage(`${project.slug}/${mediaSrc}`)
+    : projectImage(detail.hero.image.src);
   const fromProjects = useFromProjects();
 
   const titleStart = fromProjects ? 250 : 450;
@@ -78,7 +86,21 @@ function Hero({ project }: { project: Project }) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
 
       <div className="relative z-10 flex h-full w-full flex-col p-[30px] pt-[110px] md:pt-[140px]">
-        <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+        <div className="mt-auto flex flex-col gap-4 sm:gap-6">
+          <Reveal delay={titleStart - 100}>
+            <Link
+              href="/projects"
+              className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
+            >
+              <span aria-hidden className="text-base leading-none">&larr;</span>
+              Back to Our Projects
+              <span
+                aria-hidden
+                className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
+              />
+            </Link>
+          </Reveal>
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
           <WordReveal
             as="h1"
             text={project.name}
@@ -86,11 +108,14 @@ function Hero({ project }: { project: Project }) {
             className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]"
           />
           {project.type === "residential" && detail.intro.brochureUrl ? (
-            <Reveal delay={titleStart + 200}>
+            <HeroRise
+              delay={titleStart + project.name.split(/\s+/).length * 70}
+              className="w-full shrink-0 sm:w-[300px]"
+            >
               <a
                 href={detail.intro.brochureUrl}
                 download
-                className="pill-hover relative block h-[75px] w-full shrink-0 overflow-hidden bg-white text-black sm:w-[300px]"
+                className="pill-hover relative block h-[75px] w-full overflow-hidden bg-white text-black"
               >
                 <span
                   aria-hidden
@@ -98,11 +123,12 @@ function Hero({ project }: { project: Project }) {
                 />
                 <span className="relative z-10 flex h-full w-full items-end justify-between p-[12px] text-base font-medium">
                   Download Brochure
-                  <DownloadIcon />
+                  <StarIcon />
                 </span>
               </a>
-            </Reveal>
+            </HeroRise>
           ) : null}
+        </div>
         </div>
       </div>
     </section>
@@ -300,10 +326,24 @@ type OverviewCardData = {
   label: string;
 };
 
-function Overview({ project }: { project: Project }) {
+function Overview({
+  project,
+  mediaSrcs,
+}: {
+  project: Project;
+  mediaSrcs?: string[];
+}) {
   const detail = project.detail!;
   const rawCards = detail.summary?.cards ?? [];
-  const cards: OverviewCardData[] = rawCards.slice(0, 4);
+  const baseCards: OverviewCardData[] = rawCards.slice(0, 4);
+  const cards: OverviewCardData[] = mediaSrcs && mediaSrcs.length > 0
+    ? mediaSrcs.slice(0, 4).map((file, i) => ({
+        src: `${project.slug}/${file}`,
+        alt: baseCards[i]?.alt,
+        metric: baseCards[i]?.metric ?? "",
+        label: baseCards[i]?.label ?? "",
+      }))
+    : baseCards;
 
   const sectionRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -501,9 +541,19 @@ function Highlights({ project }: { project: Project }) {
 
 // -------------------- Amenities --------------------
 
-function Amenities({ project }: { project: Project }) {
+function Amenities({
+  project,
+  mediaSrc,
+}: {
+  project: Project;
+  mediaSrc?: string;
+}) {
   const detail = project.detail!;
-  const featureSrc = detail.amenities.feature?.src ? projectImage(detail.amenities.feature.src) : null;
+  const featureSrc = mediaSrc
+    ? projectImage(`${project.slug}/${mediaSrc}`)
+    : detail.amenities.feature?.src
+    ? projectImage(detail.amenities.feature.src)
+    : null;
   return (
     <section
       id="amenities"
@@ -785,9 +835,20 @@ function Specifications({ project }: { project: Project }) {
 
 // -------------------- Gallery --------------------
 
-function Gallery({ project }: { project: Project }) {
+function Gallery({
+  project,
+  mediaSrcs,
+}: {
+  project: Project;
+  mediaSrcs?: string[];
+}) {
   const detail = project.detail!;
-  const images = detail.gallery.images;
+  const images = mediaSrcs && mediaSrcs.length > 0
+    ? mediaSrcs.map((file, i) => ({
+        src: `${project.slug}/${file}`,
+        alt: detail.gallery.images[i]?.alt,
+      }))
+    : detail.gallery.images;
   if (images.length === 0) return null;
   return (
     <section id="gallery" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
@@ -917,11 +978,15 @@ function Pillars({ project }: { project: Project }) {
   const detail = project.detail!;
   if (detail.pillars.items.length === 0) return null;
   return (
-    <section className="border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 md:gap-6">
+    <section className="border-t border-[#464646] bg-black">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
         {detail.pillars.items.map((p, i) => (
-          <Reveal key={p.id} delay={i * 100}>
-            <div className="flex h-full flex-col gap-4 bg-[#111] p-6 md:p-8">
+          <Reveal
+            key={p.id}
+            delay={i * 100}
+            className="border-b border-[#464646] [&:nth-last-child(-n+1)]:border-b-0 sm:border-r sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-last-child(-n+2)]:border-b-0 md:[&:nth-child(2n)]:border-r md:[&:nth-child(4n)]:border-r-0 md:[&:nth-last-child(-n+4)]:border-b-0"
+          >
+            <div className="flex h-full flex-col gap-6 p-10 md:p-14">
               <PillarIcon pillar={p} />
               <h3 className="text-[20px] font-normal leading-[1.4] text-white">
                 {p.title}
@@ -1145,40 +1210,20 @@ function AmenityIcon({ iconKey }: { iconKey: AmenityKey }) {
   }
 }
 
-function PillarIcon({ pillar }: { pillar: Pillar }) {
-  const common = {
-    width: 36,
-    height: 36,
-    viewBox: "0 0 36 36",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.4,
-    "aria-hidden": true,
-    className: "text-[#C19B4D]",
-  };
+const PILLAR_ICON_SRC: Record<Pillar["iconKey"], string> = {
+  "zero-out": "/icons/zero-out.svg",
+  "smart-power": "/icons/smart-power.svg",
+  "climate-capsule": "/icons/climate.svg",
+  "zero-waste": "/icons/zero-waste.svg",
+};
 
-  switch (pillar.iconKey) {
-    case "zero-out":
-      return (
-        <svg {...common}>
-          <circle cx="18" cy="18" r="11" />
-          <path d="M14 14l8 8M22 14l-8 8" />
-        </svg>
-      );
-    case "smart-power":
-      return (
-        <svg {...common}>
-          <path d="M19 6l-9 14h7l-1 10 9-14h-7z" />
-        </svg>
-      );
-    case "climate-capsule":
-      return (
-        <svg {...common}>
-          <path d="M18 5c5 0 9 4 9 9 0 6-9 17-9 17S9 20 9 14c0-5 4-9 9-9z" />
-          <circle cx="18" cy="14" r="3.5" />
-        </svg>
-      );
-  }
+function PillarIcon({ pillar }: { pillar: Pillar }) {
+  const src = PILLAR_ICON_SRC[pillar.iconKey];
+  if (!src) return null;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt="" aria-hidden width={48} height={48} className="h-12 w-12" />
+  );
 }
 
 // -------------------- Reveal --------------------

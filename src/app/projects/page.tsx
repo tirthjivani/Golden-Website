@@ -25,6 +25,7 @@ import {
   type ProjectStatus,
   type ProjectType,
 } from "@/lib/projects";
+import { getProjectMedia } from "@/lib/projectMedia";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 const REVEAL_STAGGER = 140;
@@ -60,6 +61,10 @@ function statusLabel(status: ProjectStatus): string {
 }
 
 function projectHeroImage(project: Project) {
+  const media = getProjectMedia(project.slug);
+  if (media?.hero) {
+    return { src: `${project.slug}/${media.hero}`, alt: project.name };
+  }
   return project.detail?.hero.image ?? project.images[0];
 }
 
@@ -112,6 +117,15 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
     return () => window.removeEventListener("resize", compute);
   }, []);
 
+  useEffect(() => {
+    const raw = sessionStorage.getItem("golden-projects-scroll");
+    if (raw == null) return;
+    const y = Number(raw);
+    sessionStorage.removeItem("golden-projects-scroll");
+    if (!Number.isFinite(y)) return;
+    requestAnimationFrame(() => window.scrollTo({ top: y, behavior: "auto" }));
+  }, []);
+
   const filtered = projects
     .filter((p) => filter === "all" || p.type === filter)
     .filter((p) => city === "all" || p.location === city);
@@ -121,10 +135,11 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
 
   const startTransition = (project: Project, imgEl: HTMLElement) => {
     if (getProjectTransition()) return;
-    const heroRef = project.detail?.hero.image ?? project.images[0];
+    const heroRef = projectHeroImage(project);
     if (!heroRef?.src) return;
     const rect = imgEl.getBoundingClientRect();
     sessionStorage.setItem("golden-from-projects", "1");
+    sessionStorage.setItem("golden-projects-scroll", String(window.scrollY));
     setNavigating(true);
     setProjectTransition({
       slug: project.slug,
@@ -286,10 +301,20 @@ function ProjectRow({
   }, []);
 
   const displayImages = (() => {
-    const heroImg = project.detail?.hero.image;
-    if (!heroImg) return project.images;
+    const media = getProjectMedia(project.slug);
+    if (media) {
+      const slots: { src: string; alt?: string }[] = [];
+      if (media.hero) slots.push({ src: `${project.slug}/${media.hero}`, alt: project.name });
+      for (const f of [...media.overview, ...(media.amenities ? [media.amenities] : []), ...media.gallery]) {
+        const src = `${project.slug}/${f}`;
+        if (!slots.some((s) => s.src === src)) slots.push({ src, alt: project.name });
+      }
+      return slots.slice(0, 4);
+    }
+    const heroImg = projectHeroImage(project);
+    if (!heroImg) return project.images.slice(0, 4);
     const rest = project.images.filter((i) => i.src !== heroImg.src);
-    return [heroImg, ...rest].slice(0, Math.max(project.images.length, 1));
+    return [heroImg, ...rest].slice(0, 4);
   })();
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
