@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   useEffect,
   useRef,
@@ -15,6 +16,7 @@ import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 import { listProjects, projectImage } from "@/lib/projects";
+import { getProjectMedia } from "@/lib/projectMedia";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -103,12 +105,12 @@ function IntroSection() {
 }
 
 const PROJECT_IMAGES = [
-  "/residential/gallery-1.jpg",
-  "/residential/gallery-2.jpg",
-  "/residential/gallery-3.jpg",
-  "/residential/gallery-4.jpg",
-  "/residential/gallery-5.jpg",
-  "/residential/gallery-6.jpg",
+  "/projects/golden-luxuria/Building_Front_Elevation_Courtyard_View.webp",
+  "/projects/golden-heaven/Building_Full_Elevation_Twilight.webp",
+  "/projects/golden-villa/Bungalow_Main_Front_Elevation_Night.webp",
+  "/projects/golden-nirvana/Building_Side_Front_Corner_Perspective.webp",
+  "/projects/golden-homes/Bungalow_Full_Front_View_Night.webp",
+  "/projects/golden-residency/Building_Full_Front_Elevation_Day.webp",
 ];
 
 function StatsGallery() {
@@ -184,7 +186,7 @@ function StatsGallery() {
 
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[45%] bg-gradient-to-t from-black via-black/70 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[36%] bg-gradient-to-t from-black via-black/70 to-transparent"
         />
 
         <div className="absolute inset-x-0 bottom-0 z-10 flex justify-end p-[20px] md:p-[30px]">
@@ -237,14 +239,20 @@ type Project = {
 
 const PROJECTS: Project[] = listProjects()
   .filter((p) => p.type === "residential")
-  .map((p) => ({
-    name: p.name,
-    bhk: p.category,
-    location: p.location,
-    size: p.area,
-    image: projectImage(p.images[0]?.src ?? ""),
-    slug: p.slug,
-  }));
+  .map((p) => {
+    const media = getProjectMedia(p.slug);
+    const src = media?.hero
+      ? `${p.slug}/${media.hero}`
+      : p.images[0]?.src ?? "";
+    return {
+      name: p.name,
+      bhk: p.category,
+      location: p.location,
+      size: p.area,
+      image: projectImage(src),
+      slug: p.slug,
+    };
+  });
 
 const CARD_GAP = 14;
 
@@ -270,6 +278,7 @@ function ProjectsSection() {
   const cardW = useResponsiveCardWidth();
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
+  const router = useRouter();
   const next = () => setActive((i) => Math.min(total - 1, i + 1));
   const prev = () => setActive((i) => Math.max(0, i - 1));
   const touchStartX = useRef<number | null>(null);
@@ -309,11 +318,22 @@ function ProjectsSection() {
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         setActive((i) => Math.max(0, i - 1));
+      } else if (e.key === "Enter") {
+        if (active === PROJECTS.length) {
+          e.preventDefault();
+          router.push("/projects?type=residential");
+        } else {
+          const p = PROJECTS[active];
+          if (p) {
+            e.preventDefault();
+            router.push(`/project/${p.slug}`);
+          }
+        }
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [inView, total]);
+  }, [inView, total, active, router]);
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden bg-black py-12 md:py-16">

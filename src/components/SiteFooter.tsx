@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
+
+const GOLDEN_CHARS = ["G", "O", "L", "D", "E", "N"];
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -20,7 +23,8 @@ const socials = [
 
 export function SiteFooter() {
   return (
-    <footer className="relative grid grid-cols-1 border-t border-[#464646] bg-black md:h-[80vh] md:min-h-[640px] md:grid-cols-2">
+    <div className="flex flex-col md:h-[100dvh] md:min-h-[640px]">
+      <footer className="relative grid grid-cols-1 border-t border-[#464646] bg-black md:flex-1 md:min-h-0 md:grid-cols-2">
       {/* LEFT */}
       <div className="relative flex flex-col gap-10 p-[30px] lg:flex-row lg:gap-12">
         {/* Mobile: icon + logo, vertically aligned, anchored to the left */}
@@ -133,7 +137,56 @@ export function SiteFooter() {
           </a>
         </div>
       </div>
-    </footer>
+      </footer>
+      <GoldenCharsStrip />
+    </div>
+  );
+}
+
+function GoldenCharsStrip() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            setShown(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.2 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div
+      ref={ref}
+      className="border-t border-[#464646] bg-black overflow-hidden"
+    >
+      <div className="flex items-center justify-between gap-[2vw] px-[30px] py-8 md:py-12">
+        {GOLDEN_CHARS.map((ch, i) => (
+          <span
+            key={ch}
+            className={shown ? "hero-rise inline-block" : "inline-block opacity-0"}
+            style={{ ["--hero-rise-delay" as string]: `${i * 110}ms` } as CSSProperties}
+          >
+            <Image
+              src={`/footer-chars/${ch}.svg`}
+              alt={ch}
+              width={214}
+              height={134}
+              className="h-[60px] w-auto md:h-[100px] lg:h-[140px]"
+            />
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 

@@ -68,7 +68,7 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
   }, [fromProjects]);
 
   return (
-    <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
+    <section className="relative h-[200vh] min-h-[1280px] w-full overflow-hidden">
       {heroSrc ? (
         <div className={`absolute inset-0 ${fromProjects ? "" : "hero-expand"}`}>
           <Image
@@ -86,7 +86,7 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
 
       <div className="relative z-10 flex h-full w-full flex-col p-[30px] pt-[110px] md:pt-[140px]">
-        <div className="mt-auto flex flex-col gap-4 sm:gap-6">
+        <div className="mt-[35vh] flex flex-col gap-6 sm:gap-8">
           <Reveal delay={titleStart - 100}>
             <Link
               href="/projects"
@@ -100,31 +100,35 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
               />
             </Link>
           </Reveal>
-        <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+        <div className="flex flex-col gap-6">
           <WordReveal
             as="h1"
             text={project.name}
             startDelay={titleStart}
             className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]"
           />
+          {detail.intro.headline ? (
+            <Reveal delay={titleStart + project.name.split(/\s+/).length * 70}>
+              <p className="max-w-[44ch] text-base leading-[1.45] text-white/85 md:text-lg">
+                {detail.intro.headline}
+              </p>
+            </Reveal>
+          ) : null}
           {project.type === "residential" && detail.intro.brochureUrl ? (
             <HeroRise
-              delay={titleStart + project.name.split(/\s+/).length * 70}
-              className="w-full shrink-0 sm:w-[300px]"
+              delay={titleStart + project.name.split(/\s+/).length * 70 + 120}
             >
               <a
                 href={detail.intro.brochureUrl}
                 download
-                className="pill-hover relative block h-[75px] w-full overflow-hidden bg-white text-black"
+                className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white hover:text-white/85"
               >
+                Download Brochure
+                <span aria-hidden className="text-base leading-none">&rarr;</span>
                 <span
                   aria-hidden
-                  className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
+                  className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
                 />
-                <span className="relative z-10 flex h-full w-full items-end justify-between p-[12px] text-base font-medium">
-                  Download Brochure
-                  <StarIcon />
-                </span>
               </a>
             </HeroRise>
           ) : null}

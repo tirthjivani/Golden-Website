@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   useEffect,
   useRef,
@@ -103,12 +104,12 @@ function IntroSection() {
 }
 
 const PROJECT_IMAGES = [
-  "/projects/golden-square-bharuch/Building_Front_Daylight_Full_Elevation.jpg",
-  "/projects/golden-square-bharuch/Interior_Atrium_Mall_View.jpg",
-  "/projects/golden-square-bharuch/Cinemas entry-01.jpg",
-  "/projects/golden-square/Building_Main_Front_Elevation_Day.png",
-  "/projects/golden-square/Interior_Atrium_Mall_View.png",
-  "/projects/golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png",
+  "/projects/golden-square-bharuch/Building_Street_Perspective_View.webp",
+  "/projects/golden-square-bharuch/Interior_Atrium_Mall_View.webp",
+  "/projects/golden-square-bharuch/Cinemas entry-01.webp",
+  "/projects/golden-square/Building_Main_Front_Elevation_Day.webp",
+  "/projects/golden-square/Interior_Atrium_Mall_View.webp",
+  "/projects/golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp",
 ];
 
 function StatsGallery() {
@@ -221,6 +222,7 @@ type Project = {
   location: string;
   size: string;
   image: string;
+  slug: string;
 };
 
 const PROJECTS: Project[] = [
@@ -229,21 +231,24 @@ const PROJECTS: Project[] = [
     category: "150 Shops & 102 Offices",
     location: "Bharuch",
     size: "Multi-level commercial",
-    image: "/projects/golden-square-bharuch/Building_Front_Daylight_Full_Elevation.jpg",
+    image: "/projects/golden-square-bharuch/Building_Street_Perspective_View.webp",
+    slug: "golden-square-bharuch",
   },
   {
     name: "Golden Square - Ankleshwar",
     category: "Commercial Shops & Offices",
     location: "Ankleshwar",
     size: "Multi-level commercial",
-    image: "/projects/golden-square/Building_Main_Front_Elevation_Day.png",
+    image: "/projects/golden-square/Building_Main_Front_Elevation_Day.webp",
+    slug: "golden-square",
   },
   {
     name: "Golden Palm Plaza",
     category: "Shops & Offices",
     location: "Ankleshwar",
     size: "100 units across 5 floors",
-    image: "/projects/golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png",
+    image: "/projects/golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp",
+    slug: "golden-palm-plaza",
   },
 ];
 
@@ -271,6 +276,7 @@ function ProjectsSection() {
   const cardW = useResponsiveCardWidth();
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
+  const router = useRouter();
   const next = () => setActive((i) => Math.min(total - 1, i + 1));
   const prev = () => setActive((i) => Math.max(0, i - 1));
   const touchStartX = useRef<number | null>(null);
@@ -310,11 +316,22 @@ function ProjectsSection() {
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         setActive((i) => Math.max(0, i - 1));
+      } else if (e.key === "Enter") {
+        if (active === PROJECTS.length) {
+          e.preventDefault();
+          router.push("/projects?type=commercial-industrial");
+        } else {
+          const p = PROJECTS[active];
+          if (p) {
+            e.preventDefault();
+            router.push(`/project/${p.slug}`);
+          }
+        }
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [inView, total]);
+  }, [inView, total, active, router]);
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden bg-black py-12 md:py-16">

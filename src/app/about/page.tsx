@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -22,7 +23,21 @@ export default function AboutPage() {
     <main className="relative w-full bg-black text-white">
       <IntroSection />
       <StorySection />
+      <Statement
+        label="Vision"
+        body="To become a landmark real estate brand that shapes city skylines through iconic developments and earns lifelong trust through consistent quality and reliability."
+        imageAlign="right"
+        imageSrc="/about/vision.png"
+        imageAlt="Golden Group cityscape vision"
+      />
       <WhyChooseUs />
+      <Statement
+        label="Mission"
+        body="To design and deliver well-planned residential and commercial spaces by following ethical practices, maintaining precision in execution, and creating long-term value for customers, investors, and communities."
+        imageAlign="left"
+        imageSrc="/about/mission.png"
+        imageAlt="Family welcomed to Golden Luxuria"
+      />
       <Accreditations />
       <Milestones />
       <GroupOfCompanies />
@@ -67,7 +82,6 @@ function IntroSection() {
     };
   }, []);
 
-  // Phase mapping
   const meaningOpacity = clamp(1 - progress / 0.08, 0, 1); // fades by 8% scroll
   const colorP = clamp((progress - 0.08) / 0.22, 0, 1); // 0.08 → 0.30
   const scaleP = ease(clamp(progress / 0.55, 0, 1)); // 0 → 0.55
@@ -156,7 +170,7 @@ function IntroSection() {
             priority
             fetchPriority="high"
           />
-          <div className="relative hidden h-[70vh] w-full overflow-hidden min-[800px]:block">
+          <div className="relative hidden h-[95vh] w-full overflow-hidden min-[800px]:block">
             <Image
               src="/about/building-wide.webp"
               alt=""
@@ -168,6 +182,13 @@ function IntroSection() {
             />
           </div>
         </div>
+
+        {/* Gradient band sits above buildings — fades their base into black */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-[40dvh] bg-gradient-to-b from-transparent to-black"
+          style={{ opacity: buildingP }}
+        />
 
         {/* Scroll hint (visible at start, fades during scroll) */}
         <ScrollHint
@@ -192,7 +213,7 @@ function Meanings({ shown }: { shown: boolean }) {
         delay={0}
         side="left"
         lineWidth={240}
-        anchorX="50%"
+        anchorX="calc(50% - 10px)"
         anchorY="-2%"
       >
         Central tallest line symbolizes
@@ -372,143 +393,224 @@ function ArrowDown() {
 /* ---------- Story section (after intro) ---------- */
 
 function StorySection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const [year, setYear] = useState(2005);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const HOLD_PX = 100;
+    const apply = () => {
+      const sec = sectionRef.current;
+      if (!sec) return;
+      const rect = sec.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      // Year is sticky at viewport center starting when section.top <= 0.
+      // Add HOLD_PX as a small buffer past that point before counting begins.
+      const passed = -rect.top - HOLD_PX;
+      const total = rect.height - vh - HOLD_PX;
+      const p = Math.max(0, Math.min(1, passed / Math.max(total, 1)));
+      setProgress(p);
+      const COUNT_END = 0.6;
+      const countP = Math.min(1, p / COUNT_END);
+      setYear(2005 + Math.round(countP * (currentYear - 2005)));
+    };
+    let raf = 0;
+    let scheduled = false;
+    const onScroll = () => {
+      if (scheduled) return;
+      scheduled = true;
+      raf = requestAnimationFrame(() => {
+        scheduled = false;
+        apply();
+      });
+    };
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [currentYear]);
+
+  const digits = String(year).padStart(4, "0").split("");
+  // Year stays centered + full size until counter reaches current year (progress 0..0.6),
+  // then shrinks + lifts into final position during progress 0.6..1.
+  const transformP = ease(clamp((progress - 0.6) / 0.4, 0, 1));
+  const yearScale = 1 - transformP * 0.55;
+  // During counting, year sits ~60px below center (visually balanced against bottom buildings).
+  // After counting, lifts up to ~320px from top on large screens.
+  const yearLiftPx = 60 + transformP * (-117 - 60);
+  // Buildings + text fade in alongside the transform
+  const buildingsP = ease(clamp((progress - 0.65) / 0.35, 0, 1));
+  const textP = ease(clamp((progress - 0.75) / 0.25, 0, 1));
+
   return (
     <>
-      <section className="relative h-[80vh] min-h-[640px] w-full border-b border-[#464646] bg-black">
-        <div className="grid h-full grid-cols-1 md:grid-cols-2">
-          <div className="relative flex h-full flex-col p-[30px]">
-            <Reveal className="flex items-start gap-3">
-              <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
-                2005
-              </span>
-              <span className="pt-2 text-[12px] uppercase tracking-[0.08em] text-white/60 md:pt-4 md:text-[14px]">
-                Since
-              </span>
-            </Reveal>
-            <Reveal as="div" delay={120} className="mt-auto">
-              <h2 className="max-w-[18ch] text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
-                Two Decades of Shaping Spaces That Last
-              </h2>
-            </Reveal>
+      <section
+        ref={sectionRef}
+        className="relative h-[260vh] min-h-[1600px] w-full border-b border-[#464646] bg-black"
+      >
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
+          {/* Buildings — full-width image anchored at viewport bottom */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[78%] md:block"
+            style={{
+              opacity: buildingsP,
+              transform: `translateY(${(1 - buildingsP) * 60}px)`,
+              willChange: "transform, opacity",
+            }}
+          >
+            <Image
+              src="/about/story/buildings-base.webp"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover object-bottom"
+            />
           </div>
 
-          <div className="relative flex h-full flex-col gap-8 p-[30px] md:border-l md:border-[#464646]">
-            <Reveal delay={120}>
-              <h3 className="text-[36px] font-medium leading-[1.05] tracking-tight lg:text-[50px]">
-                Golden Group Story
-              </h3>
-            </Reveal>
-            <Reveal delay={240} className="flex flex-col gap-5 text-[18px] leading-[1.4] text-white/85 md:max-w-[560px] md:text-[24px] md:leading-[1.2]">
-              <p>
-                Golden Group was founded on the belief that real estate should
-                stand for confidence, stability, and long-term value, not just
-                buildings. Its name reflects enduring quality and collective
-                strength, built for today and valued for tomorrow.
-              </p>
-              <p>
-                It bridges premium design with dependable delivery, grounded in
-                transparency, consistency, and structural integrity. More than
-                spaces, it builds trust, rising steadily like its
-                skyline-inspired identity.
-              </p>
-            </Reveal>
+          {/* Year — starts huge at center, shrinks + slides up as scroll progresses */}
+          <div
+            className="pointer-events-none absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 justify-center"
+            style={{
+              transform: `translateY(calc(-50% + ${yearLiftPx}px)) scale(${yearScale})`,
+              transformOrigin: "center center",
+              willChange: "transform",
+            }}
+          >
+            <span className="flex text-[160px] font-medium leading-[0.9] tracking-tight tabular-nums md:text-[260px] lg:text-[360px] lg:tracking-[-8px]">
+              {digits.map((ch, i) => (
+                <span key={i} className="inline-block">
+                  {ch}
+                </span>
+              ))}
+            </span>
           </div>
+
+          {/* Subtitle — visible during the year-count phase, fades out as scaling begins */}
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-[18%] z-10 flex justify-center px-[30px] text-center"
+            style={{ opacity: 1 - transformP }}
+          >
+            <p className="max-w-[24ch] text-sm leading-[1.5] text-white/80 md:text-base">
+              Two Decades of
+              <br />
+              Shaping Spaces That Last
+            </p>
+          </div>
+
+          {/* Story text — absolute, sits at its final spot under year; word-by-word reveal */}
+          <StoryParagraphs textStarted={textP > 0.01} />
         </div>
       </section>
-
-      <StoryGallery />
     </>
   );
 }
 
-const STORY_GALLERY_IMAGES = [
-  "/residential/gallery-1.jpg",
-  "/residential/gallery-2.jpg",
-  "/residential/gallery-3.jpg",
-  "/residential/gallery-4.jpg",
-  "/residential/gallery-5.jpg",
-  "/residential/gallery-6.jpg",
-];
+function StoryParagraphs({ textStarted }: { textStarted: boolean }) {
+  const paragraphs = [
+    "Golden Group was founded on the belief that real estate should stand for confidence, stability, and long-term value, not just buildings. Its name reflects enduring quality and collective strength, built for today and valued for tomorrow.",
+    "It bridges premium design with dependable delivery, grounded in transparency, consistency, and structural integrity. More than spaces, it builds trust, rising steadily like its skyline-inspired identity.",
+  ];
+  let cumulative = 0;
+  return (
+    <div className="absolute inset-x-0 top-[340px] z-10 flex justify-center px-[30px]">
+      <div className="max-w-[640px] text-center text-sm leading-[1.5] text-white/80 md:text-base">
+        {paragraphs.map((para, pi) => {
+          const words = para.split(/\s+/);
+          const startIdx = cumulative;
+          cumulative += words.length;
+          return (
+            <p key={pi} className={pi > 0 ? "mt-5" : ""}>
+              {textStarted
+                ? words.map((w, i) => (
+                    <span
+                      key={i}
+                      className="hero-rise inline-block"
+                      style={{ ["--hero-rise-delay" as string]: `${(startIdx + i) * 25}ms` }}
+                    >
+                      {w}
+                      {i < words.length - 1 ? " " : ""}
+                    </span>
+                  ))
+                : null}
+            </p>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
-function StoryGallery() {
-  const [index, setIndex] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+/* ---------- Statement (Vision / Mission) ---------- */
 
-  const startAuto = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setIndex((i) => (i + 1) % STORY_GALLERY_IMAGES.length);
-    }, 4500);
-  };
+function Statement({
+  label,
+  body,
+  imageAlign,
+  imageSrc,
+  imageAlt,
+}: {
+  label: string;
+  body: string;
+  imageAlign: "left" | "right";
+  imageSrc?: string;
+  imageAlt?: string;
+}) {
+  const text = (
+    <div className="flex flex-col gap-8 px-[30px] py-16 md:px-12 md:py-24">
+      <Reveal>
+        <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+          {label}
+        </h3>
+      </Reveal>
+      <Reveal delay={150}>
+        <p className="max-w-[52ch] text-[18px] leading-[1.55] text-white/80 md:text-[22px]">
+          {body}
+        </p>
+      </Reveal>
+    </div>
+  );
 
-  useEffect(() => {
-    startAuto();
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
-
-  const select = (i: number) => {
-    setIndex(i);
-    startAuto();
-  };
+  const imageSlot = (
+    <Reveal
+      delay={120}
+      className="relative aspect-[4/3] w-full overflow-hidden bg-white/[0.04] md:aspect-auto md:h-full md:min-h-[720px]"
+    >
+      {imageSrc ? (
+        <Image
+          src={imageSrc}
+          alt={imageAlt ?? label}
+          fill
+          sizes="(min-width: 768px) 50vw, 100vw"
+          className="object-cover"
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center text-[12px] uppercase tracking-[0.2em] text-white/30">
+          Image
+        </div>
+      )}
+    </Reveal>
+  );
 
   return (
-    <section className="relative w-full border-b border-[#464646] bg-black">
-      <div className="relative h-[85vh] min-h-[480px] w-full overflow-hidden">
-        {STORY_GALLERY_IMAGES.map((src, i) => (
-          <Image
-            key={src}
-            src={src}
-            alt=""
-            fill
-            sizes="100vw"
-            priority={i === 0}
-            className="object-cover"
-            style={{
-              opacity: i === index ? 1 : 0,
-              transition: `opacity 800ms ${EASE}`,
-            }}
-          />
-        ))}
-
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[45%] bg-gradient-to-t from-black via-black/70 to-transparent"
-        />
-
-        <div className="absolute inset-x-0 bottom-0 z-10 flex justify-end p-[20px] md:p-[30px]">
-          <div className="flex gap-2 md:gap-3">
-            {STORY_GALLERY_IMAGES.map((src, i) => (
-              <button
-                key={src}
-                type="button"
-                onClick={() => select(i)}
-                aria-label={`Show image ${i + 1}`}
-                className="relative aspect-square h-[48px] w-[48px] shrink-0 overflow-hidden sm:h-[70px] sm:w-[70px] md:h-[97px] md:w-[97px]"
-                style={{
-                  opacity: index === i ? 1 : 0.55,
-                  transition: `opacity 350ms ${EASE}`,
-                }}
-              >
-                <Image
-                  src={src}
-                  alt=""
-                  fill
-                  sizes="96px"
-                  className="object-cover"
-                />
-                <span
-                  aria-hidden
-                  className="absolute inset-0 z-10"
-                  style={{
-                    boxShadow: index === i ? "inset 0 0 0 2px #fff" : "none",
-                  }}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
+    <section className="border-t border-[#464646] bg-black">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:[&>*:first-child]:border-r md:[&>*:first-child]:border-[#464646]">
+        {imageAlign === "left" ? (
+          <>
+            {imageSlot}
+            {text}
+          </>
+        ) : (
+          <>
+            {text}
+            {imageSlot}
+          </>
+        )}
       </div>
     </section>
   );
@@ -518,64 +620,37 @@ function StoryGallery() {
 
 function WhyChooseUs() {
   const items = [
-    {
-      title: "Quality",
-      body:
-        "Every project reflects our standards from material selection to construction to final handover.",
-      icon: "/icons/quality.svg",
-    },
-    {
-      title: "Commitment",
-      body:
-        "We plan every project around our customers and deliver on time, every time.",
-      icon: "/icons/commitment.svg",
-    },
-    {
-      title: "Trust",
-      body:
-        "Transparency is at the core of everything we do, from development to sales.",
-      icon: "/icons/trust.svg",
-    },
+    "Integrity & Transparency",
+    "Structural Strength & Quality",
+    "Long-Term Vision",
+    "Customer Confidence",
+    "Responsible Growth",
   ];
   return (
     <section className="border-t border-[#464646] bg-black">
-      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0">
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0 md:[&>*:first-child]:border-r md:[&>*:first-child]:border-[#464646]">
         <div className="px-[30px] pt-16 md:pr-16 md:pt-20">
           <Reveal>
-            <h3 className="max-w-[12ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-              Why Choose Us?
+            <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+              What we stand for
             </h3>
           </Reveal>
         </div>
 
-        <div className="md:border-l md:border-[#464646]">
+        <div>
           <ul>
-            {items.map((item, i) => {
+            {items.map((title, i) => {
               const isLast = i === items.length - 1;
               return (
                 <li
-                  key={item.title}
+                  key={title}
                   className={isLast ? "" : "border-b border-[#464646]"}
                 >
                   <Reveal delay={120 + i * 120}>
-                    <div className="flex items-start gap-8 px-[30px] py-10 md:px-8 md:py-12">
-                      <div className="relative h-[48px] w-[48px] shrink-0 md:h-[56px] md:w-[56px]">
-                        <Image
-                          src={item.icon}
-                          alt=""
-                          width={56}
-                          height={56}
-                          className="h-full w-full object-contain"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <h4 className="text-[20px] font-normal leading-[1.4] text-white">
-                          {item.title}
-                        </h4>
-                        <p className="text-[14px] leading-[1.5] text-white/65 md:text-[15px]">
-                          {item.body}
-                        </p>
-                      </div>
+                    <div className="px-[30px] py-8 md:px-8 md:py-10">
+                      <h4 className="text-[20px] font-normal leading-[1.4] text-white md:text-[22px]">
+                        {title}
+                      </h4>
                     </div>
                   </Reveal>
                 </li>
@@ -623,9 +698,9 @@ function Milestones() {
     <section className="border-t border-[#464646] bg-black">
       <div className="mx-auto grid w-full grid-cols-1 md:grid-cols-[30%_1fr]">
         <Reveal className="flex flex-col gap-4 px-[30px] py-16 md:px-8 md:py-20">
-          <p className="text-[32px] font-medium leading-[1.05] tracking-tight md:text-[42px]">
+          <h3 className="text-[32px] font-medium leading-[1.05] tracking-tight md:text-[42px]">
             Our Milestones
-          </p>
+          </h3>
         </Reveal>
 
         <div className="grid grid-cols-1 border-l border-[#464646] sm:grid-cols-2">

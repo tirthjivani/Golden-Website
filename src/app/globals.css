@@ -20,7 +20,7 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --font-sans: var(--font-satoshi);
-  --font-serif: var(--font-baskervville);
+  --font-serif: var(--font-lancelot);
 }
 
 html,
@@ -33,7 +33,7 @@ body {
 h1,
 h2,
 h3 {
-  font-family: var(--font-baskervville), Georgia, "Times New Roman", serif;
+  font-family: var(--font-lancelot), Georgia, "Times New Roman", serif;
 }
 
 .pill-wipe {

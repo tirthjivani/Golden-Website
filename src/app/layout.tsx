@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Baskervville } from "next/font/google";
+import { Lancelot } from "next/font/google";
 import SiteShell from "@/components/SiteShell";
 import SmoothScroll from "@/components/SmoothScroll";
 import ProjectTransitionOverlay from "@/components/ProjectTransitionOverlay";
@@ -24,11 +24,11 @@ const satoshi = localFont({
   display: "swap",
 });
 
-const baskervville = Baskervville({
+const lancelot = Lancelot({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-baskervville",
+  weight: ["400"],
+  style: ["normal"],
+  variable: "--font-lancelot",
   display: "swap",
 });
 
@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${satoshi.variable} ${baskervville.variable} h-full antialiased`}
+      className={`${satoshi.variable} ${lancelot.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-black text-white">
         <SmoothScroll />
