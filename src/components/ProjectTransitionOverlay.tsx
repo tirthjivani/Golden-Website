@@ -21,30 +21,35 @@ export default function ProjectTransitionOverlay() {
     noopSnapshot,
   );
   if (!state) return null;
-  const { rect, viewport, expanded, src, alt } = state;
-  const deltaX = rect.left + rect.width / 2 - viewport.w / 2;
-  const deltaY = rect.top + rect.height / 2 - viewport.h / 2;
+  const { rect, expanded, src, alt } = state;
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed left-1/2 top-1/2 z-[100] overflow-hidden"
+      className="pointer-events-none fixed z-[100] overflow-hidden"
       style={{
+        left: expanded ? 0 : `${rect.left}px`,
+        top: expanded ? 0 : `${rect.top}px`,
         width: expanded ? "100vw" : `${rect.width}px`,
         height: expanded ? "100vh" : `${rect.height}px`,
-        transform: expanded
-          ? "translate(-50%, -50%)"
-          : `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px))`,
-        transition: `width ${PROJECT_TRANSITION_MS}ms ${EASE}, height ${PROJECT_TRANSITION_MS}ms ${EASE}, transform ${PROJECT_TRANSITION_MS}ms ${EASE}`,
+        transition: `width ${PROJECT_TRANSITION_MS}ms ${EASE}, height ${PROJECT_TRANSITION_MS}ms ${EASE}, left ${PROJECT_TRANSITION_MS}ms ${EASE}, top ${PROJECT_TRANSITION_MS}ms ${EASE}`,
       }}
     >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-top"
-      />
+      <div
+        className="relative w-full"
+        style={{
+          height: expanded ? "200vh" : "100%",
+          transition: `height ${PROJECT_TRANSITION_MS}ms ${EASE}`,
+        }}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-top"
+        />
+      </div>
     </div>
   );
 }

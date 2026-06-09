@@ -84,23 +84,29 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
         <div className="absolute inset-0 bg-[#1a1a1a]" />
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black"
+      />
 
-      <div className="relative z-10 flex h-full w-full flex-col p-[30px] pt-[110px] md:pt-[140px]">
-        <div className="mt-[35vh] flex flex-col gap-6 sm:gap-8">
-          <Reveal delay={titleStart - 100}>
-            <Link
-              href="/projects"
-              className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
-            >
-              <span aria-hidden className="text-base leading-none">&larr;</span>
-              Back to Our Projects
-              <span
-                aria-hidden
-                className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
-              />
-            </Link>
-          </Reveal>
-        <div className="flex flex-col gap-6">
+      <div className="relative z-10 h-full w-full">
+        <Reveal
+          delay={titleStart - 100}
+          className="absolute left-[30px] top-[200px]"
+        >
+          <Link
+            href="/projects"
+            className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
+          >
+            <span aria-hidden className="text-base leading-none">&larr;</span>
+            Back to Our Projects
+            <span
+              aria-hidden
+              className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
+            />
+          </Link>
+        </Reveal>
+        <div className="absolute bottom-[calc(50%+30px)] left-[30px] flex flex-col gap-2">
           <WordReveal
             as="h1"
             text={project.name}
@@ -114,25 +120,6 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
               </p>
             </Reveal>
           ) : null}
-          {project.type === "residential" && detail.intro.brochureUrl ? (
-            <HeroRise
-              delay={titleStart + project.name.split(/\s+/).length * 70 + 120}
-            >
-              <a
-                href={detail.intro.brochureUrl}
-                download
-                className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white hover:text-white/85"
-              >
-                Download Brochure
-                <span aria-hidden className="text-base leading-none">&rarr;</span>
-                <span
-                  aria-hidden
-                  className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
-                />
-              </a>
-            </HeroRise>
-          ) : null}
-        </div>
         </div>
       </div>
     </section>
@@ -426,6 +413,22 @@ function Overview({
               {detail.intro.headline}
             </h2>
           </Reveal>
+          {project.type === "residential" && detail.intro.brochureUrl ? (
+            <Reveal delay={150} className="mt-8">
+              <a
+                href={detail.intro.brochureUrl}
+                download
+                className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white hover:text-white/85"
+              >
+                Download Brochure
+                <span aria-hidden className="text-base leading-none">&rarr;</span>
+                <span
+                  aria-hidden
+                  className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
+                />
+              </a>
+            </Reveal>
+          ) : null}
         </div>
 
         {cards[2] ? (
@@ -465,6 +468,7 @@ function OverviewCard({
           fill
           sizes="(min-width: 768px) 22vw, 50vw"
           className="object-cover"
+          fetchPriority="high"
         />
       </div>
     </div>
