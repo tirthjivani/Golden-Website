@@ -105,12 +105,13 @@ function IntroSection() {
 }
 
 const PROJECT_IMAGES = [
-  "/projects/golden-luxuria/Building_Front_Elevation_Courtyard_View.webp",
-  "/projects/golden-heaven/Building_Full_Elevation_Twilight.webp",
-  "/projects/golden-villa/Bungalow_Main_Front_Elevation_Night.webp",
-  "/projects/golden-nirvana/Building_Side_Front_Corner_Perspective.webp",
-  "/projects/golden-homes/Bungalow_Full_Front_View_Night.webp",
-  "/projects/golden-residency/Building_Full_Front_Elevation_Day.webp",
+  "/projects/golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp",
+  "/projects/golden-heaven/Residential_Complex_Birdview_Aerial.webp",
+  "/projects/golden-residency/Residential_Complex_Birdview_Aerial.webp",
+  "/projects/golden-nirvana/Residential_Complex_Birdview_Day_Aerial.webp",
+  "/projects/golden-villa/Residential_Layout_Birdview_Aerial.webp",
+  "/projects/golden-homes/Residential_Layout_Birdview_Aerial.webp",
+  "/projects/golden-palm-villa/Community_Park_And_Landscaping_Aerial.webp",
 ];
 
 function StatsGallery() {
