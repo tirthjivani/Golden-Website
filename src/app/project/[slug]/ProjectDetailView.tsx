@@ -13,7 +13,7 @@ import {
   Tree,
   Train,
 } from "@phosphor-icons/react";
-import { HeroRise, WordReveal, useFromProjects } from "@/components/HeroIntro";
+import { WordReveal, useFromProjects } from "@/components/HeroIntro";
 import {
   projectImage,
   type AmenityKey,
@@ -123,26 +123,6 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
         </div>
       </div>
     </section>
-  );
-}
-
-function DownloadIcon() {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 22 22"
-      fill="none"
-      aria-hidden
-    >
-      <path
-        d="M11 3v12m0 0-5-5m5 5 5-5M4 19h14"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }
 
@@ -472,78 +452,6 @@ function OverviewCard({
         />
       </div>
     </div>
-  );
-}
-
-// -------------------- Highlights --------------------
-
-function Highlights({ project }: { project: Project }) {
-  const detail = project.detail!;
-  const block = detail.highlights;
-  const [active, setActive] = useState(0);
-  if (!block || block.items.length === 0) return null;
-  const items = block.items.slice(0, 3);
-  const activeItem = items[active] ?? items[0];
-  return (
-    <section
-      id="highlights"
-      className="relative scroll-mt-24 border-t border-[#464646] bg-black"
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2">
-        <div className="flex flex-col px-[30px] py-16 md:py-24">
-          <Reveal>
-            <div className="flex flex-wrap gap-x-6 gap-y-3">
-              {items.map((img, i) => {
-                const isActive = i === active;
-                const label = img.caption ?? `Highlight ${i + 1}`;
-                return (
-                  <button
-                    key={`tab-${i}`}
-                    type="button"
-                    onClick={() => setActive(i)}
-                    className={`pb-2 text-[14px] tracking-tight transition-colors ${
-                      isActive
-                        ? "border-b border-white font-medium text-white"
-                        : "border-b border-transparent text-white/55 hover:text-white/80"
-                    }`}
-                    aria-pressed={isActive}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </Reveal>
-
-          <div className="mt-auto pt-16 md:pt-24">
-            <Reveal delay={120}>
-              <h2 className="max-w-[18ch] text-[32px] font-normal leading-[1.1] tracking-tight md:text-[44px]">
-                {block.headline}
-              </h2>
-            </Reveal>
-            {block.body ? (
-              <Reveal delay={200}>
-                <p className="mt-6 max-w-[52ch] text-sm leading-[1.6] text-white/70 md:text-base">
-                  {block.body}
-                </p>
-              </Reveal>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="relative md:border-l md:border-[#464646]">
-          <RevealImage
-            key={`highlight-image-${active}`}
-            src={projectImage(activeItem.src)}
-            alt={activeItem.alt ?? activeItem.caption ?? `${project.name} highlight`}
-            fill
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-            containerClassName="relative aspect-[4/5] w-full md:aspect-auto md:h-full md:min-h-[640px]"
-          />
-        </div>
-      </div>
-    </section>
   );
 }
 

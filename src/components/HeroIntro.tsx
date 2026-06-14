@@ -16,10 +16,6 @@ export function useFromProjects(): boolean {
 }
 
 function useTransitionFlag(key: string): boolean {
-  // Lazy initializer locks the value on first render. The only flow that sets
-  // the flag is a client-side click followed by client-side navigation, so
-  // there's no SSR/hydration mismatch in practice - the destination renders
-  // fresh on the client when arriving from the trigger page.
   const [flag] = useState(
     () =>
       typeof window !== "undefined" && sessionStorage.getItem(key) === "1",
@@ -34,12 +30,6 @@ function useTransitionFlag(key: string): boolean {
   return flag;
 }
 
-/**
- * Renders `text` with each whitespace-separated word wrapped in a span that
- * runs the `hero-rise` keyframe animation with a staggered delay. Each word is
- * an inline-block so it can translate independently while still wrapping
- * naturally.
- */
 export function WordReveal({
   text,
   startDelay = 0,
@@ -53,31 +43,35 @@ export function WordReveal({
   className?: string;
   as?: "span" | "h1" | "h2" | "h3";
 }) {
-  const words = text.split(/\s+/).filter(Boolean);
+  const lines = text.split("\n").map((line) => line.split(/\s+/).filter(Boolean));
+  let idx = 0;
   return (
     <Tag className={className}>
-      {words.map((word, i) => (
-        <span
-          key={`${word}-${i}`}
-          className="hero-rise inline-block"
-          style={
-            {
-              "--hero-rise-delay": `${startDelay + i * stagger}ms`,
-            } as CSSProperties
-          }
-        >
-          {word}
-          {i < words.length - 1 ? " " : ""}
+      {lines.map((words, li) => (
+        <span key={`line-${li}`} className="block">
+          {words.map((word, i) => {
+            const current = idx++;
+            const isLast = i === words.length - 1;
+            return (
+              <span
+                key={`${word}-${current}`}
+                className={`hero-rise inline-block ${isLast ? "" : "mr-[0.25em]"}`}
+                style={
+                  {
+                    "--hero-rise-delay": `${startDelay + current * stagger}ms`,
+                  } as CSSProperties
+                }
+              >
+                {word}
+              </span>
+            );
+          })}
         </span>
       ))}
     </Tag>
   );
 }
 
-/**
- * Wraps a child in a hero-rise span with a configurable delay. Useful when a
- * non-text element (button, fact card) should join the staggered hero reveal.
- */
 export function HeroRise({
   delay = 0,
   className = "",

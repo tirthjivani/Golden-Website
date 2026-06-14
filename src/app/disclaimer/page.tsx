@@ -2,9 +2,7 @@ import {
   ContactBlock,
   H2,
   LegalPage,
-  LI,
   P,
-  UL,
 } from "@/components/LegalPage";
 
 export const metadata = {

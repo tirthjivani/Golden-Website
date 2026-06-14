@@ -518,7 +518,7 @@ function StoryParagraphs({ textStarted }: { textStarted: boolean }) {
   ];
   let cumulative = 0;
   return (
-    <div className="absolute inset-x-0 top-[340px] z-10 flex justify-center px-[30px]">
+    <div className="absolute inset-x-0 top-[440px] z-10 flex justify-center px-[30px] md:top-[340px]">
       <div className="max-w-[640px] text-center text-sm leading-[1.5] text-white/80 md:text-base">
         {paragraphs.map((para, pi) => {
           const words = para.split(/\s+/);
@@ -715,7 +715,7 @@ function Milestones() {
               <Reveal
                 key={s.label}
                 delay={120 + i * 120}
-                className={`flex aspect-[458/360] flex-col items-center justify-center gap-3 sm:aspect-[458/220] ${mobileBorder} ${desktopRight} ${desktopBottom}`}
+                className={`flex aspect-[458/240] flex-col items-center justify-center gap-2 sm:aspect-[458/220] sm:gap-3 ${mobileBorder} ${desktopRight} ${desktopBottom}`}
               >
                 <CountUp
                   value={s.value}

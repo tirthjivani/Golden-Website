@@ -1,9 +1,12 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 export default function ContactPage() {
   return (
@@ -182,10 +185,29 @@ function TickIcon() {
 
 function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  useEffect(() => {
+    if (submitted) return;
+    const el = formRef.current;
+    if (!el) return;
+    const measure = () => setLockedHeight(el.offsetHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [submitted]);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (formRef.current) setLockedHeight(formRef.current.offsetHeight);
     setSubmitted(true);
+    window.setTimeout(() => setSubmitted(false), 2500);
   };
 
   return (
@@ -194,41 +216,70 @@ function ContactForm() {
         Get in touch
       </h2>
 
-      {submitted ? (
-        <div className="flex min-h-[480px] items-center justify-center text-center text-white/70">
-          <p>
-            Thanks - we&apos;ve received your message and will be in touch
-            shortly.
-          </p>
-        </div>
-      ) : (
-        <form onSubmit={onSubmit} className="flex flex-col gap-6">
-          <Field label="Name" name="name" placeholder="Your full name" required />
-          <Field
-            label="Phone Number"
-            name="phone"
-            type="tel"
-            placeholder="Your phone number"
-            required
-          />
-          <Field
-            label="Your Email"
-            name="email"
-            type="email"
-            placeholder="Your email address"
-            required
-          />
-          <TextareaField
-            label="I'm interested in"
-            name="message"
-            placeholder="Your message here"
-            required
-          />
-          <div className="mt-2">
-            <PillButton label="Send" />
-          </div>
-        </form>
-      )}
+      <div style={{ minHeight: lockedHeight ?? undefined }}>
+        {submitted ? (
+          <SuccessState />
+        ) : (
+          <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-6">
+            <Field label="Name" name="name" placeholder="Your full name" required />
+            <Field
+              label="Phone Number"
+              name="phone"
+              type="tel"
+              placeholder="Your phone number"
+              required
+            />
+            <Field
+              label="Your Email"
+              name="email"
+              type="email"
+              placeholder="Your email address"
+              required
+            />
+            <TextareaField
+              label="I'm interested in"
+              name="message"
+              placeholder="Your message here"
+              required
+            />
+            <div className="mt-2">
+              <PillButton label="Send" />
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SuccessState() {
+  const [data, setData] = useState<unknown>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/success-confetti.json")
+      .then((r) => r.json())
+      .then((json) => {
+        if (!cancelled) setData(json);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
+      <div className="h-[180px] w-[180px]">
+        {data ? (
+          <Lottie animationData={data} loop={false} autoplay className="h-full w-full" />
+        ) : null}
+      </div>
+      <p className="text-[18px] font-medium text-white md:text-[20px]">
+        Your request has been submitted
+      </p>
+      <p className="max-w-[36ch] text-sm leading-[1.5] text-white/70">
+        Thanks for reaching out. Our team will get back to you shortly.
+      </p>
     </div>
   );
 }

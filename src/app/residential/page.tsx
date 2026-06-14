@@ -51,6 +51,7 @@ function Hero() {
           alt=""
           fill
           priority
+          fetchPriority="high"
           sizes="100vw"
           className="object-cover object-top"
         />
@@ -61,7 +62,7 @@ function Hero() {
         <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
           <WordReveal
             as="h2"
-            text="Where Everyday Life Feels Extraordinary"
+            text={"Where Everyday Life\nFeels Extraordinary"}
             startDelay={headlineStart}
             className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
           />
@@ -727,29 +728,6 @@ function StarIcon() {
         d="M9 0c.24-.02.45.16.48.4.28.95.5 1.91.84 2.81.36 1.12 1 2.13 1.85 2.94.86.8 1.91 1.37 3.05 1.65l2.33.67c.31 0 .45.25.45.51 0 .25-.14.39-.45.48-.93.28-1.88.5-2.8.81-2.28.74-4.01 2.6-4.6 4.92l-.67 2.36c0 .28-.25.45-.48.45-.22 0-.39-.17-.48-.45-.31-1.01-.53-2.08-.92-3.06-.79-2.15-2.58-3.78-4.79-4.36L.45 9.45c-.31 0-.45-.25-.45-.48 0-.12.04-.24.12-.33.08-.09.18-.15.3-.17 1.01-.28 2.02-.5 3-.87 1.09-.38 2.06-1.03 2.83-1.89.78-.85 1.32-1.89 1.6-3.01l.67-2.34A.5.5 0 0 1 9 0Z"
         fill="currentColor"
       />
-    </svg>
-  );
-}
-
-function LaurelIcon({ flipped = false }: { flipped?: boolean }) {
-  return (
-    <svg
-      width="20"
-      height="28"
-      viewBox="0 0 20 28"
-      fill="none"
-      aria-hidden
-      style={{ transform: flipped ? "scaleX(-1)" : "none" }}
-    >
-      <path
-        d="M14 1c-2 4-3 7-3 12s1 9 3 13"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-      <path d="M14 5c-3 0-5 1-6 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M14 11c-3 0-5 1-6 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M14 17c-3 0-5 1-6 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
     </svg>
   );
 }

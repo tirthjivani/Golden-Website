@@ -116,6 +116,7 @@ export default function Home() {
             alt="Residential"
             fill
             priority
+            fetchPriority="high"
             sizes="(min-width: 1024px) 60vw, 100vw"
             className="pointer-events-none object-cover object-top"
             style={{
@@ -161,6 +162,8 @@ export default function Home() {
             src="/commercial-hero.png"
             alt="Commercial & Industrial"
             fill
+            priority
+            fetchPriority="high"
             sizes="(min-width: 1024px) 60vw, 100vw"
             className="pointer-events-none object-cover"
             style={{
