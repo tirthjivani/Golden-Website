@@ -104,12 +104,12 @@ function IntroSection() {
 }
 
 const PROJECT_IMAGES = [
-  "/projects/golden-square-bharuch/Building_Street_Perspective_View.webp",
+  "/projects/golden-square-bharuch/Building_Front_Daylight_Full_Elevation.webp",
   "/projects/golden-square-bharuch/Interior_Atrium_Mall_View.webp",
   "/projects/golden-square-bharuch/Cinemas entry-01.webp",
-  "/projects/golden-square/Building_Main_Front_Elevation_Day.webp",
-  "/projects/golden-square/Interior_Atrium_Mall_View.webp",
-  "/projects/golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp",
+  "/projects/golden-square/Building_Street_Perspective_View.webp",
+  "/projects/golden-square/Interior_Mall_Retail_Floor.webp",
+  "/projects/golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp",
 ];
 
 function StatsGallery() {
