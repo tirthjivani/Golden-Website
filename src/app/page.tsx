@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import HomePreloader, { PRELOADER_DONE_EVENT } from "@/components/HomePreloader";
 
 
 type Side = "left" | "right";
@@ -17,6 +18,18 @@ export default function Home() {
   const [hovered, setHovered] = useState<Side>("left");
   const [isDesktop, setIsDesktop] = useState(false);
   const [transitioning, setTransitioning] = useState<Side | null>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("golden-preloader-shown") === "1") {
+      setReady(true);
+      return;
+    }
+    const onDone = () => setReady(true);
+    window.addEventListener(PRELOADER_DONE_EVENT, onDone);
+    return () => window.removeEventListener(PRELOADER_DONE_EVENT, onDone);
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -94,7 +107,14 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black text-white">
-      <main className="flex min-h-screen w-full flex-col lg:flex-row">
+      <HomePreloader />
+      <main
+        className="flex min-h-screen w-full flex-col lg:flex-row"
+        style={{
+          opacity: ready ? 1 : 0,
+          transition: `opacity 600ms ${EASE}`,
+        }}
+      >
         <div
           onMouseEnter={() => !transitioning && setHovered("left")}
           className="group relative flex h-[50vh] w-full items-end overflow-hidden lg:h-screen lg:min-h-screen lg:w-[var(--side-width)] lg:flex-none lg:will-change-[width]"

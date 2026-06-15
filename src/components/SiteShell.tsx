@@ -1,8 +1,10 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Header from "./Header";
 import MenuPanel from "./MenuPanel";
+import { PRELOADER_DONE_EVENT } from "./HomePreloader";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 const DURATION = "700ms";
@@ -13,8 +15,26 @@ export default function SiteShell({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [menuOpen, setMenuOpen] = useState(false);
   const [stickyVisible, setStickyVisible] = useState(false);
+  const [chromeReady, setChromeReady] = useState(!isHome);
+
+  useEffect(() => {
+    if (!isHome) {
+      setChromeReady(true);
+      return;
+    }
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("golden-preloader-shown") === "1") {
+      setChromeReady(true);
+      return;
+    }
+    const onDone = () => setChromeReady(true);
+    window.addEventListener(PRELOADER_DONE_EVENT, onDone);
+    return () => window.removeEventListener(PRELOADER_DONE_EVENT, onDone);
+  }, [isHome]);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -78,12 +98,19 @@ export default function SiteShell({
           }}
         />
       </div>
-      <Header variant="transparent" onMenuClick={() => setMenuOpen(true)} />
-      <Header
-        variant="sticky"
-        visible={showSticky}
-        onMenuClick={() => setMenuOpen(true)}
-      />
+      <div
+        style={{
+          opacity: chromeReady ? 1 : 0,
+          transition: `opacity 600ms ${EASE}`,
+        }}
+      >
+        <Header variant="transparent" onMenuClick={() => setMenuOpen(true)} />
+        <Header
+          variant="sticky"
+          visible={showSticky}
+          onMenuClick={() => setMenuOpen(true)}
+        />
+      </div>
       <MenuPanel open={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   );
