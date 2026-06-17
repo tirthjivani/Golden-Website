@@ -145,11 +145,11 @@ function StatsGallery() {
         <Reveal as="div" delay={120}>
           <div className="flex items-end gap-4">
             <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
-              +5M
+              +2.7
             </span>
             <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
-              <span>sq. ft. of</span>
-              <span>commercial space</span>
+              <span>commercial</span>
+              <span>units</span>
             </div>
           </div>
         </Reveal>
@@ -340,7 +340,7 @@ function ProjectsSection() {
         <Reveal>
           <div className="flex items-end gap-4">
             <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
-              +18
+              +25
             </span>
             <span className="max-w-[120px] pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
               Completed Projects
@@ -617,8 +617,8 @@ function WhyChooseUs() {
 function Testimonials() {
   return (
     <TestimonialCarousel
-      count="+2.7k"
-      labelLines={["Commercial", "Units"]}
+      count="+10k"
+      labelLines={["Happy", "Customers"]}
     />
   );
 }
