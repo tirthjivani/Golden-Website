@@ -112,14 +112,12 @@ const SLOTS: Record<FolderKey, SlotMap> = {
     "11": "Entrance_Parking_Ramp_Close_up.webp",
   },
   GoldenVilla: {
-    "0": "Bungalow_Main_Front_Elevation_Night.webp",
+    "0": "Bungalow_Main_Front_Elevation_Day.webp",
     "1": "Main_Entrance_Gate_Day_Perspective.webp",
     "2": "Residential_Layout_Birdview_Aerial.webp",
     "3": "Landscape_Garden_Seating_Ground_View.webp",
     "4": "Landscape_Zen_Garden_Buddha_Statue.webp",
     "5": "Community_Park_Aerial_Birdview.webp",
-    "6": "Bungalow_Main_Front_Elevation_Day.webp",
-    "7": "Bungalow_Full_Front_View_Daylight.webp",
   },
 };
 
