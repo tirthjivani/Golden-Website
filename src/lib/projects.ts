@@ -706,7 +706,7 @@ const goldenNirvana: Project = {
   name: "Golden Nirvana",
   type: "residential",
   category: "2 BHK Flats & 3 BHK Bungalows",
-  location: "Surat",
+  location: "Ankleshwar",
   area: "950 - 1800 Sq. Ft. (SBUA)",
   status: "Completed",
   images: [
@@ -1365,7 +1365,7 @@ const goldenResidency: Project = {
               ],
               features: [
                 "Optimized 2 BHK footprint for efficient modern urban family living.",
-                "Standardized layouts across Blocks A, B, C, D, E, and F.",
+                "Standardized layouts across Wings A, B, C, D, G, and H.",
                 "Integrated balcony area for natural light and cross-ventilation.",
                 "Compact yet functional kitchen with attached utility/wash space.",
               ],
