@@ -24,6 +24,10 @@ export type ImageRef = {
   caption?: string;
   metric?: string;
   label?: string;
+  // Set for plan images whose source file has a dark-grey baked background.
+  // Renders with a contrast/brightness filter that crushes that grey to black
+  // so the image merges into the black page instead of showing as a grey box.
+  dimFill?: boolean;
 };
 
 export type SummaryCard = {
@@ -435,7 +439,7 @@ const goldenLuxuria: Project = {
                 "Dedicated standing deck (5'0\" wide) for outdoor views.",
                 "Large Kitchen with 3'4.5\" wide platform and connected wash area.",
               ],
-              image: { src: "golden-luxuria/ground_floor_plan.webp" },
+              image: { src: "golden-luxuria/ground_floor_plan.webp", dimFill: true },
               note: "*SBUA estimated at ~1.36x Carpet. Final dimensions may vary on site.",
             },
           ],
@@ -507,11 +511,6 @@ const goldenLuxuria: Project = {
         { src: "golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.jpg" },
         { src: "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg" },
       ],
-    },
-    masterPlan: {
-      headline: "Master Plan",
-      body: "Site layout and tower placement.",
-      image: { src: "golden-luxuria/Project_Location_Map_and_Specifications.png" },
     },
     location: {
       headline: "Location",
@@ -706,7 +705,7 @@ const goldenNirvana: Project = {
   name: "Golden Nirvana",
   type: "residential",
   category: "2 BHK Flats & 3 BHK Bungalows",
-  location: "Surat",
+  location: "Ankleshwar",
   area: "950 - 1800 Sq. Ft. (SBUA)",
   status: "Completed",
   images: [
@@ -1365,7 +1364,7 @@ const goldenResidency: Project = {
               ],
               features: [
                 "Optimized 2 BHK footprint for efficient modern urban family living.",
-                "Standardized layouts across Blocks A, B, C, D, E, and F.",
+                "Standardized layouts across Wings A, B, C, D, G, and H.",
                 "Integrated balcony area for natural light and cross-ventilation.",
                 "Compact yet functional kitchen with attached utility/wash space.",
               ],
