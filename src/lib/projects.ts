@@ -24,6 +24,10 @@ export type ImageRef = {
   caption?: string;
   metric?: string;
   label?: string;
+  // Set for plan images whose source file has a dark-grey baked background.
+  // Renders with a contrast/brightness filter that crushes that grey to black
+  // so the image merges into the black page instead of showing as a grey box.
+  dimFill?: boolean;
 };
 
 export type SummaryCard = {
@@ -435,7 +439,7 @@ const goldenLuxuria: Project = {
                 "Dedicated standing deck (5'0\" wide) for outdoor views.",
                 "Large Kitchen with 3'4.5\" wide platform and connected wash area.",
               ],
-              image: { src: "golden-luxuria/ground_floor_plan.webp" },
+              image: { src: "golden-luxuria/ground_floor_plan.webp", dimFill: true },
               note: "*SBUA estimated at ~1.36x Carpet. Final dimensions may vary on site.",
             },
           ],

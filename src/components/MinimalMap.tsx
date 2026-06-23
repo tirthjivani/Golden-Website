@@ -3,7 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import { useEffect, useRef } from "react";
-import maplibregl, { type StyleSpecification } from "maplibre-gl";
+import maplibregl from "maplibre-gl";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   GraduationCap,
@@ -16,37 +16,11 @@ import type { Landmark, LandmarkCategory } from "@/lib/projects";
 
 type Coords = [number, number];
 
-const DARK_STYLE: StyleSpecification = {
-  version: 8,
-  name: "Golden Minimal Dark",
-  sources: {
-    carto: {
-      type: "raster",
-      tiles: [
-        "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-        "https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-        "https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-        "https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-      ],
-      tileSize: 256,
-      attribution:
-        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-    },
-  },
-  layers: [
-    { id: "bg", type: "background", paint: { "background-color": "#0b0f14" } },
-    {
-      id: "carto",
-      type: "raster",
-      source: "carto",
-      paint: {
-        "raster-opacity": 0.95,
-        "raster-contrast": 0.05,
-        "raster-saturation": -0.1,
-      },
-    },
-  ],
-};
+// Vector basemap (CARTO Dark Matter) — a polished, detailed dark vector style
+// with real road hierarchy, labels and built-in area shading. Free, no API key,
+// served from a fast CDN. Used natively (no recolor) so its own shading shows.
+const STYLE_URL =
+  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 
 const CATEGORY_ICONS: Record<LandmarkCategory, typeof GraduationCap> = {
   education: GraduationCap,
@@ -115,6 +89,8 @@ export function MinimalMap({
   className = "",
   zoom,
   projectName,
+  onSelectLandmark,
+  selectedName,
 }: {
   coords: Coords;
   landmarks?: Landmark[];
@@ -122,10 +98,18 @@ export function MinimalMap({
   className?: string;
   zoom?: number;
   projectName?: string;
+  onSelectLandmark?: (landmark: Landmark | null) => void;
+  selectedName?: string | null;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const landmarkMarkersRef = useRef<maplibregl.Marker[]>([]);
+  // Keep the latest onSelectLandmark in a ref so the map-mount effect (which
+  // must not re-run on every render) can call the current callback.
+  const onSelectRef = useRef(onSelectLandmark);
+  useEffect(() => {
+    onSelectRef.current = onSelectLandmark;
+  }, [onSelectLandmark]);
 
   // Mount/teardown map and main marker. Stable across category switches.
   useEffect(() => {
@@ -139,24 +123,34 @@ export function MinimalMap({
     const autoZoom =
       zoom ??
       (maxKm <= 1
-        ? 14.5
+        ? 15.5
         : maxKm <= 3
-        ? 13.5
+        ? 14.8
         : maxKm <= 6
-        ? 12.7
+        ? 14
         : maxKm <= 12
-        ? 11.7
-        : 10.8);
+        ? 13.2
+        : 12.5);
 
     const map = new maplibregl.Map({
       container: node,
-      style: DARK_STYLE,
+      style: STYLE_URL,
       center: coords,
       zoom: autoZoom,
       cooperativeGestures: true,
+      attributionControl: { compact: true },
     });
 
     mapRef.current = map;
+
+    // Visible zoom controls so the map clearly reads as interactive.
+    map.addControl(
+      new maplibregl.NavigationControl({ showCompass: false, visualizePitch: false }),
+      "bottom-right",
+    );
+
+    // Click empty map (not a pin) → clear the selection / close the panel.
+    map.on("click", () => onSelectRef.current?.(null));
 
     const mainEl = document.createElement("div");
     mainEl.className = "golden-main-pin";
@@ -233,27 +227,50 @@ export function MinimalMap({
 
       const icon = document.createElement("span");
       icon.className = "golden-landmark__icon";
-      icon.innerHTML = iconSvg(landmark.category);
+      icon.innerHTML = iconSvg(landmark.category, "#d6b25e");
+
+      const name = document.createElement("span");
+      name.className = "golden-landmark__name";
+      name.textContent = landmark.name;
 
       const pop = document.createElement("div");
       pop.className = "golden-landmark__pop";
-      pop.innerHTML = `
-        <div class="golden-landmark__pop-title"></div>
-        <div class="golden-landmark__pop-meta"></div>
-      `;
-      (pop.querySelector(".golden-landmark__pop-title") as HTMLElement).textContent =
-        landmark.name;
-      (pop.querySelector(".golden-landmark__pop-meta") as HTMLElement).textContent =
-        `${landmark.minutes} min · ${formatKm(landmark.distanceKm)}`;
+      pop.textContent = `${landmark.minutes} min · ${formatKm(landmark.distanceKm)}`;
 
-      el.append(icon, pop);
+      el.append(icon, name, pop);
+
+      const pos = landmarkPosition(landmark, coords, i, total);
+      el.dataset.name = landmark.name;
+
+      // Click the pin → open its detail panel + fly in to reveal surroundings.
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        onSelectRef.current?.(landmark);
+        map.flyTo({
+          center: pos,
+          zoom: Math.max(map.getZoom(), 15.5),
+          speed: 0.8,
+          essential: true,
+        });
+      });
 
       const marker = new maplibregl.Marker({ element: el, anchor: "center" })
-        .setLngLat(landmarkPosition(landmark, coords, i, total))
+        .setLngLat(pos)
         .addTo(map);
       landmarkMarkersRef.current.push(marker);
     }
   }, [landmarks, activeCategory, coords]);
+
+  // Highlight the selected pin (and raise it above the rest).
+  useEffect(() => {
+    for (const m of landmarkMarkersRef.current) {
+      const el = m.getElement();
+      el.classList.toggle(
+        "golden-landmark--active",
+        !!selectedName && el.dataset.name === selectedName,
+      );
+    }
+  }, [selectedName, landmarks, activeCategory]);
 
   return (
     <div className={`relative w-full bg-black ${className}`}>

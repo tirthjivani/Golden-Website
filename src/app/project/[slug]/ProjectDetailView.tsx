@@ -12,11 +12,14 @@ import {
   FirstAid,
   Tree,
   Train,
+  X,
+  NavigationArrow,
 } from "@phosphor-icons/react";
 import { WordReveal, useFromProjects } from "@/components/HeroIntro";
 import {
   projectImage,
   type AmenityKey,
+  type Landmark,
   type LandmarkCategory,
   type Pillar,
   type Project,
@@ -672,8 +675,8 @@ function FloorPlans({ project }: { project: Project }) {
               alt={activePlan.image.alt ?? `${project.name} ${activePlan.label} floor plan`}
               fill
               sizes="(min-width: 768px) 55vw, 100vw"
-              className="object-contain"
-              containerClassName="relative aspect-[4/3] w-full bg-white/[0.03]"
+              className={`object-contain${activePlan.image.dimFill ? " [filter:contrast(1.6)_brightness(0.85)]" : ""}`}
+              containerClassName={`relative aspect-[4/3] w-full${activePlan.image.dimFill ? " bg-black" : " bg-white/[0.03]"}`}
             />
           ) : (
             <div className="flex aspect-[4/3] w-full items-center justify-center bg-white/[0.03] text-sm text-white/35">
@@ -830,6 +833,7 @@ function LocationSection({ project }: { project: Project }) {
   const [active, setActive] = useState<LandmarkCategory | null>(
     () => availableCategories[0] ?? null,
   );
+  const [selected, setSelected] = useState<Landmark | null>(null);
 
   if (!location || location.landmarks.length === 0) return null;
 
@@ -860,6 +864,8 @@ function LocationSection({ project }: { project: Project }) {
           activeCategory={active ?? undefined}
           className="aspect-[3/4] md:aspect-auto md:h-[80vh] md:min-h-[640px]"
           projectName={project.name}
+          onSelectLandmark={setSelected}
+          selectedName={selected?.name ?? null}
         />
         <div className="golden-map-tabs absolute left-[19px] top-[22px] z-10 sm:left-[30px] sm:top-[30px]">
           {availableCategories.map((key) => {
@@ -870,7 +876,10 @@ function LocationSection({ project }: { project: Project }) {
               <button
                 key={key}
                 type="button"
-                onClick={() => setActive(key)}
+                onClick={() => {
+                  setActive(key);
+                  setSelected(null);
+                }}
                 className="golden-map-tab"
                 data-active={isActive}
                 aria-pressed={isActive}
@@ -883,8 +892,93 @@ function LocationSection({ project }: { project: Project }) {
             );
           })}
         </div>
+
+        <LandmarkPanel
+          landmark={selected}
+          area={location.address ?? project.location}
+          projectName={project.name}
+          projectCoords={location.coords}
+          onClose={() => setSelected(null)}
+        />
       </div>
     </section>
+  );
+}
+
+function LandmarkPanel({
+  landmark,
+  area,
+  projectName,
+  projectCoords,
+  onClose,
+}: {
+  landmark: Landmark | null;
+  area: string;
+  projectName: string;
+  projectCoords: [number, number];
+  onClose: () => void;
+}) {
+  if (!landmark) return null;
+
+  const Icon = LANDMARK_ICONS[landmark.category];
+  const categoryLabel =
+    LANDMARK_CATEGORIES.find((c) => c.key === landmark.category)?.label ??
+    "Nearby";
+  const [lng, lat] = projectCoords;
+  const query = encodeURIComponent(`${landmark.name}, ${area}`);
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lng}&destination=${query}`;
+  const searchUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+  const distance =
+    landmark.distanceKm < 1
+      ? `${Math.round(landmark.distanceKm * 1000)} m`
+      : `${landmark.distanceKm} km`;
+
+  return (
+    <div className="pointer-events-auto absolute bottom-3 left-3 z-20 w-[250px] max-w-[calc(100%-24px)] sm:bottom-auto sm:left-auto sm:right-[30px] sm:top-[30px] sm:w-[330px] sm:max-w-none">
+      <div className="relative rounded-xl border border-[#464646] bg-black/85 p-5 shadow-2xl backdrop-blur-md sm:p-6">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close details"
+          className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full text-white/60 transition hover:bg-white/10 hover:text-white"
+        >
+          <X size={16} weight="bold" />
+        </button>
+
+        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-[#d6b25e]">
+          <Icon size={16} weight="regular" />
+          <span>{categoryLabel}</span>
+        </div>
+
+        <h3 className="mt-3 max-w-[22ch] text-[22px] font-normal leading-[1.2] tracking-tight text-white">
+          {landmark.name}
+        </h3>
+
+        <p className="mt-3 text-[13px] leading-[1.5] text-white/60">
+          <span className="text-white/85">{landmark.minutes} min</span> drive ·{" "}
+          {distance} from {projectName}
+        </p>
+
+        <a
+          href={directionsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 flex items-center justify-center gap-2 rounded-full bg-[#c19b4d] px-5 py-3 text-[13px] font-medium tracking-wide text-black transition hover:bg-[#d6b25e]"
+        >
+          <NavigationArrow size={16} weight="fill" />
+          Directions
+        </a>
+
+        <a
+          href={searchUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 block text-center text-[12px] text-white/45 underline-offset-4 transition hover:text-white/70 hover:underline"
+        >
+          View address, hours &amp; photos on Google Maps
+        </a>
+      </div>
+    </div>
   );
 }
 
