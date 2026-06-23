@@ -508,11 +508,6 @@ const goldenLuxuria: Project = {
         { src: "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg" },
       ],
     },
-    masterPlan: {
-      headline: "Master Plan",
-      body: "Site layout and tower placement.",
-      image: { src: "golden-luxuria/Project_Location_Map_and_Specifications.png" },
-    },
     location: {
       headline: "Location",
       body: "Strategically located for connectivity and convenience in Bharuch.",
