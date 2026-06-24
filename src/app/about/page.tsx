@@ -27,7 +27,7 @@ export default function AboutPage() {
         label="Vision"
         body="To become a landmark real estate brand that shapes city skylines through iconic developments and earns lifelong trust through consistent quality and reliability."
         imageAlign="right"
-        imageSrc="/about/vision.png"
+        imageSrc="/about/vision.webp"
         imageAlt="Golden Group cityscape vision"
       />
       <WhyChooseUs />
@@ -35,7 +35,7 @@ export default function AboutPage() {
         label="Mission"
         body="To design and deliver well-planned residential and commercial spaces by following ethical practices, maintaining precision in execution, and creating long-term value for customers, investors, and communities."
         imageAlign="left"
-        imageSrc="/about/mission.png"
+        imageSrc="/about/mission.webp"
         imageAlt="Family welcomed to Golden Luxuria"
       />
       <Accreditations />
@@ -357,7 +357,7 @@ function RealCloud({
       }}
     >
       <Image
-        src="/about/cloud-v2.png"
+        src="/about/cloud-v2.webp"
         alt=""
         fill
         sizes="(min-width:768px) 520px, 60vw"
@@ -672,7 +672,7 @@ function Accreditations() {
         <Reveal>
           <div className="relative aspect-[2576/926] w-full">
             <Image
-              src="/rera-credai.png"
+              src="/rera-credai.webp"
               alt="RERA Approved and CREDAI Member"
               fill
               sizes="(min-width: 768px) 720px, 100vw"
@@ -737,9 +737,9 @@ function Milestones() {
 
 function GroupOfCompanies() {
   const logos = [
-    { src: "/about/group-shrungal.png", alt: "Shrungal", sizeClass: "h-[60%] w-[60%]" },
-    { src: "/about/group-golden.png", alt: "Golden Group", sizeClass: "h-[90%] w-[90%]" },
-    { src: "/about/group-keystar.png", alt: "Keystar Gems LLP", sizeClass: "h-[60%] w-[60%]" },
+    { src: "/about/group-shrungal.webp", alt: "Shrungal", sizeClass: "h-[60%] w-[60%]" },
+    { src: "/about/group-golden.webp", alt: "Golden Group", sizeClass: "h-[90%] w-[90%]" },
+    { src: "/about/group-keystar.webp", alt: "Keystar Gems LLP", sizeClass: "h-[60%] w-[60%]" },
   ];
   return (
     <section className="border-t border-[#464646] bg-black p-[30px] md:py-20">

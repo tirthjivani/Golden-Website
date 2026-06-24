@@ -46,7 +46,7 @@ function Hero() {
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
       <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand"}`}>
         <Image
-          src="/commercial-hero.png"
+          src="/commercial-hero.webp"
           alt=""
           fill
           priority
@@ -630,7 +630,7 @@ function Recognition() {
         <Reveal>
           <div className="relative aspect-[2576/926] w-full">
             <Image
-              src="/rera-credai.png"
+              src="/rera-credai.webp"
               alt="RERA Approved and CREDAI Member"
               fill
               sizes="(min-width: 1024px) 560px, (min-width: 640px) 500px, 80vw"

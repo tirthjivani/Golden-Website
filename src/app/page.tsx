@@ -179,7 +179,7 @@ export default function Home() {
             className="absolute inset-0 z-0"
           />
           <Image
-            src="/commercial-hero.png"
+            src="/commercial-hero.webp"
             alt="Commercial & Industrial"
             fill
             priority

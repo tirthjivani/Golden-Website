@@ -38,7 +38,8 @@ const CATEGORY_BEARING: Record<LandmarkCategory, number> = {
   recreation: 95,
   transit: 265,
 };
-const CATEGORY_ARC = 50;
+// Wide arc so a category's pins encircle the project (avoids label collisions).
+const SPREAD_ARC = 300;
 
 function offsetCoords(
   base: Coords,
@@ -54,26 +55,38 @@ function offsetCoords(
   return [lng + dLng, lat + dLat];
 }
 
+// Normalise real distances into a tight visual band so pins cluster near the
+// project rather than spreading across many km. Positions are illustrative, so
+// we keep relative ordering but compress the scale to avoid an airy, sparse map.
+function compressKm(distanceKm: number): number {
+  return 0.4 + Math.min(distanceKm, 12) * 0.09;
+}
+
 function landmarkPosition(
   landmark: Landmark,
   base: Coords,
   indexInCategory: number,
   totalInCategory: number,
 ): Coords {
+  const radiusKm = compressKm(landmark.distanceKm);
   if (landmark.bearing !== undefined) {
-    return offsetCoords(base, landmark.distanceKm, landmark.bearing);
+    return offsetCoords(base, radiusKm, landmark.bearing);
   }
+  // Distribute the category's pins around the project across a wide arc and
+  // stagger them between an inner and outer ring, so the (wide) labels don't
+  // collide even though the radii are tightly compressed.
   const home = CATEGORY_BEARING[landmark.category];
   const t =
     totalInCategory <= 1 ? 0.5 : indexInCategory / (totalInCategory - 1);
-  const bearing = home - CATEGORY_ARC / 2 + CATEGORY_ARC * t;
-  return offsetCoords(base, landmark.distanceKm, bearing);
+  const bearing = home - SPREAD_ARC / 2 + SPREAD_ARC * t;
+  const ring = indexInCategory % 2 === 0 ? 1 : 1.4;
+  return offsetCoords(base, radiusKm * ring, bearing);
 }
 
 function iconSvg(category: LandmarkCategory, color = "#ffffff"): string {
   const Icon = CATEGORY_ICONS[category];
   return renderToStaticMarkup(
-    <Icon weight="regular" size={16} color={color} />,
+    <Icon weight="regular" size={20} color={color} />,
   );
 }
 
@@ -116,21 +129,22 @@ export function MinimalMap({
     const node = containerRef.current;
     if (!node) return;
 
+    // Pins are placed using the compressed scale, so zoom to fit that tight
+    // visual spread (not the raw km) — keeps the map full rather than airy.
     const maxKm = landmarks.reduce(
       (m, l) => (l.distanceKm > m ? l.distanceKm : m),
       0,
     );
+    const maxVisualKm = compressKm(maxKm) * 1.4; // outer staggered ring
     const autoZoom =
       zoom ??
-      (maxKm <= 1
-        ? 15.5
-        : maxKm <= 3
-        ? 14.8
-        : maxKm <= 6
-        ? 14
-        : maxKm <= 12
-        ? 13.2
-        : 12.5);
+      (maxVisualKm <= 1.1
+        ? 15.3
+        : maxVisualKm <= 1.5
+        ? 14.9
+        : maxVisualKm <= 1.9
+        ? 14.6
+        : 14.3);
 
     const map = new maplibregl.Map({
       container: node,

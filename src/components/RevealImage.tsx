@@ -64,7 +64,7 @@ export function RevealImage({
           className={className}
           loading={priority ? "eager" : "lazy"}
           priority={priority}
-          fetchPriority="high"
+          fetchPriority={priority ? "high" : "auto"}
         />
       </div>
     </div>

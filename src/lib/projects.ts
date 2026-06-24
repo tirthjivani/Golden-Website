@@ -671,9 +671,9 @@ const goldenHeaven: Project = {
         { src: "golden-heaven/Garden_Landscaping_Water_Feature.jpg" },
         { src: "golden-heaven/Garden_Seating_Aesthetic_Bench.jpg" },
         { src: "golden-heaven/Sunken_Seating_and_Parking.jpg" },
-        { src: "golden-heaven/Interiors_Banquet_Hall 2.png", alt: "Banquet hall" },
-        { src: "golden-heaven/Interiors_Gymnasium 2.png", alt: "Gymnasium" },
-        { src: "golden-heaven/Interiors_Indoor_Games 2.png", alt: "Indoor games" },
+        { src: "golden-heaven/Interiors_Banquet_Hall 2.webp", alt: "Banquet hall" },
+        { src: "golden-heaven/Interiors_Gymnasium 2.webp", alt: "Gymnasium" },
+        { src: "golden-heaven/Interiors_Indoor_Games 2.webp", alt: "Indoor games" },
         { src: "golden-heaven/Building_Full_Elevation_Twilight.jpg" },
       ],
     },
@@ -712,7 +712,7 @@ const goldenNirvana: Project = {
     { src: "golden-nirvana/Building_Low_Angle_Street_View.jpg" },
     { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg" },
     { src: "golden-nirvana/Community_Park_Aerial_Birdview.jpg" },
-    { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.png" },
+    { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp" },
   ],
   detail: {
     hero: {
@@ -724,7 +724,7 @@ const goldenNirvana: Project = {
       headline: "First Look",
       items: [
         { src: "golden-nirvana/Building_Low_Angle_Street_View.jpg", caption: "Main Entrance" },
-        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.png", caption: "Front Elevation" },
+        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp", caption: "Front Elevation" },
       ],
     },
     intro: {
@@ -736,7 +736,7 @@ const goldenNirvana: Project = {
       cards: [
         { src: "golden-nirvana/Building_Low_Angle_Street_View.jpg", metric: "GIDC, Ankleshwar", label: "Location" },
         { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg", metric: "950 - 1800 Sq.Ft.", label: "SBUA" },
-        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.png", metric: "2 BHK + Bungalow", label: "Type" },
+        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp", metric: "2 BHK + Bungalow", label: "Type" },
         { src: "golden-nirvana/Community_Park_Aerial_Birdview.jpg", metric: "5 Blocks", label: "A - E" },
       ],
     },
@@ -746,13 +746,13 @@ const goldenNirvana: Project = {
         { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg", caption: "2 BHK towers & private bungalows" },
         { src: "golden-nirvana/Community_Park_Aerial_Birdview.jpg", caption: "Open parks & community gardens" },
         { src: "golden-nirvana/Landscape_Garden_Zen_Seating_Area.jpg", caption: "Dedicated leisure & recreational zones" },
-        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.png", caption: "3 BHK private bungalows" },
+        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp", caption: "3 BHK private bungalows" },
       ],
     },
     amenities: {
       headline: "Township Amenities",
       body: "Open parks, walking loops, and recreational pockets - all woven into the daily route.",
-      feature: { src: "golden-nirvana/Garden_and_Tower_View.png" },
+      feature: { src: "golden-nirvana/Garden_and_Tower_View.webp" },
       items: AMENITIES_RESIDENTIAL,
     },
     floorPlans: {
@@ -839,13 +839,13 @@ const goldenNirvana: Project = {
       body: "A look at what awaits you.",
       images: [
         { src: "golden-nirvana/Bungalow_Entrance_Parking_Day.jpg" },
-        { src: "golden-nirvana/Bungalow_Internal_Road_Parking_View.png" },
-        { src: "golden-nirvana/Childrens_Play_Area.png" },
-        { src: "golden-nirvana/Community_Park_Children_Play_Area_Detail.png" },
+        { src: "golden-nirvana/Bungalow_Internal_Road_Parking_View.webp" },
+        { src: "golden-nirvana/Childrens_Play_Area.webp" },
+        { src: "golden-nirvana/Community_Park_Children_Play_Area_Detail.webp" },
         { src: "golden-nirvana/Community_Park_Ground_Perspective.jpg" },
-        { src: "golden-nirvana/Amenity_Area_Aerial.png" },
-        { src: "golden-nirvana/Building_Side_Front_Corner_Perspective.png" },
-        { src: "golden-nirvana/Garden_and_Tower_View.png" },
+        { src: "golden-nirvana/Amenity_Area_Aerial.webp" },
+        { src: "golden-nirvana/Building_Side_Front_Corner_Perspective.webp" },
+        { src: "golden-nirvana/Garden_and_Tower_View.webp" },
       ],
     },
     masterPlan: {
@@ -1412,7 +1412,7 @@ const goldenResidency: Project = {
     masterPlan: {
       headline: "Master Plan",
       body: "Ground layout and block placement.",
-      image: { src: "golden-residency/ground_layout_plan.png" },
+      image: { src: "golden-residency/ground_layout_plan.webp" },
     },
     location: {
       headline: "Location",
@@ -1440,22 +1440,22 @@ const goldenPalmPlaza: Project = {
   area: "100 units across 5 floors",
   status: "Completed",
   images: [
-    { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.png" },
-    { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png" },
-    { src: "/commercial-hero.png" },
-    { src: "/commercial-hero.png" },
+    { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp" },
+    { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp" },
+    { src: "/commercial-hero.webp" },
+    { src: "/commercial-hero.webp" },
   ],
   detail: {
     hero: {
-      image: { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png" },
+      image: { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp" },
       eyebrow: "Retail & Office",
       tagline: "Premium retail and office spaces in the heart of Ankleshwar.",
     },
     firstLook: {
       headline: "First Look",
       items: [
-        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.png", caption: "Entrance Gate (Night)" },
-        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png", caption: "Front Elevation (Day)" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp", caption: "Entrance Gate (Night)" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp", caption: "Front Elevation (Day)" },
       ],
     },
     intro: {
@@ -1464,24 +1464,24 @@ const goldenPalmPlaza: Project = {
     },
     summary: {
       cards: [
-        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png", metric: "Ankleshwar", label: "Location" },
-        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.png", metric: "100 Units", label: "Total Inventory" },
-        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png", metric: "Shops + Offices", label: "Mix Use" },
-        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.png", metric: "5 Floors", label: "Levels" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp", metric: "Ankleshwar", label: "Location" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp", metric: "100 Units", label: "Total Inventory" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp", metric: "Shops + Offices", label: "Mix Use" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp", metric: "5 Floors", label: "Levels" },
       ],
     },
     highlights: {
       headline: "Visual Highlights",
       items: [
-        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png", caption: "High-visibility Retail Hub" },
-        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.png", caption: "Premium Night Visibility" },
-        { src: "/commercial-hero.png", caption: "Boutique Office Spaces" },
-        { src: "/commercial-hero.png", caption: "Wide Basement Parking" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp", caption: "High-visibility Retail Hub" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp", caption: "Premium Night Visibility" },
+        { src: "/commercial-hero.webp", caption: "Boutique Office Spaces" },
+        { src: "/commercial-hero.webp", caption: "Wide Basement Parking" },
       ],
     },
     amenities: {
       headline: "Building Amenities",
-      feature: { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png" },
+      feature: { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp" },
       items: AMENITIES_COMMERCIAL,
     },
     floorPlans: {
@@ -1535,8 +1535,8 @@ const goldenPalmPlaza: Project = {
       headline: "Gallery",
       body: "A look at the plaza.",
       images: [
-        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.png" },
-        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.png" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp" },
+        { src: "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp" },
       ],
     },
     pillars: { items: PILLARS_DEFAULT },
@@ -1555,22 +1555,22 @@ const goldenSquareAnk: Project = {
   area: "Multi-level commercial",
   status: "Completed",
   images: [
-    { src: "golden-square/Building_Main_Front_Elevation_Day.png" },
-    { src: "golden-square/Building_Front_Elevation_Parking_View.png" },
-    { src: "golden-square/Interior_Atrium_Mall_View.png" },
-    { src: "golden-square/Interior_Mall_Retail_Floor.png" },
+    { src: "golden-square/Building_Main_Front_Elevation_Day.webp" },
+    { src: "golden-square/Building_Front_Elevation_Parking_View.webp" },
+    { src: "golden-square/Interior_Atrium_Mall_View.webp" },
+    { src: "golden-square/Interior_Mall_Retail_Floor.webp" },
   ],
   detail: {
     hero: {
-      image: { src: "golden-square/Building_Main_Front_Elevation_Day.png" },
+      image: { src: "golden-square/Building_Main_Front_Elevation_Day.webp" },
       eyebrow: "Commercial Centre",
       tagline: "Boost your business with a state-of-the-art address.",
     },
     firstLook: {
       headline: "First Look",
       items: [
-        { src: "golden-square/Building_Main_Front_Elevation_Day.png", caption: "Front Elevation" },
-        { src: "golden-square/Building_Front_Elevation_Parking_View.png", caption: "Parking & Frontage" },
+        { src: "golden-square/Building_Main_Front_Elevation_Day.webp", caption: "Front Elevation" },
+        { src: "golden-square/Building_Front_Elevation_Parking_View.webp", caption: "Parking & Frontage" },
       ],
     },
     intro: {
@@ -1579,24 +1579,24 @@ const goldenSquareAnk: Project = {
     },
     summary: {
       cards: [
-        { src: "golden-square/Building_Main_Front_Elevation_Day.png", metric: "Ankleshwar", label: "Location" },
-        { src: "golden-square/Building_Street_Perspective_View.png", metric: "Shops + Offices", label: "Mix Use" },
-        { src: "golden-square/Interior_Mall_Retail_Floor.png", metric: "Retail Hub", label: "Ground Floor" },
-        { src: "golden-square/Interior_Office_Block_Atrium.png", metric: "Luxury Offices", label: "Upper Floors" },
+        { src: "golden-square/Building_Main_Front_Elevation_Day.webp", metric: "Ankleshwar", label: "Location" },
+        { src: "golden-square/Building_Street_Perspective_View.webp", metric: "Shops + Offices", label: "Mix Use" },
+        { src: "golden-square/Interior_Mall_Retail_Floor.webp", metric: "Retail Hub", label: "Ground Floor" },
+        { src: "golden-square/Interior_Office_Block_Atrium.webp", metric: "Luxury Offices", label: "Upper Floors" },
       ],
     },
     highlights: {
       headline: "Visual Highlights",
       items: [
-        { src: "golden-square/Building_Street_Perspective_View.png", caption: "Premium Retail Frontage" },
-        { src: "golden-square/Interior_Courtyard_Seating_Area.png", caption: "Modern Commercial Elevation" },
-        { src: "golden-square/Interior_Mall_Retail_Floor.png", caption: "Retail Floor Concourse" },
-        { src: "golden-square/Interior_Office_Block_Atrium.png", caption: "Office Block Atrium" },
+        { src: "golden-square/Building_Street_Perspective_View.webp", caption: "Premium Retail Frontage" },
+        { src: "golden-square/Interior_Courtyard_Seating_Area.webp", caption: "Modern Commercial Elevation" },
+        { src: "golden-square/Interior_Mall_Retail_Floor.webp", caption: "Retail Floor Concourse" },
+        { src: "golden-square/Interior_Office_Block_Atrium.webp", caption: "Office Block Atrium" },
       ],
     },
     amenities: {
       headline: "Building Amenities",
-      feature: { src: "golden-square/Interior_Atrium_Mall_View.png" },
+      feature: { src: "golden-square/Interior_Atrium_Mall_View.webp" },
       items: AMENITIES_COMMERCIAL,
     },
     floorPlans: {
@@ -1649,13 +1649,13 @@ const goldenSquareAnk: Project = {
       headline: "Gallery",
       body: "A look at the building.",
       images: [
-        { src: "golden-square/Building_Main_Front_Elevation_Day.png" },
-        { src: "golden-square/Building_Front_Elevation_Parking_View.png" },
-        { src: "golden-square/Building_Street_Perspective_View.png" },
-        { src: "golden-square/Interior_Atrium_Mall_View.png" },
-        { src: "golden-square/Interior_Courtyard_Seating_Area.png" },
-        { src: "golden-square/Interior_Mall_Retail_Floor.png" },
-        { src: "golden-square/Interior_Office_Block_Atrium.png" },
+        { src: "golden-square/Building_Main_Front_Elevation_Day.webp" },
+        { src: "golden-square/Building_Front_Elevation_Parking_View.webp" },
+        { src: "golden-square/Building_Street_Perspective_View.webp" },
+        { src: "golden-square/Interior_Atrium_Mall_View.webp" },
+        { src: "golden-square/Interior_Courtyard_Seating_Area.webp" },
+        { src: "golden-square/Interior_Mall_Retail_Floor.webp" },
+        { src: "golden-square/Interior_Office_Block_Atrium.webp" },
       ],
     },
     pillars: { items: PILLARS_DEFAULT },
@@ -1840,22 +1840,22 @@ const goldenIndustrialEstate: Project = {
   area: "468 plots (17x100 / 17x120 ft)",
   status: "Completed",
   images: [
-    { src: "/commercial-hero.png" },
-    { src: "/commercial-hero.png" },
-    { src: "/commercial-hero.png" },
-    { src: "/commercial-hero.png" },
+    { src: "/commercial-hero.webp" },
+    { src: "/commercial-hero.webp" },
+    { src: "/commercial-hero.webp" },
+    { src: "/commercial-hero.webp" },
   ],
   detail: {
     hero: {
-      image: { src: "/commercial-hero.png" },
+      image: { src: "/commercial-hero.webp" },
       eyebrow: "Industrial Estate",
       tagline: "The strategic gateway for Surat's industrial growth.",
     },
     firstLook: {
       headline: "First Look",
       items: [
-        { src: "/commercial-hero.png", caption: "Estate Entry" },
-        { src: "/commercial-hero.png", caption: "Master Layout" },
+        { src: "/commercial-hero.webp", caption: "Estate Entry" },
+        { src: "/commercial-hero.webp", caption: "Master Layout" },
       ],
     },
     intro: {
@@ -1864,24 +1864,24 @@ const goldenIndustrialEstate: Project = {
     },
     summary: {
       cards: [
-        { src: "/commercial-hero.png", metric: "Delad, Surat", label: "Location" },
-        { src: "/commercial-hero.png", metric: "468 Plots", label: "Inventory" },
-        { src: "/commercial-hero.png", metric: "17x100 / 17x120 ft", label: "Plot Sizes" },
-        { src: "/commercial-hero.png", metric: "NH 48", label: "Connectivity" },
+        { src: "/commercial-hero.webp", metric: "Delad, Surat", label: "Location" },
+        { src: "/commercial-hero.webp", metric: "468 Plots", label: "Inventory" },
+        { src: "/commercial-hero.webp", metric: "17x100 / 17x120 ft", label: "Plot Sizes" },
+        { src: "/commercial-hero.webp", metric: "NH 48", label: "Connectivity" },
       ],
     },
     highlights: {
       headline: "Visual Highlights",
       items: [
-        { src: "/commercial-hero.png", caption: "468 Premium Industrial Plots" },
-        { src: "/commercial-hero.png", caption: "Wide RCC Roads & Street Lights" },
-        { src: "/commercial-hero.png", caption: "Dedicated Gas & Drainage Lines" },
-        { src: "/commercial-hero.png", caption: "4 Large Garden Areas" },
+        { src: "/commercial-hero.webp", caption: "468 Premium Industrial Plots" },
+        { src: "/commercial-hero.webp", caption: "Wide RCC Roads & Street Lights" },
+        { src: "/commercial-hero.webp", caption: "Dedicated Gas & Drainage Lines" },
+        { src: "/commercial-hero.webp", caption: "4 Large Garden Areas" },
       ],
     },
     amenities: {
       headline: "Estate Amenities",
-      feature: { src: "/commercial-hero.png" },
+      feature: { src: "/commercial-hero.webp" },
       items: [
         { key: "parking", label: "Heavy Vehicle Movement" },
         { key: "security", label: "Compound Security" },
@@ -1927,7 +1927,7 @@ const goldenIndustrialEstate: Project = {
     gallery: {
       headline: "Gallery",
       body: "A look at the estate.",
-      images: [{ src: "/commercial-hero.png" }],
+      images: [{ src: "/commercial-hero.webp" }],
     },
     pillars: { items: PILLARS_DEFAULT },
   },
