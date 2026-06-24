@@ -12,6 +12,7 @@ export default function ContactPage() {
   return (
     <main className="relative w-full bg-black text-white">
       <ContactSection />
+      <CareersSection />
       <SiteFooter />
     </main>
   );
@@ -19,24 +20,25 @@ export default function ContactPage() {
 
 function ContactSection() {
   return (
-    <section className="relative w-full pt-[120px] md:pt-[140px]">
-      {/* Vertical center divider - desktop only; aligns with footer's central border */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px bg-[#464646] md:block"
-      />
-
-      <div className="relative grid grid-cols-1 md:grid-cols-2">
+    <section className="relative w-full">
+      <div className="relative grid grid-cols-1 md:grid-cols-2 border-b border-[#464646]">
         {/* LEFT - Contact title */}
-        <div className="flex items-start px-[30px] pb-12 pt-6 md:pt-12">
+        <div className="flex items-start px-[30px] pb-12 pt-[120px] md:pt-[140px]">
           <h1 className="text-[40px] font-normal leading-[1.1] tracking-tight text-white md:text-[52px]">
             Contact
           </h1>
         </div>
+        {/* RIGHT - empty for balance */}
+        <div className="hidden md:block md:border-l md:border-[#464646]" />
+      </div>
 
-        {/* RIGHT - info cards + form */}
-        <div className="flex flex-col">
+      <div className="relative grid grid-cols-1 md:grid-cols-2 border-b border-[#464646]">
+        {/* LEFT - info cards */}
+        <div className="flex flex-col h-full">
           <InfoGrid />
+        </div>
+        {/* RIGHT - form */}
+        <div className="flex flex-col md:border-l md:border-[#464646]">
           <ContactForm />
         </div>
       </div>
@@ -46,14 +48,16 @@ function ContactSection() {
 
 function InfoGrid() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col -mt-px -mb-px h-full">
       <InfoCard
+        className="md:border-r-0"
         label="Email"
         value="info@goldengroup.in"
         action={{ kind: "copy", text: "info@goldengroup.in", verb: "Email" }}
       />
       <div className="-mt-px grid grid-cols-1 lg:grid-cols-2">
         <InfoCard
+          className="md:border-r-0 lg:border-r"
           label="Instagram"
           value="@goldengroupofficial"
           action={{
@@ -64,14 +68,16 @@ function InfoGrid() {
         />
         <div className="-mt-px lg:ml-[-1px] lg:mt-0">
           <InfoCard
+            className="md:border-r-0"
             label="Phone"
             value="+91 98765 43210"
             action={{ kind: "copy", text: "+919876543210", verb: "Phone" }}
           />
         </div>
       </div>
-      <div className="-mt-px">
+      <div className="-mt-px flex-1 flex flex-col">
         <InfoCard
+          className="md:border-r-0 md:border-b-0 flex-1"
           label="Location"
           value={
             <span className="block max-w-[640px]">
@@ -98,10 +104,12 @@ function InfoCard({
   label,
   value,
   action,
+  className = "",
 }: {
   label: string;
   value: ReactNode;
   action: CardAction;
+  className?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -138,7 +146,7 @@ function InfoCard({
     <button
       type="button"
       onClick={onClick}
-      className="card-hover group/info relative flex min-h-[180px] w-full flex-col justify-between overflow-hidden border border-[#464646] bg-black p-[30px] text-left md:min-h-[198px]"
+      className={`card-hover group/info relative flex min-h-[180px] w-full flex-col justify-between overflow-hidden border border-[#464646] bg-black p-[30px] text-left md:min-h-[198px] ${className}`}
     >
       <span
         aria-hidden
@@ -211,7 +219,7 @@ function ContactForm() {
   };
 
   return (
-    <div className="flex flex-col gap-6 border-t border-[#464646] p-[30px] md:border-l md:border-t-0">
+    <div className="flex flex-col gap-6 p-[30px]">
       <h2 className="text-[28px] font-normal leading-[1.2] tracking-tight text-white md:text-[36px]">
         Get in touch
       </h2>
@@ -284,17 +292,32 @@ function SuccessState() {
   );
 }
 
-function PillButton({ label }: { label: string }) {
+function PillButton({
+  label,
+  disabled = false,
+}: {
+  label: string;
+  disabled?: boolean;
+}) {
   return (
     <button
       type="submit"
-      className="pill-hover relative block h-[50px] w-[245px] shrink-0 overflow-hidden bg-white text-black"
-      style={{ transition: `opacity 700ms ${EASE}, transform 700ms ${EASE}` }}
+      disabled={disabled}
+      className={`pill-hover relative block h-[50px] w-[245px] shrink-0 overflow-hidden transition-all duration-300 ${
+        disabled
+          ? "bg-neutral-955 border border-neutral-800 text-neutral-500 cursor-not-allowed"
+          : "bg-white text-black"
+      }`}
+      style={{
+        transition: `opacity 700ms ${EASE}, transform 700ms ${EASE}, background-color 300ms ${EASE}, color 300ms ${EASE}, border-color 300ms ${EASE}`,
+      }}
     >
-      <span
-        aria-hidden
-        className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
-      />
+      {!disabled && (
+        <span
+          aria-hidden
+          className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
+        />
+      )}
       <span className="relative z-10 flex h-full w-full items-end justify-between px-[12px] pb-[8px] pt-[4px] text-sm font-medium">
         {label}
         <PillStarIcon />
@@ -326,12 +349,16 @@ function Field({
   type = "text",
   placeholder,
   required,
+  value,
+  onChange,
 }: {
   label: string;
   name: string;
   type?: string;
   placeholder?: string;
   required?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <input
@@ -340,6 +367,8 @@ function Field({
       name={name}
       required={required}
       placeholder={placeholder}
+      value={value}
+      onChange={onChange}
       className="w-full bg-[#131313] px-3 py-4 text-[15px] text-white outline-none transition-colors duration-300 placeholder:text-[#a1a1a1] focus:bg-[#2a2114] md:text-base"
     />
   );
@@ -350,11 +379,15 @@ function TextareaField({
   name,
   placeholder,
   required,
+  value,
+  onChange,
 }: {
   label: string;
   name: string;
   placeholder?: string;
   required?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) {
   return (
     <textarea
@@ -362,8 +395,284 @@ function TextareaField({
       name={name}
       required={required}
       placeholder={placeholder}
-      rows={6}
-      className="min-h-[180px] w-full resize-none bg-[#131313] px-3 py-4 text-[15px] text-white outline-none transition-colors duration-300 placeholder:text-[#a1a1a1] focus:bg-[#2a2114] md:min-h-[234px] md:text-base"
+      value={value}
+      onChange={onChange}
+      rows={3}
+      className="min-h-[120px] w-full resize-none bg-[#131313] px-3 py-4 text-[15px] text-white outline-none transition-colors duration-300 placeholder:text-[#a1a1a1] focus:bg-[#2a2114] md:min-h-[148px] md:text-base"
     />
+  );
+}
+
+function CareersSection() {
+  return (
+    <section className="relative w-full border-t border-[#464646] -mt-px">
+      <div className="relative grid grid-cols-1 md:grid-cols-2">
+        {/* LEFT - Careers title */}
+        <div className="flex items-start px-[30px] pb-12 pt-[120px] md:pt-[140px]">
+          <h2 className="text-[40px] font-normal leading-[1.1] tracking-tight text-white md:text-[52px]">
+            Careers
+          </h2>
+        </div>
+
+        {/* RIGHT - form */}
+        <div className="flex flex-col md:border-l md:border-[#464646] pt-[120px] md:pt-[140px]">
+          <CareersForm />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CareersForm() {
+  const [submitted, setSubmitted] = useState(false);
+  const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+  const [resume, setResume] = useState<File | null>(null);
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
+  const [experience, setExperience] = useState("");
+  const [message, setMessage] = useState("");
+
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  useEffect(() => {
+    if (submitted) return;
+    const el = formRef.current;
+    if (!el) return;
+    const measure = () => setLockedHeight(el.offsetHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [submitted]);
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (formRef.current) setLockedHeight(formRef.current.offsetHeight);
+    setSubmitted(true);
+    window.setTimeout(() => {
+      setSubmitted(false);
+      setResume(null);
+      setName("");
+      setPhone("");
+      setEmail("");
+      setRole("");
+      setExperience("");
+      setMessage("");
+    }, 2500);
+  };
+
+  const isFormValid =
+    name.trim() !== "" &&
+    phone.trim() !== "" &&
+    email.trim() !== "" &&
+    role.trim() !== "" &&
+    experience.trim() !== "" &&
+    message.trim() !== "" &&
+    resume !== null;
+
+  return (
+    <div className="flex flex-col gap-6 p-[30px]">
+      <h2 className="text-[28px] font-normal leading-[1.2] tracking-tight text-white md:text-[36px]">
+        Join Our Team
+      </h2>
+
+      <div style={{ minHeight: lockedHeight ?? undefined }}>
+        {submitted ? (
+          <CareersSuccessState />
+        ) : (
+          <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-6">
+            <Field
+              label="Name"
+              name="name"
+              placeholder="Your full name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field
+                label="Phone Number"
+                name="phone"
+                type="tel"
+                placeholder="Your phone number"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+              <Field
+                label="Your Email"
+                name="email"
+                type="email"
+                placeholder="Your email address"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field
+                label="Function / Role"
+                name="function"
+                placeholder="E.g., Site Engineer, Architect"
+                required
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              />
+              <Field
+                label="Years of Experience"
+                name="experience"
+                placeholder="E.g., 5 Years"
+                required
+                value={experience}
+                onChange={(e) => setExperience(e.target.value)}
+              />
+            </div>
+            <TextareaField
+              label="Cover Note"
+              name="message"
+              placeholder="Tell us about yourself..."
+              required
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-4 justify-start">
+              <ResumeUploadButton file={resume} onChange={setResume} />
+              <PillButton label="Send Application" disabled={!isFormValid} />
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CareersSuccessState() {
+  const [data, setData] = useState<unknown>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/success-confetti.json")
+      .then((r) => r.json())
+      .then((json) => {
+        if (!cancelled) setData(json);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
+      <div className="h-[180px] w-[180px]">
+        {data ? (
+          <Lottie animationData={data} loop={false} autoplay className="h-full w-full" />
+        ) : null}
+      </div>
+      <p className="text-[18px] font-medium text-white md:text-[20px]">
+        Application Submitted
+      </p>
+      <p className="max-w-[36ch] text-sm leading-[1.5] text-white/70">
+        Thanks for your interest in joining Golden Group. Our team will review your application and get back to you shortly.
+      </p>
+    </div>
+  );
+}
+
+function ResumeUploadButton({
+  file,
+  onChange,
+}: {
+  file: File | null;
+  onChange: (file: File | null) => void;
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (file) {
+      e.stopPropagation();
+      onChange(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } else {
+      fileInputRef.current?.click();
+    }
+  };
+
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0] || null;
+    onChange(selected);
+  };
+
+  const truncateFileName = (name: string, maxLen = 18) => {
+    if (name.length <= maxLen) return name;
+    return name.slice(0, 8) + "..." + name.slice(-7);
+  };
+
+  return (
+    <div className="relative shrink-0">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.doc,.docx"
+        className="hidden"
+        onChange={onFileChange}
+      />
+      <button
+        type="button"
+        onClick={onClick}
+        className={`group/upload relative flex h-[50px] w-[245px] shrink-0 items-end justify-between border px-[12px] pb-[8px] pt-[4px] text-sm font-medium transition-all duration-300 ${
+          file
+            ? "border-white bg-white text-black"
+            : "border-[#464646] bg-black text-white hover:border-white hover:bg-white hover:text-black"
+        }`}
+      >
+        <span>{file ? truncateFileName(file.name) : "Upload Resume"}</span>
+        {file ? <CrossIcon /> : <UploadIcon />}
+      </button>
+    </div>
+  );
+}
+
+function UploadIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="transition-colors duration-300"
+    >
+      <path d="M12 10v3H4v-3M8 3v7M5 6l3-3 3 3" />
+    </svg>
+  );
+}
+
+function CrossIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="transition-all duration-350 group-hover/upload:rotate-90"
+    >
+      <path d="M12 4L4 12M4 4l8 8" />
+    </svg>
   );
 }
