@@ -690,9 +690,9 @@ function Accreditations() {
 function Milestones() {
   const stats = [
     { value: "+10M", label: "sq. ft. built since 2005" },
-    { value: "+6.3k", label: "Residential Units" },
-    { value: "+10k", label: "Happy Customers" },
-    { value: "+2.7k", label: "Commercial Units" },
+    { value: "+6.3K", label: "Residential Units" },
+    { value: "+10K", label: "Happy Customers" },
+    { value: "+2.7K", label: "Commercial Units" },
   ];
   return (
     <section className="border-t border-[#464646] bg-black">

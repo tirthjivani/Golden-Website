@@ -42,8 +42,62 @@ function Hero() {
   const titleWords = headlineText.split(/\s+/).length;
   const ctaDelay = headlineStart + titleWords * 70 + 200;
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sec = sectionRef.current;
+    const title = titleRef.current;
+    if (!sec || !title) return;
+
+    let rafId = 0;
+    let scheduled = false;
+
+    const update = () => {
+      scheduled = false;
+      const rect = sec.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const y = -rect.top;
+      const limit = rect.height - vh;
+
+      if (limit <= 0) return;
+
+      const zone = 300; // Transition zone in pixels
+      const H = 100;    // Maximum lift in pixels
+
+      let ty = 0;
+      if (y < limit - zone) {
+        ty = 0;
+      } else if (y >= limit - zone && y < limit) {
+        const t = (y - (limit - zone)) / zone;
+        const ease = t * t * (3 - 2 * t);
+        ty = -H * ease;
+      } else {
+        ty = -H;
+      }
+
+      title.style.transform = `translate3d(0, ${ty}px, 0)`;
+    };
+
+    const onScroll = () => {
+      if (scheduled) return;
+      scheduled = true;
+      rafId = requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   return (
-    <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
+    <section ref={sectionRef} className="relative h-[200vh] min-h-[1280px] w-full">
       <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand"}`}>
         <Image
           src="/commercial-hero.webp"
@@ -52,22 +106,34 @@ function Hero() {
           priority
           fetchPriority="high"
           sizes="100vw"
-          className="object-cover min-[1440px]:[object-position:center_-400px]"
+          className="object-cover object-top"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black" />
 
-      <div className="relative z-10 flex h-full w-full flex-col p-[30px]">
-        <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
-          <WordReveal
-            as="h2"
-            text={headlineText}
-            startDelay={headlineStart}
-            className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
+      <div className="absolute inset-0 z-10 flex flex-col justify-end">
+        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[30px] px-[30px]">
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 bottom-[-40px]"
+            style={{
+              background: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.1) 85%, rgba(0,0,0,0) 100%)"
+            }}
           />
-          <HeroRise delay={ctaDelay}>
-            <Pill href="/projects" label="See latest projects" />
-          </HeroRise>
+          <div
+            ref={titleRef}
+            style={{ willChange: "transform" }}
+            className="relative z-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10"
+          >
+            <WordReveal
+              as="h2"
+              text={headlineText}
+              startDelay={headlineStart}
+              className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
+            />
+            <HeroRise delay={ctaDelay} className="shrink-0">
+              <Pill href="/projects" label="See latest projects" />
+            </HeroRise>
+          </div>
         </div>
       </div>
     </section>
@@ -145,7 +211,7 @@ function StatsGallery() {
         <Reveal as="div" delay={120}>
           <div className="flex items-end gap-4">
             <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
-              +2.7
+              +2.7K
             </span>
             <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
               <span>commercial</span>
@@ -276,6 +342,7 @@ function ProjectsSection() {
   const total = PROJECTS.length + 1;
   const cardW = useResponsiveCardWidth();
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const router = useRouter();
   const next = () => setActive((i) => Math.min(total - 1, i + 1));
@@ -292,6 +359,55 @@ function ProjectsSection() {
     if (dx < 0) next();
     else prev();
   };
+
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+
+    let lastScrollTime = 0;
+    const COOLDOWN = 800; // ms transition duration + small buffer
+
+    const handleWheel = (e: WheelEvent) => {
+      const now = Date.now();
+      const hasHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      const isShift = e.shiftKey;
+
+      if (hasHorizontal || isShift) {
+        // Prevent default browser/page scrolling behavior
+        e.preventDefault();
+
+        // Check if transition is currently running
+        if (now - lastScrollTime < COOLDOWN) return;
+
+        if (hasHorizontal) {
+          if (e.deltaX > 5) {
+            // Drag finger from right to left (scrolls right) -> next project
+            setActive((i) => Math.min(total - 1, i + 1));
+            lastScrollTime = now;
+          } else if (e.deltaX < -5) {
+            // Drag finger from left to right (scrolls left) -> prev project
+            setActive((i) => Math.max(0, i - 1));
+            lastScrollTime = now;
+          }
+        } else if (isShift) {
+          if (e.deltaY > 5) {
+            // Scroll down + Shift -> goes towards left scroll (prev project)
+            setActive((i) => Math.max(0, i - 1));
+            lastScrollTime = now;
+          } else if (e.deltaY < -5) {
+            // Scroll up + Shift -> goes towards right scroll (next project)
+            setActive((i) => Math.min(total - 1, i + 1));
+            lastScrollTime = now;
+          }
+        }
+      }
+    };
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => {
+      el.removeEventListener("wheel", handleWheel);
+    };
+  }, [total]);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -372,6 +488,7 @@ function ProjectsSection() {
       </div>
 
       <div
+        ref={scrollContainerRef}
         className="mt-12 overflow-hidden md:mt-16"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
@@ -440,8 +557,9 @@ function ProjectCard({
   cardW: number;
 }) {
   return (
-    <article
-      className="flex shrink-0 flex-col gap-2 pt-5"
+    <Link
+      href={`/project/${project.slug}`}
+      className="group flex shrink-0 flex-col gap-2 pt-5"
       style={{
         width: cardW,
         borderTop: "2px solid",
@@ -455,11 +573,11 @@ function ProjectCard({
         alt={project.name}
         fill
         sizes="(min-width: 1024px) 380px, (min-width: 640px) 300px, 80vw"
-        className="object-cover"
+        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
         containerClassName="relative aspect-[380/370] w-full"
       />
       <div className="mt-2 flex w-full flex-col gap-3 pr-4">
-        <h4 className="text-[24px] font-normal leading-[1.4] text-white">
+        <h4 className="text-[24px] font-normal leading-[1.4] text-white transition-colors duration-300 group-hover:text-[#C19B4D]">
           {project.name}
         </h4>
         <ul className="flex flex-col gap-2 text-[16px] text-[#737373]">
@@ -477,7 +595,7 @@ function ProjectCard({
           </li>
         </ul>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -667,7 +785,7 @@ function FinalCta() {
 
         <Reveal delay={120} className="relative">
           <RevealImage
-            src="/projects/golden-square-bharuch/Entrance Foyer-Final.jpg"
+            src="/projects/golden-square-bharuch/Entrance Foyer-Final.webp"
             alt=""
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
