@@ -206,26 +206,31 @@ function ProjectFacts({ project }: { project: Project }) {
   const facts: { label: string; value: string; sub?: string }[] = [
     { label: "Location", value: project.location },
     { label: "Type", value: project.category },
-    {
-      label: "RERA",
-      value: project.rera ?? "Pending",
-      sub: project.reraIssuedOn ? `Issued ${project.reraIssuedOn}` : undefined,
-    },
   ];
-  const cellClass = (i: number, last: boolean) =>
+  if (project.rera) {
+    facts.push({
+      label: "RERA",
+      value: project.rera,
+      sub: project.reraIssuedOn ? `Issued ${project.reraIssuedOn}` : undefined,
+    });
+  }
+  const total = facts.length + 1; // + Carpet Area cell
+  const mdColsClass = total === 4 ? "md:grid-cols-4" : "md:grid-cols-3";
+  const lastBottomRowStart = total % 2 === 0 ? total - 2 : total - 1;
+  const cellClass = (i: number) =>
     `flex flex-col gap-3 px-[30px] py-10 md:py-14 ${
-      !last ? "md:border-r md:border-[#464646]" : ""
-    } ${i < 2 ? "border-b border-[#464646] md:border-b-0" : ""} ${
-      i === 0 || i === 2 ? "border-r border-[#464646]" : ""
-    }`;
+      i < total - 1 ? "md:border-r md:border-[#464646]" : ""
+    } ${
+      i < lastBottomRowStart ? "border-b border-[#464646] md:border-b-0" : ""
+    } ${i % 2 === 0 && i + 1 < total ? "border-r border-[#464646]" : ""}`;
   return (
     <section className="border-t border-[#464646] bg-black">
-      <dl className="grid grid-cols-2 md:grid-cols-4">
+      <dl className={`grid grid-cols-2 ${mdColsClass}`}>
         {facts.map((f, i) => (
           <Reveal
             key={f.label}
             delay={120 + i * 100}
-            className={cellClass(i, false)}
+            className={cellClass(i)}
           >
             <div className="flex items-start justify-between gap-3">
               <dt className="text-[13px] tracking-tight text-white/55">
@@ -245,7 +250,7 @@ function ProjectFacts({ project }: { project: Project }) {
         <CarpetAreaCell
           project={project}
           delay={120 + facts.length * 100}
-          className={cellClass(facts.length, true)}
+          className={cellClass(facts.length)}
         />
       </dl>
     </section>

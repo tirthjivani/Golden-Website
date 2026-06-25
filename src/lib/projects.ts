@@ -89,6 +89,9 @@ export type Landmark = {
   distanceKm: number;
   minutes: number;
   bearing?: number;
+  // Real geographic position [lng, lat], when known. Falls back to a synthetic
+  // position around the project when absent. See src/lib/landmarkCoords.ts.
+  coords?: [number, number];
 };
 
 export type Pillar = {
@@ -353,13 +356,11 @@ function specs(...rows: [string, string][]): SpecificationItem[] {
 const goldenLuxuria: Project = {
   id: "golden-luxuria",
   slug: "golden-luxuria",
-  rera: "RAA11279",
-  reraIssuedOn: "02/03/2023",
   name: "Golden Luxuria",
   type: "residential",
-  category: "3 & 4 BHK Flats",
+  category: "2 & 3 BHK Flats",
   location: "Bharuch",
-  area: "1600 - 2400 Sq. Ft. (SBUA)",
+  area: "676 - 959 Sq. Ft.",
   status: "Completed",
   images: [
     { src: "golden-luxuria/Main_Entrance_Gate_Day_Perspective.jpg" },
@@ -388,9 +389,9 @@ const goldenLuxuria: Project = {
     summary: {
       cards: [
         { src: "golden-luxuria/Main_Entrance_Gate_Day_Perspective.jpg", metric: "Tavra, Bharuch", label: "Location" },
-        { src: "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg", metric: "1600 - 2400 Sq.Ft.", label: "SBUA" },
-        { src: "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg", metric: "3 & 4 BHK", label: "Type" },
-        { src: "golden-luxuria/Residential_Complex_Birdview_Aerial.jpg", metric: "3 Towers", label: "A, B & C" },
+        { src: "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg", metric: "676 - 959 Sq.Ft.", label: "Carpet" },
+        { src: "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg", metric: "2 & 3 BHK", label: "Type" },
+        { src: "golden-luxuria/Residential_Complex_Birdview_Aerial.jpg", metric: "5 Blocks", label: "A, B, C, D & E" },
       ],
     },
     highlights: {
@@ -399,7 +400,7 @@ const goldenLuxuria: Project = {
         { src: "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg", caption: "Grand entrance lobby" },
         { src: "golden-luxuria/Interior_Banquet_Hall_Formal_Setup.jpg", caption: "Private banquet hall" },
         { src: "golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.jpg", caption: "Zen garden & meditation spaces" },
-        { src: "golden-luxuria/Residential_Complex_Birdview_Aerial.jpg", caption: "3 BHK & 4 BHK residences" },
+        { src: "golden-luxuria/Residential_Complex_Birdview_Aerial.jpg", caption: "2 BHK & 3 BHK residences" },
       ],
     },
     amenities: {
@@ -422,48 +423,66 @@ const goldenLuxuria: Project = {
       body: "Premium Residential Tower Layouts.",
       groups: [
         {
+          id: "2bhk",
+          label: "2 BHK (Block A, B, D & E)",
+          plans: [
+            {
+              id: "2bhk-type-1",
+              label: "2 BHK",
+              metrics: [
+                { label: "C.A.", value: "676.48 SQ.FT." },
+                { label: "R.C.A.", value: "587.38 SQ.FT." },
+              ],
+              features: [
+                "Two comfortable, cross-ventilated bedrooms.",
+                "Living room opening onto the central passage.",
+                "Kitchen with an attached wash area.",
+                "Foyer, store and two bathrooms.",
+              ],
+              image: { src: "golden-luxuria/2bhk_typical_unit.webp" },
+              note: "*Final dimensions may vary on site.",
+            },
+          ],
+        },
+        {
           id: "3bhk",
-          label: "3 BHK (Tower A & C)",
+          label: "3 BHK (Block C)",
           plans: [
             {
               id: "3bhk-type-1",
               label: "3 BHK",
               metrics: [
-                { label: "SBUA", value: "1600 SQ.FT." },
-                { label: "TCA", value: "1177 SQ.FT." },
-                { label: "Carpet (C.A.)", value: "1133.58 SQ.FT." },
+                { label: "C.A.", value: "958.60 SQ.FT." },
+                { label: "R.C.A.", value: "873.38 SQ.FT." },
               ],
               features: [
-                "Triple Bedroom configuration with a Master Bedroom (10'0\" x 14'0\").",
-                "Expansive Living and Dining area (11'6\" x 23'6\") for luxury living.",
-                "Dedicated standing deck (5'0\" wide) for outdoor views.",
-                "Large Kitchen with 3'4.5\" wide platform and connected wash area.",
+                "Three bedrooms, including two spacious masters.",
+                "Large living room with a wide central passage.",
+                "Kitchen with an attached wash area.",
+                "Store room plus attached and common bathrooms.",
               ],
-              image: { src: "golden-luxuria/ground_floor_plan.webp", dimFill: true },
-              note: "*SBUA estimated at ~1.36x Carpet. Final dimensions may vary on site.",
+              image: { src: "golden-luxuria/3bhk_typical_unit.webp" },
+              note: "*Final dimensions may vary on site.",
             },
           ],
         },
         {
-          id: "4bhk",
-          label: "4 BHK (Tower B)",
+          id: "ground-floor",
+          label: "Ground Floor",
           plans: [
             {
-              id: "4bhk-type-1",
-              label: "4 BHK",
+              id: "ground-floor-plan",
+              label: "Ground Floor Plan",
               metrics: [
-                { label: "SBUA", value: "2400 SQ.FT." },
-                { label: "TCA", value: "1776 SQ.FT." },
-                { label: "Carpet (C.A.)", value: "1714.49 SQ.FT." },
+                { label: "Drive Way", value: "33'0\" Wide" },
               ],
               features: [
-                "Multi-Master Suite configuration (17'0\" x 11'0\" and 10'0\" x 14'0\").",
-                "Integrated Servant Room with separate toilet for high-end functionality.",
-                "Massive Living Room (13'0\" x 23'0\") with attached premium deck.",
-                "Four dedicated bathrooms plus additional powder/servant facilities.",
+                "Entry, security cabin and pick-up/drop zone at the front.",
+                "Drive-ways with car and bike parking along all blocks.",
+                "Central landscape with water body, gazebo, jogging track and open gym.",
+                "Indoor games, party hall and party lawn at the central club.",
               ],
-              image: { src: "golden-luxuria/2bhk_typical_unit.webp" },
-              note: "*SBUA estimated at ~1.35x Carpet.",
+              image: { src: "golden-luxuria/ground_floor_plan.webp", dimFill: true },
             },
           ],
         },
@@ -475,11 +494,11 @@ const goldenLuxuria: Project = {
               id: "typical-floor",
               label: "Typical Floor Plate",
               metrics: [
-                { label: "Configuration", value: "3 + 4 BHK" },
+                { label: "Configuration", value: "2 + 3 BHK" },
               ],
               features: [
-                "Tower A & C: 3 BHK units.",
-                "Tower B: 4 BHK units.",
+                "Block A, B, D & E: 2 BHK units.",
+                "Block C: 3 BHK units.",
                 "Connected lobby and high-speed lifts on every floor.",
               ],
               image: { src: "golden-luxuria/typical_floor_plan.webp" },
@@ -492,10 +511,10 @@ const goldenLuxuria: Project = {
       headline: "Specifications",
       body: "Every detail, orchestrated for a life of balance and beauty.",
       items: specs(
-        ["Structure", "RCC framed design following earthquake-resistant codes. Solid block masonry or high-quality brickwork for all wall partitions."],
-        ["Architecture", "Contemporary facade with premium exterior textures. Granite or marble flooring in foyers and corridors. Interior walls with Birla white putty."],
-        ["Plumbing & Electrical", "International standard CP & sanitary fittings (Kohler / Jaquar equivalent). Fire-retardant copper wiring with premium modular switches."],
-        ["Windows & Doors", "Powder-coated aluminium windows with tinted glass. Flush doors with teak wood frames for a premium entrance experience."],
+        ["Structure", "R.C.C. frame structure. Roda waterproofing with china mosaic on the terrace."],
+        ["Architecture", "Rustic-texture and acrylic paint on the building exterior; putty finish in interior flats. 32x32 or 24x48 vitrified tile flooring with skirting, and kota stone in the wash area. Ceramic tile flooring with attractive glazed tiles in bathrooms. Granite kitchen platform with stainless-steel sink and full-height decorative tile dado."],
+        ["Plumbing & Electrical", "Concealed ISI, CPVC & UPVC plumbing with bathroom fittings and sanitary fittings. ISI-standard concealed electrical wiring - light, fan, TV, bell and bedroom AC points, plus a washing-machine point in the wash area."],
+        ["Windows & Doors", "Decorative main door with sal-wood frame; all internal door frames in granite. Anodized / Akzonobel heavy aluminium-section windows with granite jamb and heat-reflective, noise-reduction glass."],
       ),
     },
     gallery: {
@@ -535,9 +554,9 @@ const goldenHeaven: Project = {
   reraIssuedOn: "16/07/2022",
   name: "Golden Heaven",
   type: "residential",
-  category: "1 & 2 BHK Flats",
+  category: "3 & 4 BHK Flats",
   location: "Surat",
-  area: "615 - 1000 Sq. Ft. (SBUA)",
+  area: "1381 - 1943 Sq. Ft.",
   status: "Completed",
   images: [
     { src: "golden-heaven/Main_Entrance_Gate_Day_View.jpg" },
@@ -566,18 +585,18 @@ const goldenHeaven: Project = {
     summary: {
       cards: [
         { src: "golden-heaven/Main_Entrance_Gate_Day_View.jpg", metric: "Uttran, Surat", label: "Location" },
-        { src: "golden-heaven/Building_Front_Perspective_Daylight.jpg", metric: "615 - 1000 Sq.Ft.", label: "SBUA" },
-        { src: "golden-heaven/Building_Full_Elevation_Twilight.jpg", metric: "1 & 2 BHK", label: "Type" },
-        { src: "golden-heaven/Residential_Complex_Birdview_Aerial.jpg", metric: "5 Towers", label: "A - E" },
+        { src: "golden-heaven/Building_Front_Perspective_Daylight.jpg", metric: "1381 - 1943 Sq.Ft.", label: "Carpet" },
+        { src: "golden-heaven/Building_Full_Elevation_Twilight.jpg", metric: "3 & 4 BHK", label: "Type" },
+        { src: "golden-heaven/Residential_Complex_Birdview_Aerial.jpg", metric: "3 Buildings", label: "A, B & C" },
       ],
     },
     highlights: {
       headline: "Visual Highlights",
       items: [
-        { src: "golden-heaven/Building_Full_Elevation_Twilight.jpg", caption: "Twin-tower modern façade" },
+        { src: "golden-heaven/Building_Full_Elevation_Twilight.jpg", caption: "Modern tower façade" },
         { src: "golden-heaven/Children_Play_Area_Amenities.jpg", caption: "Children's play & recreation zone" },
         { src: "golden-heaven/Garden_Landscaping_Lawn_Area.jpg", caption: "Landscaped gardens & open lawns" },
-        { src: "golden-heaven/Residential_Complex_Birdview_Aerial.jpg", caption: "1 BHK & 2 BHK, 5 towers" },
+        { src: "golden-heaven/Residential_Complex_Birdview_Aerial.jpg", caption: "3 BHK & 4 BHK, 3 buildings" },
       ],
     },
     amenities: {
@@ -591,48 +610,40 @@ const goldenHeaven: Project = {
       body: "Typical 1st to 7th Floor Layouts.",
       groups: [
         {
-          id: "1bhk",
-          label: "1 BHK (Tower B & C)",
+          id: "3bhk",
+          label: "3 BHK (Building A & C)",
           plans: [
             {
-              id: "1bhk-typical",
-              label: "1 BHK",
-              metrics: [
-                { label: "SBUA", value: "615 SQ.FT." },
-                { label: "TCA", value: "459 SQ.FT." },
-                { label: "Carpet (C.A.)", value: "438.30 SQ.FT." },
-              ],
+              id: "3bhk-unit",
+              label: "3 BHK",
+              metrics: [{ label: "C.A.", value: "1381.00 SQ.FT." }],
               features: [
-                "Integrated Kitchen and Wash area for space efficiency.",
-                "Living and Dining space of 10'0\" x 15'0\" for comfortable hosting.",
-                "Master Bedroom (10'0\" x 12'0\") with attached ventilation balcony.",
-                "Large common toilet (4'0\" x 6'6\") design.",
+                "Three well-proportioned bedrooms, two of them spacious masters.",
+                "Expansive living and dining hall opening onto a private deck.",
+                "Large kitchen with a connected utility and wash area.",
+                "Three bathrooms - attached, secondary and common.",
               ],
-              image: { src: "golden-heaven/typical_plan.webp" },
-              note: "*SBUA estimated at ~1.35x Carpet.",
+              image: { src: "golden-heaven/3bhk_floor_plan.webp" },
+              note: "*Final dimensions may vary on site.",
             },
           ],
         },
         {
-          id: "2bhk",
-          label: "2 BHK (Tower A, D & E)",
+          id: "4bhk",
+          label: "4 BHK (Building B)",
           plans: [
             {
-              id: "2bhk-typical",
-              label: "2 BHK",
-              metrics: [
-                { label: "SBUA", value: "1000 SQ.FT." },
-                { label: "TCA", value: "730 SQ.FT." },
-                { label: "Carpet (C.A.)", value: "705.51 SQ.FT." },
-              ],
+              id: "4bhk-unit",
+              label: "4 BHK",
+              metrics: [{ label: "C.A.", value: "1943.00 SQ.FT." }],
               features: [
-                "Spacious Living Room (10'0\" x 16'0\") with separate Dining foyer.",
-                "Two large Bedrooms (both 12'0\" x 10'0\") for family privacy.",
-                "Master Bedroom features an attached toilet (4'0\" x 6'6\").",
-                "Expansive Wash area (9'0\" x 4'6\") connected to the Kitchen.",
+                "Four generously sized bedrooms for a large family.",
+                "Grand living room with an attached deck and a separate formal dining.",
+                "Spacious kitchen with adjoining store, puja and wash areas.",
+                "Bedrooms with dressing-toilets, plus common and powder bathrooms.",
               ],
-              image: { src: "golden-heaven/layout_plan.webp" },
-              note: "*SBUA estimated at ~1.37x Carpet.",
+              image: { src: "golden-heaven/4bhk_floor_plan.webp" },
+              note: "*Final dimensions may vary on site.",
             },
           ],
         },
@@ -643,12 +654,62 @@ const goldenHeaven: Project = {
             {
               id: "typical-plan",
               label: "Typical Floor Plate",
-              metrics: [{ label: "Configuration", value: "1 + 2 BHK" }],
+              metrics: [{ label: "Configuration", value: "3 + 4 BHK" }],
               features: [
-                "1 BHK in Towers B & C, 2 BHK in Towers A, D & E.",
-                "Tower core with two elevators and stair lobbies.",
+                "3 BHK in Buildings A & C, 4 BHK in Building B.",
+                "Building core with two elevators and stair lobby.",
               ],
               image: { src: "golden-heaven/typical_plan.webp" },
+            },
+          ],
+        },
+        {
+          id: "layout",
+          label: "Layout Plan",
+          plans: [
+            {
+              id: "layout-plan",
+              label: "Ground Layout",
+              metrics: [],
+              features: [
+                "Entrance gate, security cabin and entrance foyer.",
+                "Water body with deck, gymnasium, banquet hall and skating rink.",
+                "Car wash, child play area, senior-citizen and landscape gardens.",
+                "Ramp to basement, wide internal roads and walkways.",
+              ],
+              image: { src: "golden-heaven/layout_plan.webp" },
+            },
+          ],
+        },
+        {
+          id: "basement-1",
+          label: "1st Basement",
+          plans: [
+            {
+              id: "basement-1-plan",
+              label: "1st Basement Floor Plan",
+              metrics: [{ label: "Level", value: "Parking" }],
+              features: [
+                "Covered car parking with internal driveways.",
+                "Ramp connection to ground and second basement.",
+              ],
+              image: { src: "golden-heaven/1st_basement_floor_plan.webp" },
+            },
+          ],
+        },
+        {
+          id: "basement-2",
+          label: "2nd Basement",
+          plans: [
+            {
+              id: "basement-2-plan",
+              label: "2nd Basement Floor Plan",
+              metrics: [{ label: "Level", value: "Parking" }],
+              features: [
+                "Additional covered car-parking level.",
+                "Internal driveways with ramp access.",
+              ],
+              image: { src: "golden-heaven/2nd_basement_floor_plan.webp" },
             },
           ],
         },
@@ -704,9 +765,9 @@ const goldenNirvana: Project = {
   reraIssuedOn: "18/09/2024",
   name: "Golden Nirvana",
   type: "residential",
-  category: "2 BHK Flats & 3 BHK Bungalows",
+  category: "2 BHK Flats, 3 BHK Bungalows & Shops",
   location: "Ankleshwar",
-  area: "950 - 1800 Sq. Ft. (SBUA)",
+  area: "705 - 1334 Sq. Ft.",
   status: "Completed",
   images: [
     { src: "golden-nirvana/Building_Low_Angle_Street_View.jpg" },
@@ -735,15 +796,15 @@ const goldenNirvana: Project = {
     summary: {
       cards: [
         { src: "golden-nirvana/Building_Low_Angle_Street_View.jpg", metric: "GIDC, Ankleshwar", label: "Location" },
-        { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg", metric: "950 - 1800 Sq.Ft.", label: "SBUA" },
-        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp", metric: "2 BHK + Bungalow", label: "Type" },
+        { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg", metric: "705 - 1334 Sq.Ft.", label: "Carpet" },
+        { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp", metric: "2 BHK, Bungalow & Shops", label: "Type" },
         { src: "golden-nirvana/Community_Park_Aerial_Birdview.jpg", metric: "5 Blocks", label: "A - E" },
       ],
     },
     highlights: {
       headline: "Visual Highlights",
       items: [
-        { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg", caption: "2 BHK towers & private bungalows" },
+        { src: "golden-nirvana/Exterior_Frontage_Aerial.jpg", caption: "2 BHK towers, bungalows & shops" },
         { src: "golden-nirvana/Community_Park_Aerial_Birdview.jpg", caption: "Open parks & community gardens" },
         { src: "golden-nirvana/Landscape_Garden_Zen_Seating_Area.jpg", caption: "Dedicated leisure & recreational zones" },
         { src: "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp", caption: "3 BHK private bungalows" },
@@ -767,18 +828,17 @@ const goldenNirvana: Project = {
               id: "2bhk-typical",
               label: "2 BHK (Blocks A–E)",
               metrics: [
-                { label: "SBUA", value: "950 SQ.FT." },
-                { label: "TCA", value: "705 SQ.FT." },
-                { label: "RCA", value: "680.00 SQ.FT." },
+                { label: "C.A.", value: "705.31 SQ.FT." },
+                { label: "R.C.A.", value: "680.00 SQ.FT." },
               ],
               features: [
-                "Typical floor plan applicable from 2nd to 7th floor of blocks.",
-                "Twin Bedroom suites both measuring 12'0\" x 10'0\" for equal comfort.",
-                "Generous Kitchen/Dining combo (9'0\" x 13'6\") for modern workflows.",
-                "Massive wash area (9'0\" x 4'6\") to accommodate all utility needs.",
+                "Typical layout repeated on the 2nd to 7th floors of Blocks A-E.",
+                "Two equally sized bedrooms, including a master.",
+                "Combined kitchen and dining with a connected wash area.",
+                "Living room opening to the central passage and twin lifts.",
               ],
               image: { src: "golden-nirvana/2bhk_typical_floor_plan_2nd_to_7th_floor_block_a,b,c,d,e.webp" },
-              note: "*SBUA estimated at ~1.35x Carpet.",
+              note: "*Final dimensions may vary on site.",
             },
             {
               id: "2bhk-first-floor",
@@ -803,8 +863,8 @@ const goldenNirvana: Project = {
                 { label: "Total Slab", value: "1334 SQ.FT." },
               ],
               features: [
-                "Triple Bedroom private layout with ground and first floor separation.",
-                "Private 8'0\" x 15'9\" parking and dedicated 6'0\" x 6'1.5\" garden space.",
+                "Living, kitchen and one bedroom on the ground floor.",
+                "Private covered parking with otta, garden and dry/wash areas.",
               ],
               image: { src: "golden-nirvana/bungalow_ground_floor_layout_plan.webp" },
             },
@@ -816,8 +876,8 @@ const goldenNirvana: Project = {
                 { label: "Terrace", value: "90 SQ.FT." },
               ],
               features: [
-                "Dedicated First Floor Store Room (6'0\" x 6'6\") for organized storage.",
-                "Private Terrace (90 SQ.FT.) for outdoor relaxation and expansion.",
+                "Two more bedrooms with a dress-toilet and a store on the first floor.",
+                "Private terrace for outdoor relaxation.",
               ],
               image: { src: "golden-nirvana/bungalow_first_floor_layout_plan.webp" },
             },
@@ -828,10 +888,10 @@ const goldenNirvana: Project = {
     specifications: {
       headline: "Specifications",
       items: specs(
-        ["Structure", "RCC framed structure designed for seismic stability. High-grade brick masonry for all wall systems."],
-        ["Architecture", "Tiled or smooth-finish exteriors with modern color palettes. Premium vitrified tile flooring and gypsum-finished internal walls."],
-        ["Plumbing & Electrical", "Superior CP and sanitary fittings in all bungalow and tower bathrooms. Concealed wiring with modular board systems."],
-        ["Windows & Doors", "Premium aluminium windows with sliding mechanism. Large entrance doors with premium wood polish and designer hardware."],
+        ["Structure", "R.C.C. frame structure. Roda waterproofing with china mosaic on the terrace."],
+        ["Architecture", "Rustic-texture and acrylic paint on the building exterior; putty finish in interior flats. 32x32 or 24x48 vitrified tile flooring with skirting, and kota stone in the wash area. Ceramic tile flooring with attractive glazed tiles in bathrooms. Granite kitchen platform with stainless-steel sink and lintel-level tile dado."],
+        ["Plumbing & Electrical", "Concealed ISI, CPVC & UPVC plumbing with bathroom fittings and sanitary fittings. ISI-standard concealed electrical wiring - light, fan, TV, bell and bedroom AC points, plus a washing-machine point in the wash area."],
+        ["Windows & Doors", "Decorative main door with wooden frame; all internal door frames in granite. Anodized / Akzonobel heavy aluminium-section windows with granite jamb and heat-reflective, noise-reduction glass."],
       ),
     },
     gallery: {
