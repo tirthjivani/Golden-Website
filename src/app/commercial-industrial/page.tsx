@@ -44,14 +44,14 @@ function Hero() {
 
   return (
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
-      <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand"}`}>
+      <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand-commercial"}`}>
         <Image
           src="/commercial-hero.png"
           alt=""
           fill
           priority
           fetchPriority="high"
-          sizes="100vw"
+          sizes="(min-width: 1024px) 60vw, 100vw"
           className="object-cover min-[1440px]:[object-position:center_-400px]"
         />
       </div>
@@ -145,7 +145,7 @@ function StatsGallery() {
         <Reveal as="div" delay={120}>
           <div className="flex items-end gap-4">
             <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
-              +2.7
+              +2.7k
             </span>
             <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
               <span>commercial</span>
@@ -293,6 +293,32 @@ function ProjectsSection() {
     else prev();
   };
 
+  // Trackpad / horizontal wheel: advance one project per gesture, locked
+  // until the slide eases into place so a single swipe never skips cards.
+  // Native non-passive listener so preventDefault stops the browser
+  // back/forward swipe gesture.
+  const carouselRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    let locked = false;
+    const onWheel = (e: WheelEvent) => {
+      const dx = e.deltaX;
+      if (Math.abs(dx) <= Math.abs(e.deltaY) || Math.abs(dx) < 12) return;
+      e.preventDefault();
+      if (locked) return;
+      locked = true;
+      setActive((i) =>
+        dx > 0 ? Math.min(total - 1, i + 1) : Math.max(0, i - 1),
+      );
+      window.setTimeout(() => {
+        locked = false;
+      }, 650);
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [total]);
+
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
@@ -372,6 +398,7 @@ function ProjectsSection() {
       </div>
 
       <div
+        ref={carouselRef}
         className="mt-12 overflow-hidden md:mt-16"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
@@ -667,7 +694,7 @@ function FinalCta() {
 
         <Reveal delay={120} className="relative">
           <RevealImage
-            src="/projects/golden-square-bharuch/Entrance Foyer-Final.jpg"
+            src="/projects/golden-square-bharuch/Entrance Foyer-Final.webp"
             alt=""
             fill
             sizes="(min-width: 768px) 50vw, 100vw"

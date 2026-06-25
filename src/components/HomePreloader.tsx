@@ -24,9 +24,9 @@ const STAR_PATH =
 const GOLD = "#C19B4D";
 const DRAW_MS = 2000;
 const STAGGER_MS = 0;
-const FILL_DELAY = DRAW_MS + 80;
+const FILL_DELAY = DRAW_MS;
 const WORDMARK_DELAY = FILL_DELAY + 100;
-const HOLD_MS = 250;
+const HOLD_MS = 1100;
 const FADE_MS = 500;
 const TOTAL_MS = WORDMARK_DELAY + 200 + HOLD_MS + FADE_MS;
 
@@ -164,9 +164,7 @@ export default function HomePreloader() {
           style={{
             opacity: filled ? 1 : 0,
             transform: filled ? "translateY(0)" : "translateY(8px)",
-            transition: `opacity 600ms ease ${
-              filled ? 250 : 0
-            }ms, transform 600ms ease ${filled ? 250 : 0}ms`,
+            transition: `opacity 400ms ease, transform 400ms ease`,
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}

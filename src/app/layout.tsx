@@ -43,7 +43,8 @@ export default function RootLayout({
         <SmoothScroll />
         <SiteShell>{children}</SiteShell>
         <ProjectTransitionOverlay />
-        {process.env.NODE_ENV === "development" && <Agentation />}
+        {process.env.NODE_ENV === "development" &&
+          process.env.NEXT_PUBLIC_ENABLE_AGENTATION !== "false" && <Agentation />}
       </body>
     </html>
   );
