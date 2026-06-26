@@ -306,7 +306,7 @@ function CarpetAreaCell({
   return (
     <Reveal delay={delay} className={`relative ${className}`}>
       <div className="flex items-start justify-between gap-3">
-        <dt className="text-[13px] tracking-tight text-white/55">Carpet Area</dt>
+        <dt className="text-[13px] tracking-tight text-white/55">{project.areaLabel ?? "Carpet Area"}</dt>
         {hasBoth ? (
           <div ref={wrapRef} className="relative">
             <button

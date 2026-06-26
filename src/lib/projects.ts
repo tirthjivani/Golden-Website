@@ -177,6 +177,7 @@ export type Project = {
   category: string;
   location: string;
   area: string;
+  areaLabel?: string;
   status: ProjectStatus;
   rera?: string;
   reraIssuedOn?: string;
@@ -1234,12 +1235,12 @@ const goldenHomes: Project = {
 const goldenPalmVilla: Project = {
   id: "golden-palm-villa",
   slug: "golden-palm-villa",
-  rera: "Pre-RERA project",
   name: "Golden Palm Villa",
   type: "residential",
   category: "3 BHK Bungalows",
   location: "Ankleshwar",
-  area: "Plot-based",
+  area: "G + 1 Bungalow",
+  areaLabel: "Layout",
   status: "Completed",
   images: [
     { src: "golden-palm-villa/Bungalow_Street_Level_Day_View.jpg" },
@@ -1300,20 +1301,28 @@ const goldenPalmVilla: Project = {
       groups: [
         {
           id: "3bhk",
-          label: "3 BHK Bungalow",
+          label: "3 BHK Bungalow (G + 1)",
           plans: [
             {
-              id: "palm-villa-3bhk",
-              label: "3 BHK Bungalow",
-              metrics: [{ label: "Configuration", value: "3 BHK" }],
+              id: "palm-villa-ground",
+              label: "Ground Floor",
+              metrics: [],
               features: [
-                "Luxury living with natural beauty across 74 private family homes.",
-                "State-of-the-art amenities including a dedicated club house.",
-                "Generously sized 3 BHK layout with open garden space per unit.",
-                "Specifically curated brands for all infrastructure and finishes.",
+                "Drawing room, kitchen and one bedroom with bath.",
+                "Private covered parking, otta and a garden.",
               ],
               image: { src: "" },
-              note: "Detailed plan drawings available on request.",
+              note: "Detailed floor plan drawings available on request.",
+            },
+            {
+              id: "palm-villa-first",
+              label: "First Floor",
+              metrics: [],
+              features: [
+                "Two more bedrooms, a lounge and a children's room with two toilets.",
+                "Private balcony and an open terrace.",
+              ],
+              image: { src: "" },
             },
           ],
         },
@@ -1492,12 +1501,12 @@ const goldenResidency: Project = {
 const goldenPalmPlaza: Project = {
   id: "golden-palm-plaza",
   slug: "golden-palm-plaza",
-  rera: "Pre-RERA project",
   name: "Golden Palm Plaza",
   type: "commercial-industrial",
   category: "Shops & Offices",
   location: "Ankleshwar",
-  area: "100 units across 5 floors",
+  area: "100 units · 5 floors",
+  areaLabel: "Inventory",
   status: "Completed",
   images: [
     { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp" },
@@ -1612,7 +1621,8 @@ const goldenSquareAnk: Project = {
   type: "commercial-industrial",
   category: "Commercial Shops & Offices",
   location: "Ankleshwar",
-  area: "1,00,000 Sq. Ft. (Built-up)",
+  area: "1,00,000 Sq. Ft.",
+  areaLabel: "Built-up Area",
   status: "Completed",
   images: [
     { src: "golden-square/Building_Main_Front_Elevation_Day.webp" },
@@ -1898,7 +1908,8 @@ const goldenIndustrialEstate: Project = {
   type: "commercial-industrial",
   category: "Industrial Plots",
   location: "Surat",
-  area: "468 plots (17x100 / 17x120 ft)",
+  area: "468 (17x100 / 17x120 ft)",
+  areaLabel: "Plots",
   status: "Completed",
   images: [
     { src: "/commercial-hero.webp" },
