@@ -26,18 +26,13 @@ export default function AboutPage() {
       <Statement
         label="Vision"
         body="To become a landmark real estate brand that shapes city skylines through iconic developments and earns lifelong trust through consistent quality and reliability."
-        imageAlign="right"
-        imageSrc="/about/vision.png"
-        imageAlt="Golden Group cityscape vision"
-      />
-      <WhyChooseUs />
-      <Statement
-        label="Mission"
-        body="To design and deliver well-planned residential and commercial spaces by following ethical practices, maintaining precision in execution, and creating long-term value for customers, investors, and communities."
+        label2="Mission"
+        body2="To design and deliver well-planned residential and commercial spaces by following ethical practices, maintaining precision in execution, and creating long-term value for customers, investors, and communities."
         imageAlign="left"
         imageSrc="/about/mission.png"
         imageAlt="Family welcomed to Golden Luxuria"
       />
+      <WhyChooseUs />
       <Accreditations />
       <Milestones />
       <GroupOfCompanies />
@@ -238,9 +233,9 @@ function Meanings({ shown }: { shown: boolean }) {
         side="left"
         lineWidth={200}
         anchorX="-2%"
-        anchorY="58%"
+        anchorY="72%"
       >
-        Vertical golden lines represent buildings,
+        Vertical lines represent buildings,
         <br />
         growth, and upward momentum
       </Meaning>
@@ -440,9 +435,9 @@ function StorySection() {
   // then shrinks + lifts into final position during progress 0.6..1.
   const transformP = ease(clamp((progress - 0.6) / 0.4, 0, 1));
   const yearScale = 1 - transformP * 0.55;
-  // During counting, year sits ~60px below center (visually balanced against bottom buildings).
-  // After counting, lifts up to ~320px from top on large screens.
-  const yearLiftPx = 60 + transformP * (-117 - 60);
+  // During counting, year sits a bit above the absolute center.
+  // After counting, lifts further up to its final spot on large screens.
+  const yearLiftPx = -40 + transformP * (-117 - -40);
   // Buildings + text fade in alongside the transform
   const buildingsP = ease(clamp((progress - 0.65) / 0.35, 0, 1));
   const textP = ease(clamp((progress - 0.75) / 0.25, 0, 1));
@@ -454,10 +449,10 @@ function StorySection() {
         className="relative h-[260vh] min-h-[1600px] w-full border-b border-[#464646] bg-black"
       >
         <div className="sticky top-0 h-screen w-full overflow-hidden">
-          {/* Buildings — full-width image anchored at viewport bottom */}
+          {/* Building — single tower anchored at the bottom-right */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[78%] md:block"
+            className="pointer-events-none absolute bottom-0 right-0 hidden h-[100%] w-[60%] md:block"
             style={{
               opacity: buildingsP,
               transform: `translateY(${(1 - buildingsP) * 60}px)`,
@@ -465,21 +460,22 @@ function StorySection() {
             }}
           >
             <Image
-              src="/about/story/buildings-base.webp"
+              src="/about/story/building-single-2.png"
               alt=""
               fill
-              sizes="100vw"
-              className="object-cover object-bottom"
+              sizes="60vw"
+              className="object-contain object-right-bottom"
             />
           </div>
 
           {/* Year — starts huge at center, shrinks + slides up as scroll progresses */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 justify-center"
+            className="pointer-events-none absolute top-1/2 z-10 inline-flex"
             style={{
-              transform: `translateY(calc(-50% + ${yearLiftPx}px)) scale(${yearScale})`,
-              transformOrigin: "center center",
-              willChange: "transform",
+              left: `calc(${(1 - transformP) * 50}% + ${transformP * 40}px)`,
+              transform: `translate(${-(1 - transformP) * 50}%, calc(-50% + ${yearLiftPx}px)) scale(${yearScale})`,
+              transformOrigin: "left center",
+              willChange: "transform, left",
             }}
           >
             <span className="flex text-[160px] font-medium leading-[0.9] tracking-tight tabular-nums md:text-[260px] lg:text-[360px] lg:tracking-[-8px]">
@@ -493,8 +489,12 @@ function StorySection() {
 
           {/* Subtitle — visible during the year-count phase, fades out as scaling begins */}
           <div
-            className="pointer-events-none absolute inset-x-0 bottom-[18%] z-10 flex justify-center px-[30px] text-center"
-            style={{ opacity: 1 - transformP }}
+            className="pointer-events-none absolute bottom-[18%] z-10 inline-flex text-center"
+            style={{
+              left: `calc(${(1 - transformP) * 50}% + ${transformP * 40}px)`,
+              transform: `translateX(${-(1 - transformP) * 50}%)`,
+              opacity: 1 - transformP,
+            }}
           >
             <p className="max-w-[24ch] text-sm leading-[1.5] text-white/80 md:text-base">
               Two Decades of
@@ -518,8 +518,8 @@ function StoryParagraphs({ textStarted }: { textStarted: boolean }) {
   ];
   let cumulative = 0;
   return (
-    <div className="absolute inset-x-0 top-[440px] z-10 flex justify-center px-[30px] md:top-[340px]">
-      <div className="max-w-[640px] text-center text-sm leading-[1.5] text-white/80 md:text-base">
+    <div className="absolute inset-x-0 top-[460px] z-10 flex justify-start px-[24px] md:top-[500px] md:px-[40px]">
+      <div className="max-w-[560px] text-left text-sm leading-[1.5] text-white/80 md:text-base">
         {paragraphs.map((para, pi) => {
           const words = para.split(/\s+/);
           const startIdx = cumulative;
@@ -551,12 +551,16 @@ function StoryParagraphs({ textStarted }: { textStarted: boolean }) {
 function Statement({
   label,
   body,
+  label2,
+  body2,
   imageAlign,
   imageSrc,
   imageAlt,
 }: {
   label: string;
   body: string;
+  label2?: string;
+  body2?: string;
   imageAlign: "left" | "right";
   imageSrc?: string;
   imageAlt?: string;
@@ -569,10 +573,27 @@ function Statement({
         </h3>
       </Reveal>
       <Reveal delay={150}>
-        <p className="max-w-[52ch] text-[18px] leading-[1.55] text-white/80 md:text-[22px]">
+        <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
           {body}
         </p>
       </Reveal>
+      {label2 && body2 ? (
+        <>
+          <Reveal delay={200}>
+            <hr className="-mx-[30px] border-t border-[#464646] md:-mx-12" />
+          </Reveal>
+          <Reveal delay={250}>
+            <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+              {label2}
+            </h3>
+          </Reveal>
+          <Reveal delay={300}>
+            <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
+              {body2}
+            </p>
+          </Reveal>
+        </>
+      ) : null}
     </div>
   );
 

@@ -44,31 +44,37 @@ function Hero() {
   const ctaDelay = headlineStart + titleWords * 70 + 200;
 
   return (
-    <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
-      <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand"}`}>
-        <Image
-          src="/residential-hero.jpg"
-          alt=""
-          fill
-          priority
-          fetchPriority="high"
-          sizes="100vw"
-          className="object-cover object-top"
-        />
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
-
-      <div className="relative z-10 flex h-full w-full flex-col p-[30px]">
-        <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
-          <WordReveal
-            as="h2"
-            text={"Where Everyday Life\nFeels Extraordinary"}
-            startDelay={headlineStart}
-            className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
+    <section className="relative h-[150svh] min-h-[960px] w-full">
+      {/* Image + gradient clip in their own box so the sticky content below
+          isn't trapped by an overflow:hidden ancestor. */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand"}`}>
+          <Image
+            src="/residential-hero.jpg"
+            alt=""
+            fill
+            priority
+            fetchPriority="high"
+            sizes="(min-width: 1024px) 60vw, 100vw"
+            className="object-cover object-top"
           />
-          <HeroRise delay={ctaDelay}>
-            <Pill href="/projects" label="See latest projects" />
-          </HeroRise>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
+      </div>
+
+      <div className="relative z-10 h-full w-full">
+        <div className="sticky top-0 flex h-[100svh] w-full flex-col justify-end p-[30px]">
+          <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+            <WordReveal
+              as="h2"
+              text={"Where Everyday Life\nFeels Extraordinary"}
+              startDelay={headlineStart}
+              className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
+            />
+            <HeroRise delay={ctaDelay}>
+              <Pill href="/projects" label="See latest projects" />
+            </HeroRise>
+          </div>
         </div>
       </div>
     </section>
@@ -296,6 +302,32 @@ function ProjectsSection() {
     else prev();
   };
 
+  // Trackpad / horizontal wheel: advance one project per gesture, locked
+  // until the slide eases into place so a single swipe never skips cards.
+  // Native non-passive listener so preventDefault stops the browser
+  // back/forward swipe gesture.
+  const carouselRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    let locked = false;
+    const onWheel = (e: WheelEvent) => {
+      const dx = e.deltaX;
+      if (Math.abs(dx) <= Math.abs(e.deltaY) || Math.abs(dx) < 12) return;
+      e.preventDefault();
+      if (locked) return;
+      locked = true;
+      setActive((i) =>
+        dx > 0 ? Math.min(total - 1, i + 1) : Math.max(0, i - 1),
+      );
+      window.setTimeout(() => {
+        locked = false;
+      }, 650);
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [total]);
+
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
@@ -375,6 +407,7 @@ function ProjectsSection() {
       </div>
 
       <div
+        ref={carouselRef}
         className="mt-12 overflow-hidden md:mt-16"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
@@ -412,8 +445,10 @@ function ProjectCard({
   cardW: number;
 }) {
   return (
-    <article
-      className="flex shrink-0 flex-col gap-2 pt-5"
+    <Link
+      href={`/project/${project.slug}`}
+      aria-label={project.name}
+      className="group flex shrink-0 cursor-pointer flex-col gap-2 pt-5"
       style={{
         width: cardW,
         borderTop: "2px solid",
@@ -449,7 +484,7 @@ function ProjectCard({
           </li>
         </ul>
       </div>
-    </article>
+    </Link>
   );
 }
 
