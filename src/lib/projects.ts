@@ -1505,8 +1505,8 @@ const goldenPalmPlaza: Project = {
   type: "commercial-industrial",
   category: "Shops & Offices",
   location: "Ankleshwar",
-  area: "100 units · 5 floors",
-  areaLabel: "Inventory",
+  area: "100 (Shops + Offices)",
+  areaLabel: "Units",
   status: "Completed",
   images: [
     { src: "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp" },
