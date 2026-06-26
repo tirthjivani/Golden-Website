@@ -574,7 +574,7 @@ function Amenities({
           {featureSrc ? (
             <RevealImage
               src={featureSrc}
-              alt={detail.amenities.feature.alt ?? `${project.name} amenities`}
+              alt={detail.amenities.feature?.alt ?? `${project.name} amenities`}
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover"
