@@ -1324,7 +1324,7 @@ const goldenPalmVilla: Project = {
       items: specs(
         ["Structure", "RCC frame structure."],
         ["Architecture", "24x24 vitrified tiles with skirting. Decorative main door with sal wood and inner door frames in flush door. Powder-coated aluminium section windows with marble seal. Marble stairs with decorative CRC pipe railing."],
-        ["Plumbing & Services", "Black granite platform with stainless steel sink and full-height decorative glaze tiles. Concealed ISI, CPVC & UPVC plumbing with bathroom fittings. PVC water tank for individual bungalows."],
+        ["Plumbing & Services", "Black granite platform with stainless steel sink and full-height decorative glaze tiles. Concealed ISI, CPVC & UPVC plumbing with bathroom fittings. R.O. plant and individual PVC water tanks for each bungalow."],
         ["Electrical", "ISI standard concealed electric wiring with modular boards."],
       ),
     },
@@ -1555,7 +1555,7 @@ const goldenPalmPlaza: Project = {
             {
               id: "retail-plan",
               label: "Retail Units",
-              metrics: [{ label: "Total Shops", value: "~50" }],
+              metrics: [{ label: "Floors", value: "Ground & 1st" }],
               features: [
                 "Strategic location ensures no shop or office goes unnoticed.",
                 "Perfect for showrooms, banks, corporate offices, and supermarkets.",
@@ -1572,7 +1572,7 @@ const goldenPalmPlaza: Project = {
             {
               id: "office-plan",
               label: "Office Units",
-              metrics: [{ label: "Total Offices", value: "~50" }],
+              metrics: [{ label: "Floors", value: "2nd - 4th" }],
               features: [
                 "Modern elevation with focus on natural light.",
                 "High-speed elevator core and double-loaded corridors.",
@@ -1587,8 +1587,8 @@ const goldenPalmPlaza: Project = {
       headline: "Specifications",
       items: specs(
         ["Structure", "RCC frame structure with high load-bearing capacity."],
-        ["Finishes", "Granamite tile flooring and smooth interior finishes."],
-        ["Connectivity", "High-speed lifts with concealed electrical and PVC fittings."],
+        ["Finishes", "Granite tile flooring and smooth interior finishes."],
+        ["Connectivity", "Standard company lift with ISI-certified concealed P.V.C. and electrical fittings. Wide parking."],
       ),
     },
     gallery: {
@@ -1612,7 +1612,7 @@ const goldenSquareAnk: Project = {
   type: "commercial-industrial",
   category: "Commercial Shops & Offices",
   location: "Ankleshwar",
-  area: "Multi-level commercial",
+  area: "1,00,000 Sq. Ft. (Built-up)",
   status: "Completed",
   images: [
     { src: "golden-square/Building_Main_Front_Elevation_Day.webp" },
@@ -1640,9 +1640,9 @@ const goldenSquareAnk: Project = {
     summary: {
       cards: [
         { src: "golden-square/Building_Main_Front_Elevation_Day.webp", metric: "Ankleshwar", label: "Location" },
-        { src: "golden-square/Building_Street_Perspective_View.webp", metric: "Shops + Offices", label: "Mix Use" },
-        { src: "golden-square/Interior_Mall_Retail_Floor.webp", metric: "Retail Hub", label: "Ground Floor" },
-        { src: "golden-square/Interior_Office_Block_Atrium.webp", metric: "Luxury Offices", label: "Upper Floors" },
+        { src: "golden-square/Building_Street_Perspective_View.webp", metric: "186 Shops", label: "Retail" },
+        { src: "golden-square/Interior_Mall_Retail_Floor.webp", metric: "72 Offices", label: "Workspaces" },
+        { src: "golden-square/Interior_Office_Block_Atrium.webp", metric: "1,00,000 Sq.Ft.", label: "Built-up Area" },
       ],
     },
     highlights: {
@@ -1670,9 +1670,10 @@ const goldenSquareAnk: Project = {
             {
               id: "retail-plan",
               label: "Commercial Shops",
-              metrics: [{ label: "Status", value: "Available" }],
+              metrics: [{ label: "Total Shops", value: "186" }],
               features: [
-                "Prime location in the commercial hub of Ankleshwar.",
+                "186 shops in the commercial hub of Ankleshwar.",
+                "136 of the 186 shops are centrally air-conditioned.",
                 "Designed for banks, retail showrooms, and medical suites.",
               ],
               image: { src: "" },
@@ -1686,9 +1687,9 @@ const goldenSquareAnk: Project = {
             {
               id: "office-plan",
               label: "Luxury Offices",
-              metrics: [{ label: "Status", value: "Available" }],
+              metrics: [{ label: "Total Offices", value: "72" }],
               features: [
-                "Modern glass-fronted elevation for a premium corporate look.",
+                "72 offices on the upper floors with a premium corporate look.",
                 "24/7 security with CCTV and fire safety systems.",
               ],
               image: { src: "" },
