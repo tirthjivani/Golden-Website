@@ -443,8 +443,6 @@ function Overview({
     };
   }, [cards.length]);
 
-  if (cards.length === 0) return null;
-
   return (
     <section
       id="overview"
@@ -452,11 +450,13 @@ function Overview({
       className="relative scroll-mt-24 overflow-hidden bg-black px-[30px] py-20 md:flex md:h-[100vh] md:min-h-[720px] md:items-center md:py-0"
     >
       <div className="relative mx-auto grid w-full max-w-[1500px] grid-cols-2 gap-6 md:h-full md:grid-cols-12 md:grid-rows-[1fr_auto_1fr] md:gap-x-10 md:gap-y-10 md:py-20">
-        <OverviewCard
-          card={cards[0]}
-          cardRef={(el) => { cardRefs.current[0] = el; }}
-          className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-1 md:self-start"
-        />
+        {cards[0] ? (
+          <OverviewCard
+            card={cards[0]}
+            cardRef={(el) => { cardRefs.current[0] = el; }}
+            className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-1 md:self-start"
+          />
+        ) : null}
         {cards[1] ? (
           <OverviewCard
             card={cards[1]}

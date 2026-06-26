@@ -128,7 +128,7 @@ export type ProjectDetail = {
   amenities: {
     headline: string;
     body?: string;
-    feature: ImageRef;
+    feature?: ImageRef;
     items: { key: AmenityKey; label: string }[];
   };
   masterPlan?: {
@@ -1923,33 +1923,9 @@ const goldenIndustrialEstate: Project = {
       eyebrow: "Industrial Estate",
       tagline: "The strategic gateway for Surat's industrial growth.",
     },
-    firstLook: {
-      headline: "First Look",
-      items: [
-        { src: "/commercial-hero.webp", caption: "Estate Entry" },
-        { src: "/commercial-hero.webp", caption: "Master Layout" },
-      ],
-    },
     intro: {
       headline: "Massive scale, perfect connectivity, and all-inclusive infrastructure.",
       body: "Industrial Excellence at Delad. Spanning across a strategic location connected to NH 48, this estate provides 468 plots designed for efficiency and growth. With full infrastructure from gas lines to RCC roads.",
-    },
-    summary: {
-      cards: [
-        { src: "/commercial-hero.webp", metric: "Delad, Surat", label: "Location" },
-        { src: "/commercial-hero.webp", metric: "468 Plots", label: "Inventory" },
-        { src: "/commercial-hero.webp", metric: "17x100 / 17x120 ft", label: "Plot Sizes" },
-        { src: "/commercial-hero.webp", metric: "NH 48", label: "Connectivity" },
-      ],
-    },
-    highlights: {
-      headline: "Visual Highlights",
-      items: [
-        { src: "/commercial-hero.webp", caption: "468 Premium Industrial Plots" },
-        { src: "/commercial-hero.webp", caption: "Wide RCC Roads & Street Lights" },
-        { src: "/commercial-hero.webp", caption: "Dedicated Gas & Drainage Lines" },
-        { src: "/commercial-hero.webp", caption: "4 Large Garden Areas" },
-      ],
     },
     amenities: {
       headline: "Estate Amenities",
@@ -1999,7 +1975,7 @@ const goldenIndustrialEstate: Project = {
     gallery: {
       headline: "Gallery",
       body: "A look at the estate.",
-      images: [{ src: "/commercial-hero.webp" }],
+      images: [],
     },
     pillars: { items: PILLARS_DEFAULT },
   },
