@@ -1390,9 +1390,9 @@ const goldenResidency: Project = {
   reraIssuedOn: "07/01/2021",
   name: "Golden Residency",
   type: "residential",
-  category: "1 & 2 BHK Flats",
+  category: "1 & 2 BHK Flats & Shops",
   location: "Bharuch",
-  area: "1000 Sq. Ft. (SBUA)",
+  area: "500 - 671 Sq. Ft.",
   status: "Completed",
   images: [
     { src: "golden-residency/Building_Side_Elevation_Daylight.jpg" },
@@ -1420,7 +1420,7 @@ const goldenResidency: Project = {
     summary: {
       cards: [
         { src: "golden-residency/Building_Side_Elevation_Daylight.jpg", metric: "Tavra, Bharuch", label: "Location" },
-        { src: "golden-residency/Building_Full_Front_Elevation_Day.jpg", metric: "1000 Sq.Ft.", label: "Carpet Area" },
+        { src: "golden-residency/Building_Full_Front_Elevation_Day.jpg", metric: "500 - 671 Sq.Ft.", label: "Carpet Area" },
         { src: "golden-residency/Residential_Complex_Birdview_Aerial.jpg", metric: "1 & 2 BHK", label: "Type" },
         { src: "golden-residency/Building_Side_Elevation_Daylight.jpg", metric: "8 Wings", label: "A - H Blocks" },
       ],
@@ -1429,7 +1429,7 @@ const goldenResidency: Project = {
       headline: "Visual Highlights",
       items: [
         { src: "golden-residency/Residential_Complex_Birdview_Aerial.jpg", caption: "Multi-block gated complex" },
-        { src: "golden-residency/typical_floor_plan_wing_f,e_1bhk.webp", caption: "1 BHK & 2 BHK layouts" },
+        { src: "golden-residency/project_1bhk_typical_floor_plan.webp", caption: "1 BHK & 2 BHK layouts" },
         { src: "golden-residency/typical_first_floor_plan.webp", caption: "2 BHK across Wings A–H" },
         { src: "golden-residency/basement_parking_plan.webp", caption: "Covered basement parking" },
       ],
@@ -1451,19 +1451,13 @@ const goldenResidency: Project = {
             {
               id: "2bhk-typical",
               label: "2 BHK",
-              metrics: [
-                { label: "SBUA", value: "1000 SQ.FT." },
-                { label: "TCA", value: "732 SQ.FT." },
-                { label: "Carpet (C.A.)", value: "702.50 SQ.FT." },
-              ],
+              metrics: [{ label: "R.C.A.", value: "671.00 SQ.FT." }],
               features: [
-                "Optimized 2 BHK footprint for efficient modern urban family living.",
-                "Standardized layouts across Wings A, B, C, D, G, and H.",
-                "Integrated balcony area for natural light and cross-ventilation.",
-                "Compact yet functional kitchen with attached utility/wash space.",
+                "Two-bedroom layout repeated across Wings A, B, C, D, G and H.",
+                "Living and kitchen-dining open off a central lift-and-stair core.",
+                "Both bedrooms served by attached toilets and an architectural projection balcony.",
               ],
-              image: { src: "golden-residency/typical_first_floor_plan.webp" },
-              note: "*SBUA estimated at ~1.37x Carpet.",
+              image: { src: "golden-residency/typical_floor_plan_2bhk_wing_a,b,c,d,g-h.webp" },
             },
           ],
         },
@@ -1474,12 +1468,45 @@ const goldenResidency: Project = {
             {
               id: "1bhk-typical",
               label: "1 BHK",
-              metrics: [{ label: "Type", value: "Compact 1 BHK" }],
+              metrics: [{ label: "R.C.A.", value: "500.00 SQ.FT." }],
               features: [
-                "Compact 1 BHK plan tuned for value-conscious buyers.",
-                "Cross-ventilated layout with attached toilet and balcony.",
+                "Compact one-bedroom layout in Wings E and F.",
+                "Living, kitchen and bedroom arranged around the lift-and-stair core.",
+                "Attached and common toilets with a utility wash area.",
               ],
-              image: { src: "golden-residency/typical_floor_plan_wing_f,e_1bhk.webp" },
+              image: { src: "golden-residency/project_1bhk_typical_floor_plan.webp" },
+            },
+          ],
+        },
+        {
+          id: "typical-floor",
+          label: "Typical Floor",
+          plans: [
+            {
+              id: "typical-floor-plan",
+              label: "Typical Floor Plan",
+              metrics: [],
+              features: [
+                "Eight residential wings (A–H) arranged around a central landscaped garden.",
+                "Street-facing shops along the roadside blocks; perimeter driveways with clubhouse and play zones.",
+              ],
+              image: { src: "golden-residency/typical_floor_plan.webp" },
+            },
+          ],
+        },
+        {
+          id: "basement",
+          label: "Basement Parking",
+          plans: [
+            {
+              id: "basement-parking",
+              label: "Basement Parking Plan",
+              metrics: [],
+              features: [
+                "Covered basement parking spanning the full site.",
+                "Wide internal driveways with entry/exit ramps and a lift core per wing.",
+              ],
+              image: { src: "golden-residency/basement_parking_plan.webp" },
             },
           ],
         },
@@ -1488,10 +1515,10 @@ const goldenResidency: Project = {
     specifications: {
       headline: "Specifications",
       items: specs(
-        ["Structure", "RCC framed earthquake-resistant structure. Quality masonry work for internal and external walls for better insulation."],
-        ["Architecture", "Modern elevation with weather-shield exterior paint. Vitrified flooring in all rooms and anti-skid tiles in toilets and wash areas."],
-        ["Plumbing & Electrical", "Concealed copper wiring with branded switches. Standard CP fittings and sanitaryware in all bathrooms."],
-        ["Windows & Doors", "Aluminium sliding windows and wooden door frames. Flush doors with standard hardware and decorative main entrance."],
+        ["Structure", "R.C.C. frame structure. Terrace finished with roda waterproofing and china mosaic."],
+        ["Architecture", "32x32 or 24x48 vitrified tile flooring with skirting, and kota stone in wash areas. Granite kitchen platform with stainless-steel sink and full-height decorative tile dado. Ceramic-tiled bathrooms with glazed wall tiles. Acrylic exterior paint and a putty finish in interiors."],
+        ["Plumbing & Electrical", "ISI concealed electrical wiring with light, fan, TV, bell and AC (bedroom) points, plus a washing-machine point in the wash area. ISI CPVC & UPVC plumbing with bathroom and sanitary fittings."],
+        ["Windows & Doors", "Powder-coated aluminium section windows. Decorative main door with a sal-wood frame; all inner door frames in granite."],
       ),
     },
     gallery: {
