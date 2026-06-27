@@ -118,6 +118,12 @@ const SLOTS: Record<FolderKey, SlotMap> = {
     "3": "Landscape_Garden_Seating_Ground_View.webp",
     "4": "Landscape_Zen_Garden_Buddha_Statue.webp",
     "5": "Community_Park_Aerial_Birdview.webp",
+    "6": "Bungalow_Full_Front_View_Daylight.webp",
+    "7": "Bungalow_Main_Front_Elevation_Night.webp",
+    "8": "Landscape_Zen_Garden_Buddha_Statue.webp",
+    "9": "Community_Park_Aerial_Birdview.webp",
+    "10": "Residential_Layout_Birdview_Aerial.webp",
+    "11": "Main_Entrance_Gate_Day_Perspective.webp",
   },
 };
 

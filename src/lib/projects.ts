@@ -932,13 +932,12 @@ const goldenNirvana: Project = {
 const goldenVilla: Project = {
   id: "golden-villa",
   slug: "golden-villa",
-  rera: "PAA15865",
-  reraIssuedOn: "20/09/2025",
   name: "Golden Villa",
   type: "residential",
-  category: "4 BHK Row Villas (G + 2)",
+  category: "4 BHK Bungalows & Shopping",
   location: "Ankleshwar",
-  area: "2000 Sq. Ft. (SBUA)",
+  area: "2000 Sq. Ft.",
+  areaLabel: "Built-up Area",
   status: "Completed",
   images: [
     { src: "golden-villa/Main_Entrance_Gate_Day_Perspective.jpg" },
@@ -949,7 +948,7 @@ const goldenVilla: Project = {
   detail: {
     hero: {
       image: { src: "golden-villa/Bungalow_Main_Front_Elevation_Day.jpg" },
-      eyebrow: "Row Villas",
+      eyebrow: "Bungalows & Shopping",
       tagline: "Three floors of space, one address you will always be proud of.",
     },
     firstLook: {
@@ -967,8 +966,8 @@ const goldenVilla: Project = {
     summary: {
       cards: [
         { src: "golden-villa/Main_Entrance_Gate_Day_Perspective.jpg", metric: "Ankleshwar", label: "Location" },
-        { src: "golden-villa/Bungalow_Main_Front_Elevation_Day.jpg", metric: "2000 Sq.Ft.", label: "Carpet Area" },
-        { src: "golden-villa/Community_Park_Aerial_Birdview.jpg", metric: "4 BHK", label: "Row Villas" },
+        { src: "golden-villa/Bungalow_Main_Front_Elevation_Day.jpg", metric: "2000 Sq.Ft.", label: "Built-up Area" },
+        { src: "golden-villa/Community_Park_Aerial_Birdview.jpg", metric: "4 BHK", label: "Bungalows" },
         { src: "golden-villa/Residential_Layout_Birdview_Aerial.jpg", metric: "G + 2", label: "Floors" },
       ],
     },
@@ -978,7 +977,7 @@ const goldenVilla: Project = {
         { src: "golden-villa/Community_Park_Aerial_Birdview.jpg", caption: "Landscaped community parks & walkways" },
         { src: "golden-villa/Landscape_Zen_Garden_Buddha_Statue.jpg", caption: "Zen garden & premium landscaping" },
         { src: "golden-villa/Landscape_Garden_Seating_Ground_View.jpg", caption: "Resident seating & relaxation areas" },
-        { src: "golden-villa/Residential_Layout_Birdview_Aerial.jpg", caption: "4 BHK row villas, G+2 floors" },
+        { src: "golden-villa/Residential_Layout_Birdview_Aerial.jpg", caption: "4 BHK bungalows with an on-site shopping arcade" },
       ],
     },
     amenities: {
@@ -998,14 +997,10 @@ const goldenVilla: Project = {
             {
               id: "villa-ground",
               label: "4 BHK Row Villa - Ground",
-              metrics: [
-                { label: "SBUA", value: "2000 SQ.FT." },
-                { label: "TCA", value: "1500 SQ.FT." },
-                { label: "Per Plate", value: "~500-600 SQ.FT." },
-              ],
+              metrics: [],
               features: [
-                "Expansive Ground Floor Living Room (12'0\" x 16'0\") with 10'10\" x 15' parking.",
-                "Integrated Shopping Arcade (Golden Square) within the project vicinity.",
+                "Open-plan living and dining flowing into a kitchen with a utility wash area.",
+                "Covered car parking and a front otta framing the entrance.",
               ],
               image: { src: "golden-villa/ground_floor_plan.webp" },
             },
@@ -1018,9 +1013,10 @@ const goldenVilla: Project = {
             {
               id: "villa-first",
               label: "4 BHK Row Villa - First",
-              metrics: [{ label: "Plate", value: "~500-600 SQ.FT." }],
+              metrics: [],
               features: [
-                "Dual Bedroom private floor including a 13'6\" x 10' master suite.",
+                "Two bedrooms including a master suite, each with an attached toilet.",
+                "Standing balcony and a central passage linking the rooms.",
               ],
               image: { src: "golden-villa/first_floor_plan.webp" },
             },
@@ -1033,11 +1029,41 @@ const goldenVilla: Project = {
             {
               id: "villa-second",
               label: "4 BHK Row Villa - Second",
-              metrics: [{ label: "Terrace", value: "~190 SQ.FT." }],
+              metrics: [],
               features: [
-                "Exclusive Second Floor Master Suite with 18'10.5\" x 10' open terrace.",
+                "Private master suite opening to a generous open terrace and deck.",
+                "Standing balcony extending the upper living space outdoors.",
               ],
               image: { src: "golden-villa/second_floor_plan.webp" },
+            },
+          ],
+        },
+        {
+          id: "shopping",
+          label: "Shopping",
+          plans: [
+            {
+              id: "villa-shop-ground",
+              label: "Ground Floor",
+              metrics: [{ label: "Shops", value: "7" }],
+              features: [
+                "Seven street-facing retail units, with larger shops anchoring each rounded corner.",
+                "Covered otta frontage and a vehicle ramp for direct ground-level access.",
+                "Central lift, staircase and meter room serving the complex.",
+              ],
+              // Ground-floor shopping plan asset to be supplied (black style).
+              image: { src: "golden-villa/shopping_ground_plan.webp" },
+            },
+            {
+              id: "villa-shop-upper",
+              label: "1st & 2nd Floor",
+              metrics: [{ label: "Shops / Floor", value: "7" }],
+              features: [
+                "Seven retail units per floor opening onto a central circulation passage.",
+                "Larger corner shops at either end of the floor plate.",
+                "Shared lift, staircase and a common toilet block on each level.",
+              ],
+              image: { src: "golden-villa/shopping_plan.webp" },
             },
           ],
         },
