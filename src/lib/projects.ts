@@ -1121,7 +1121,8 @@ const goldenHomes: Project = {
   type: "residential",
   category: "3 BHK Row Bungalows",
   location: "Ankleshwar",
-  area: "1400 Sq. Ft. (SBUA)",
+  area: "1029 Sq. Ft.",
+  areaLabel: "Built-up Area",
   status: "Completed",
   images: [
     { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg" },
@@ -1150,7 +1151,7 @@ const goldenHomes: Project = {
     summary: {
       cards: [
         { src: "golden-homes/Bungalow_Entrance_Parking_View.jpg", metric: "Ankleshwar", label: "Location" },
-        { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg", metric: "1400 Sq.Ft.", label: "SBUA" },
+        { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg", metric: "1029 Sq.Ft.", label: "Built-up Area" },
         { src: "golden-homes/Bungalow_Full_Front_View_Day.jpg", metric: "3 BHK Villa", label: "Type" },
         { src: "golden-homes/Residential_Layout_Birdview_Aerial.jpg", metric: "G + 1", label: "Floors" },
       ],
@@ -1182,9 +1183,8 @@ const goldenHomes: Project = {
               id: "homes-ground",
               label: "3 BHK Villa - Ground",
               metrics: [
-                { label: "SBUA", value: "1400 SQ.FT." },
-                { label: "TCA", value: "1029 SQ.FT." },
                 { label: "Ground Built-up", value: "545 SQ.FT." },
+                { label: "Total Built-up", value: "1029 SQ.FT." },
               ],
               features: [
                 "Independent Row-Villa lifestyle with dedicated ground-level entry.",
@@ -1211,7 +1211,6 @@ const goldenHomes: Project = {
                 "Multi-bedroom configuration with dedicated common toilet.",
               ],
               image: { src: "golden-homes/first_floor_unit_plan.webp" },
-              note: "*SBUA estimated at ~1.36x Built-up.",
             },
           ],
         },
