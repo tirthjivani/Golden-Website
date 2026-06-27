@@ -25,6 +25,7 @@ import {
   type Project,
 } from "@/lib/projects";
 import { getProjectMedia } from "@/lib/projectMedia";
+import { LANDMARK_COORDS } from "@/lib/landmarkCoords";
 
 export function ProjectDetailView({ project }: { project: Project }) {
   const detail = project.detail;
@@ -901,19 +902,31 @@ const LANDMARK_ICONS: Record<LandmarkCategory, typeof GraduationCap> = {
 
 function LocationSection({ project }: { project: Project }) {
   const location = project.detail?.location;
-  const availableCategories = useMemo(() => {
-    if (!location) return [] as LandmarkCategory[];
-    return LANDMARK_CATEGORIES.filter((c) =>
-      location.landmarks.some((l) => l.category === c.key),
-    ).map((c) => c.key);
-  }, [location]);
+  // Attach real geocoded positions (Mappls) and keep only landmarks we could
+  // place — pins are never synthesised, so an un-geocoded landmark is omitted
+  // rather than dropped onto a fake spot.
+  const mappedLandmarks = useMemo<Landmark[]>(() => {
+    if (!location) return [];
+    return location.landmarks.flatMap((l) => {
+      const coords = LANDMARK_COORDS[`${project.slug}::${l.name}`];
+      return coords ? [{ ...l, coords }] : [];
+    });
+  }, [location, project.slug]);
 
-  const [active, setActive] = useState<LandmarkCategory | null>(
-    () => availableCategories[0] ?? null,
+  const availableCategories = useMemo(
+    () =>
+      LANDMARK_CATEGORIES.filter((c) =>
+        mappedLandmarks.some((l) => l.category === c.key),
+      ).map((c) => c.key),
+    [mappedLandmarks],
   );
+
+  // No category selected by default → the map shows every kind of pin at once
+  // ("all the things nearby" at a glance). Selecting a tab filters to it.
+  const [active, setActive] = useState<LandmarkCategory | null>(null);
   const [selected, setSelected] = useState<Landmark | null>(null);
 
-  if (!location || location.landmarks.length === 0) return null;
+  if (!location || mappedLandmarks.length === 0) return null;
 
   return (
     <section
@@ -938,7 +951,7 @@ function LocationSection({ project }: { project: Project }) {
       <div className="relative mt-10 md:mt-14">
         <MinimalMap
           coords={location.coords}
-          landmarks={location.landmarks}
+          landmarks={mappedLandmarks}
           activeCategory={active ?? undefined}
           className="aspect-[3/4] md:aspect-auto md:h-[80vh] md:min-h-[640px]"
           projectName={project.name}
@@ -955,7 +968,9 @@ function LocationSection({ project }: { project: Project }) {
                 key={key}
                 type="button"
                 onClick={() => {
-                  setActive(key);
+                  // Toggle: tapping the active tab again clears the filter and
+                  // returns to showing every category.
+                  setActive((prev) => (prev === key ? null : key));
                   setSelected(null);
                 }}
                 className="golden-map-tab"
