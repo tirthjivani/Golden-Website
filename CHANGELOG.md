@@ -5,6 +5,36 @@ One entry per PR. Bug-fix entries link to the detailed daily issue logs (e.g.
 `2026-06-24.md`) where a Symptom / Root Cause / Resolution / Validation
 breakdown is kept.
 
+## [Unreleased] — location map: real pins (2026-06-27)
+
+Replaces the location map's synthetic landmark positions (which dropped pins
+into rivers and other wrong spots) with real geocoded coordinates, on a more
+detailed dark basemap. Validated against a green production build (all routes).
+
+### Added
+- `src/lib/landmarkCoords.ts` — 92 verified landmark coordinates keyed
+  `${slug}::${name}` -> `[lng, lat]`.
+- `scripts/geocode-mappls.ts` — geocoder that derives coordinates via Mappls
+  trilateration (free tier returns straight-line distance but withholds lat/lng,
+  so each place is queried from 3 reference points and trilaterated). Reads
+  credentials from env only; nothing secret is committed.
+
+### Changed
+- `MinimalMap`: render pins at their real coordinates and `fitBounds` to frame
+  each view; removed the synthetic offset/compress placement. Zoom pulled back
+  so streets and labels show instead of bare building footprints.
+- Basemap switched to MapTiler `basic-v2-dark` (detailed dark vector style;
+  publishable, domain-restricted key) in place of CARTO Dark Matter.
+- `LocationSection`: shows every landmark category by default ("all nearby at a
+  glance"); category tabs now toggle as filters. Un-geocoded landmarks are
+  omitted rather than shown at a fake position.
+
+### Notes
+- Coverage is 92 of 136 landmarks (~68%). The rest are either absent from the
+  Mappls dataset (mostly smaller hospitals/schools), too generic to geocode
+  ("Local Bus Stop", "Golden Bridge Road"), or were dropped because they matched
+  the wrong entity. Missing pins can be hand-added in `landmarkCoords.ts`.
+
 ## [Unreleased] — perf + bug-fixes (2026-06-25)
 
 Combines the image-loading performance work with the June 24 bug-fix batch into
