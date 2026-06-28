@@ -399,10 +399,15 @@ function ArrowDown() {
 
 function StorySection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const yearRef = useRef<HTMLDivElement>(null);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const [year, setYear] = useState(2005);
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  // Desktop: pin the paragraph a constant 20px below the year's measured box
+  // so the gap never drifts with viewport height or font scaling.
+  const [paraTop, setParaTop] = useState<number | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -411,6 +416,20 @@ function StorySection() {
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setParaTop(null);
+      return;
+    }
+    const y = yearRef.current;
+    const s = stickyRef.current;
+    if (!y || !s) return;
+    const gap = 20;
+    setParaTop(
+      y.getBoundingClientRect().bottom - s.getBoundingClientRect().top + gap,
+    );
+  }, [progress, isMobile, year]);
 
   useEffect(() => {
     const HOLD_PX = 100;
@@ -473,7 +492,10 @@ function StorySection() {
         ref={sectionRef}
         className="relative h-[260vh] min-h-[1600px] w-full border-b border-[#464646] bg-black"
       >
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <div
+          ref={stickyRef}
+          className="sticky top-0 h-screen w-full overflow-hidden"
+        >
           {/* Building — single tower anchored at the bottom-right */}
           <div
             aria-hidden
@@ -496,6 +518,7 @@ function StorySection() {
 
           {/* Year — starts huge at center, shrinks + slides up as scroll progresses */}
           <div
+            ref={yearRef}
             className="pointer-events-none absolute top-1/2 z-10 inline-flex"
             style={{
               left: yearLeft,
@@ -530,21 +553,30 @@ function StorySection() {
           </div>
 
           {/* Story text — absolute, sits at its final spot under year; word-by-word reveal */}
-          <StoryParagraphs textStarted={textP > 0.01} />
+          <StoryParagraphs textStarted={textP > 0.01} topPx={paraTop} />
         </div>
       </section>
     </>
   );
 }
 
-function StoryParagraphs({ textStarted }: { textStarted: boolean }) {
+function StoryParagraphs({
+  textStarted,
+  topPx,
+}: {
+  textStarted: boolean;
+  topPx?: number | null;
+}) {
   const paragraphs = [
     "Golden Group was founded on the belief that real estate should stand for confidence, stability, and long-term value, not just buildings. Its name reflects enduring quality and collective strength, built for today and valued for tomorrow.",
     "It bridges premium design with dependable delivery, grounded in transparency, consistency, and structural integrity. More than spaces, it builds trust, rising steadily like its skyline-inspired identity.",
   ];
   let cumulative = 0;
   return (
-    <div className="absolute inset-x-0 top-[460px] z-10 flex justify-center px-[24px] md:top-[500px] md:justify-start md:px-[40px]">
+    <div
+      className="absolute inset-x-0 top-[460px] z-10 flex justify-center px-[24px] md:top-[500px] md:justify-start md:px-[40px]"
+      style={topPx != null ? { top: topPx } : undefined}
+    >
       <div className="max-w-[560px] text-center text-sm leading-[1.5] text-white/80 md:text-left md:text-base">
         {paragraphs.map((para, pi) => {
           const words = para.split(/\s+/);
