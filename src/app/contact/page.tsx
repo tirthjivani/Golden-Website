@@ -618,7 +618,7 @@ function ResumeUploadButton({
         onClick={onClick}
         className={`card-hover group/upload relative flex h-[50px] w-[245px] shrink-0 items-end justify-between overflow-hidden border px-[12px] pb-[8px] pt-[4px] text-sm font-medium transition-colors duration-300 ${
           file
-            ? "border-white bg-white text-black"
+            ? "border-transparent bg-[#2a2a2a] text-white hover:bg-[#3a3a3a]"
             : "border-[#464646] bg-black text-white"
         }`}
       >
@@ -628,10 +628,18 @@ function ResumeUploadButton({
             className="card-fill pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
           />
         )}
-        <span className="relative z-10 transition-colors duration-300 group-hover/upload:text-black">
+        <span
+          className={`relative z-10 transition-colors duration-300 ${
+            file ? "" : "group-hover/upload:text-black"
+          }`}
+        >
           {file ? truncateFileName(file.name) : "Upload Resume"}
         </span>
-        <span className="relative z-10 transition-colors duration-300 group-hover/upload:text-black">
+        <span
+          className={`relative z-10 transition-colors duration-300 ${
+            file ? "" : "group-hover/upload:text-black"
+          }`}
+        >
           {file ? <CrossIcon /> : <UploadIcon />}
         </span>
       </button>
