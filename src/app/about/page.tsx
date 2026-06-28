@@ -2,6 +2,13 @@
 
 import Image from "next/image";
 import {
+  Binoculars,
+  Buildings,
+  Handshake,
+  Plant,
+  ThumbsUp,
+} from "@phosphor-icons/react";
+import {
   useEffect,
   useMemo,
   useRef,
@@ -395,6 +402,15 @@ function StorySection() {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const [year, setYear] = useState(2005);
   const [progress, setProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const apply = () => setIsMobile(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   useEffect(() => {
     const HOLD_PX = 100;
@@ -437,10 +453,16 @@ function StorySection() {
   // Year stays centered + full size until counter reaches current year (progress 0..0.6),
   // then shrinks + lifts into final position during progress 0.6..1.
   const transformP = ease(clamp((progress - 0.6) / 0.4, 0, 1));
-  const yearScale = 1 - transformP * 0.55;
+  // Mobile keeps the final year centered (with side padding) and only mildly
+  // shrunk so it stays legible; desktop shrinks more and slides to the left.
+  const yearScale = 1 - transformP * (isMobile ? 0.4 : 0.55);
   // During counting, year sits a bit above the absolute center.
-  // After counting, lifts further up to its final spot on large screens.
-  const yearLiftPx = -40 + transformP * (-117 - -40);
+  // After counting, lifts further up to make room for the story text below.
+  const yearLiftPx = -40 + transformP * ((isMobile ? -180 : -117) - -40);
+  const yearLeft = isMobile
+    ? "50%"
+    : `calc(${(1 - transformP) * 50}% + ${transformP * 40}px)`;
+  const yearTranslateX = isMobile ? "-50%" : `${-(1 - transformP) * 50}%`;
   // Buildings + text fade in alongside the transform
   const buildingsP = ease(clamp((progress - 0.65) / 0.35, 0, 1));
   const textP = ease(clamp((progress - 0.75) / 0.25, 0, 1));
@@ -455,7 +477,7 @@ function StorySection() {
           {/* Building — single tower anchored at the bottom-right */}
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 right-0 hidden h-[100%] w-[60%] md:block"
+            className="pointer-events-none absolute bottom-0 right-0 h-[55%] w-[92%] md:h-[100%] md:w-[60%]"
             style={{
               opacity: buildingsP,
               transform: `translateY(${(1 - buildingsP) * 60}px)`,
@@ -463,10 +485,10 @@ function StorySection() {
             }}
           >
             <Image
-              src="/about/story/building-single-2.png"
+              src="/about/story/building-towers.png"
               alt=""
               fill
-              sizes="60vw"
+              sizes="(min-width: 768px) 60vw, 92vw"
               quality={90}
               className="object-contain object-right-bottom"
             />
@@ -476,13 +498,13 @@ function StorySection() {
           <div
             className="pointer-events-none absolute top-1/2 z-10 inline-flex"
             style={{
-              left: `calc(${(1 - transformP) * 50}% + ${transformP * 40}px)`,
-              transform: `translate(${-(1 - transformP) * 50}%, calc(-50% + ${yearLiftPx}px)) scale(${yearScale})`,
-              transformOrigin: "left center",
+              left: yearLeft,
+              transform: `translate(${yearTranslateX}, calc(-50% + ${yearLiftPx}px)) scale(${yearScale})`,
+              transformOrigin: isMobile ? "center center" : "left center",
               willChange: "transform, left",
             }}
           >
-            <span className="flex text-[160px] font-medium leading-[0.9] tracking-tight tabular-nums md:text-[260px] lg:text-[360px] lg:tracking-[-8px]">
+            <span className="flex text-[120px] font-medium leading-[0.9] tracking-tight tabular-nums md:text-[260px] lg:text-[360px] lg:tracking-[-8px]">
               {digits.map((ch, i) => (
                 <span key={i} className="inline-block">
                   {ch}
@@ -522,8 +544,8 @@ function StoryParagraphs({ textStarted }: { textStarted: boolean }) {
   ];
   let cumulative = 0;
   return (
-    <div className="absolute inset-x-0 top-[460px] z-10 flex justify-start px-[24px] md:top-[500px] md:px-[40px]">
-      <div className="max-w-[560px] text-left text-sm leading-[1.5] text-white/80 md:text-base">
+    <div className="absolute inset-x-0 top-[460px] z-10 flex justify-center px-[24px] md:top-[500px] md:justify-start md:px-[40px]">
+      <div className="max-w-[560px] text-center text-sm leading-[1.5] text-white/80 md:text-left md:text-base">
         {paragraphs.map((para, pi) => {
           const words = para.split(/\s+/);
           const startIdx = cumulative;
@@ -646,11 +668,11 @@ function Statement({
 
 function WhyChooseUs() {
   const items = [
-    "Integrity & Transparency",
-    "Structural Strength & Quality",
-    "Long-Term Vision",
-    "Customer Confidence",
-    "Responsible Growth",
+    { title: "Integrity & Transparency", Icon: Handshake },
+    { title: "Structural Strength & Quality", Icon: Buildings },
+    { title: "Long-Term Vision", Icon: Binoculars },
+    { title: "Customer Confidence", Icon: ThumbsUp },
+    { title: "Responsible Growth", Icon: Plant },
   ];
   return (
     <section className="border-t border-[#464646] bg-black">
@@ -665,7 +687,7 @@ function WhyChooseUs() {
 
         <div>
           <ul>
-            {items.map((title, i) => {
+            {items.map(({ title, Icon }, i) => {
               const isLast = i === items.length - 1;
               return (
                 <li
@@ -673,7 +695,13 @@ function WhyChooseUs() {
                   className={isLast ? "" : "border-b border-[#464646]"}
                 >
                   <Reveal delay={120 + i * 120}>
-                    <div className="px-[30px] py-8 md:px-8 md:py-10">
+                    <div className="flex items-center gap-4 px-[30px] py-8 md:px-8 md:py-10">
+                      <Icon
+                        size={28}
+                        weight="light"
+                        className="shrink-0 text-[#c19b4d]"
+                        aria-hidden
+                      />
                       <h4 className="text-[20px] font-normal leading-[1.4] text-white md:text-[22px]">
                         {title}
                       </h4>
