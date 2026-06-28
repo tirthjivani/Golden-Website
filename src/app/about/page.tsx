@@ -477,7 +477,7 @@ function StorySection() {
           {/* Building — single tower anchored at the bottom-right */}
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 right-0 h-[55%] w-[92%] md:h-[100%] md:w-[60%]"
+            className="pointer-events-none absolute bottom-0 right-0 h-[55%] w-[92%] md:-right-[70px] md:h-[90%] md:w-[55%]"
             style={{
               opacity: buildingsP,
               transform: `translateY(${(1 - buildingsP) * 60}px)`,
@@ -592,32 +592,36 @@ function Statement({
   imageAlt?: string;
 }) {
   const text = (
-    <div className="flex flex-col gap-8 px-[30px] py-16 md:px-12 md:py-24">
-      <Reveal>
-        <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-          {label}
-        </h3>
-      </Reveal>
-      <Reveal delay={150}>
-        <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
-          {body}
-        </p>
-      </Reveal>
+    <div className="flex flex-col gap-8 px-[30px] py-16 md:h-full md:justify-between md:gap-0 md:px-12 md:py-24">
+      <div className="flex flex-col gap-8">
+        <Reveal>
+          <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+            {label}
+          </h3>
+        </Reveal>
+        <Reveal delay={150}>
+          <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
+            {body}
+          </p>
+        </Reveal>
+      </div>
       {label2 && body2 ? (
         <>
           <Reveal delay={200}>
             <hr className="-mx-[30px] border-t border-[#464646] md:-mx-12" />
           </Reveal>
-          <Reveal delay={250}>
-            <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-              {label2}
-            </h3>
-          </Reveal>
-          <Reveal delay={300}>
-            <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
-              {body2}
-            </p>
-          </Reveal>
+          <div className="flex flex-col gap-8">
+            <Reveal delay={250}>
+              <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+                {label2}
+              </h3>
+            </Reveal>
+            <Reveal delay={300}>
+              <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
+                {body2}
+              </p>
+            </Reveal>
+          </div>
         </>
       ) : null}
     </div>
