@@ -11,7 +11,7 @@ import {
 
 const YOUTUBE_ID = "kzg2SO6HMUQ";
 const YOUTUBE_SRC = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?autoplay=1&mute=1&loop=1&playlist=${YOUTUBE_ID}&controls=0&modestbranding=1&rel=0&playsinline=1&iv_load_policy=3&disablekb=1&enablejsapi=1`;
-const RIBBON_SRC = "/recognition-ribbon.png";
+const RIBBON_SRC = "/recognition-ribbon.webp";
 
 export function RecognitionSection() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -69,6 +69,7 @@ export function RecognitionSection() {
               alt="Award winning legacy since 2005"
               width={132}
               height={198}
+              quality={90}
               className="h-auto w-[80px] md:w-[110px] lg:w-[132px]"
             />
           </div>

@@ -64,6 +64,7 @@ export default function Header({
     >
       <div className="pointer-events-auto flex items-center gap-4 md:gap-6">
         <LogoLink priority />
+        {projectSlug ? <BackToProjectsLink /> : null}
         {active ? <SegmentSwitcher current={active.href} /> : null}
       </div>
       <MenuButton onClick={onMenuClick} className="pointer-events-auto" />
@@ -209,5 +210,39 @@ function Caret({ open }: { open: boolean }) {
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+function BackToProjectsLink() {
+  return (
+    <div className="relative hidden h-8 items-center sm:flex">
+      <span aria-hidden className="mr-3 block h-5 w-px bg-white/25" />
+      <Link
+        href="/projects"
+        className="cta-underline relative flex items-center gap-2 pb-0.5 text-sm font-medium tracking-wide text-white/80 hover:text-white"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          className="h-3.5 w-3.5"
+          aria-hidden
+        >
+          <path
+            d="M12 7H2m0 0 4-4M2 7l4 4"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span>Back to Our Projects</span>
+        <span
+          aria-hidden
+          className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
+        />
+      </Link>
+    </div>
   );
 }

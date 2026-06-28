@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "react";
 import {
   getProjectTransition,
@@ -20,12 +21,21 @@ export default function ProjectTransitionOverlay() {
     getProjectTransition,
     noopSnapshot,
   );
+  const [hiResLoaded, setHiResLoaded] = useState(false);
+
+  // Reset the high-res flag whenever a new transition starts.
+  const slug = state?.slug;
+  useEffect(() => {
+    setHiResLoaded(false);
+  }, [slug]);
+
   if (!state) return null;
-  const { rect, expanded, src, alt } = state;
+  const { rect, expanded, src, previewSrc, alt } = state;
+
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed z-[100] overflow-hidden"
+      className="pointer-events-none fixed z-[100] overflow-hidden bg-black"
       style={{
         left: expanded ? 0 : `${rect.left}px`,
         top: expanded ? 0 : `${rect.top}px`,
@@ -34,22 +44,50 @@ export default function ProjectTransitionOverlay() {
         transition: `width ${PROJECT_TRANSITION_MS}ms ${EASE}, height ${PROJECT_TRANSITION_MS}ms ${EASE}, left ${PROJECT_TRANSITION_MS}ms ${EASE}, top ${PROJECT_TRANSITION_MS}ms ${EASE}`,
       }}
     >
-      <div
-        className="relative w-full"
-        style={{
-          height: expanded ? "200vh" : "100%",
-          transition: `height ${PROJECT_TRANSITION_MS}ms ${EASE}`,
-        }}
-      >
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-top"
+      {/* Preview: the exact image the card already loaded — paints instantly so
+          the zoom never shows black. */}
+      {previewSrc ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={previewSrc}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-top"
         />
-      </div>
+      ) : null}
+
+      {/* Full-resolution hero — fades in over the preview once decoded. */}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        priority
+        fetchPriority="high"
+        quality={90}
+        sizes="100vw"
+        onLoad={() => setHiResLoaded(true)}
+        className="object-cover object-top"
+        style={{
+          opacity: hiResLoaded ? 1 : 0,
+          transition: `opacity 400ms ${EASE}`,
+        }}
+      />
+
+      {/* Dark gradient eases in as the image expands, matching the detail hero
+          so the handoff at the end of the zoom is seamless. */}
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65"
+        style={{
+          opacity: expanded ? 1 : 0,
+          transition: `opacity ${PROJECT_TRANSITION_MS}ms ${EASE}`,
+        }}
+      />
+      <div
+        className="absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black"
+        style={{
+          opacity: expanded ? 1 : 0,
+          transition: `opacity ${PROJECT_TRANSITION_MS}ms ${EASE}`,
+        }}
+      />
     </div>
   );
 }

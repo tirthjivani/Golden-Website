@@ -29,7 +29,7 @@ export default function AboutPage() {
         label2="Mission"
         body2="To design and deliver well-planned residential and commercial spaces by following ethical practices, maintaining precision in execution, and creating long-term value for customers, investors, and communities."
         imageAlign="left"
-        imageSrc="/about/mission.png"
+        imageSrc="/about/mission.webp"
         imageAlt="Family welcomed to Golden Luxuria"
       />
       <WhyChooseUs />
@@ -161,6 +161,7 @@ function IntroSection() {
             width={6506}
             height={6830}
             sizes="100vw"
+            quality={90}
             className="block h-auto w-full min-[800px]:hidden"
             priority
             fetchPriority="high"
@@ -171,6 +172,7 @@ function IntroSection() {
               alt=""
               fill
               sizes="100vw"
+              quality={90}
               className="object-cover object-top"
               priority
               fetchPriority="high"
@@ -352,10 +354,11 @@ function RealCloud({
       }}
     >
       <Image
-        src="/about/cloud-v2.png"
+        src="/about/cloud-v2.webp"
         alt=""
         fill
         sizes="(min-width:768px) 520px, 60vw"
+        quality={90}
         className="object-contain"
         priority
         fetchPriority="high"
@@ -464,6 +467,7 @@ function StorySection() {
               alt=""
               fill
               sizes="60vw"
+              quality={90}
               className="object-contain object-right-bottom"
             />
           </div>
@@ -607,6 +611,7 @@ function Statement({
           src={imageSrc}
           alt={imageAlt ?? label}
           fill
+          quality={90}
           sizes="(min-width: 768px) 50vw, 100vw"
           className="object-cover"
         />
@@ -693,9 +698,10 @@ function Accreditations() {
         <Reveal>
           <div className="relative aspect-[2576/926] w-full">
             <Image
-              src="/rera-credai.png"
+              src="/rera-credai.webp"
               alt="RERA Approved and CREDAI Member"
               fill
+              quality={90}
               sizes="(min-width: 768px) 720px, 100vw"
               className="object-contain"
             />
@@ -711,9 +717,9 @@ function Accreditations() {
 function Milestones() {
   const stats = [
     { value: "+10M", label: "sq. ft. built since 2005" },
-    { value: "+6.3k", label: "Residential Units" },
-    { value: "+10k", label: "Happy Customers" },
-    { value: "+2.7k", label: "Commercial Units" },
+    { value: "+6.3K", label: "Residential Units" },
+    { value: "+10K", label: "Happy Customers" },
+    { value: "+2.7K", label: "Commercial Units" },
   ];
   return (
     <section className="border-t border-[#464646] bg-black">
@@ -758,9 +764,9 @@ function Milestones() {
 
 function GroupOfCompanies() {
   const logos = [
-    { src: "/about/group-shrungal.png", alt: "Shrungal", sizeClass: "h-[60%] w-[60%]" },
-    { src: "/about/group-golden.png", alt: "Golden Group", sizeClass: "h-[90%] w-[90%]" },
-    { src: "/about/group-keystar.png", alt: "Keystar Gems LLP", sizeClass: "h-[60%] w-[60%]" },
+    { src: "/about/group-shrungal.webp", alt: "Shrungal", sizeClass: "h-[60%] w-[60%]" },
+    { src: "/about/group-golden.webp", alt: "Golden Group", sizeClass: "h-[90%] w-[90%]" },
+    { src: "/about/group-keystar.webp", alt: "Keystar Gems LLP", sizeClass: "h-[60%] w-[60%]" },
   ];
   return (
     <section className="border-t border-[#464646] bg-black p-[30px] md:py-20">
@@ -790,6 +796,7 @@ function GroupOfCompanies() {
                   src={l.src}
                   alt={l.alt}
                   fill
+                  quality={90}
                   sizes="(min-width: 768px) 33vw, 100vw"
                   className="object-contain"
                 />

@@ -21,6 +21,7 @@ export function RevealImage({
   className,
   alt,
   priority,
+  quality = 90,
   ...imageProps
 }: RevealImageProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -61,10 +62,11 @@ export function RevealImage({
         <Image
           {...imageProps}
           alt={alt}
+          quality={quality}
           className={className}
           loading={priority ? "eager" : "lazy"}
           priority={priority}
-          fetchPriority="high"
+          fetchPriority={priority ? "high" : "auto"}
         />
       </div>
     </div>

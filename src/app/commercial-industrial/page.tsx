@@ -44,30 +44,39 @@ function Hero() {
 
   return (
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
-      <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand-commercial"}`}>
+      <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand"}`}>
         <Image
-          src="/commercial-hero.png"
+          src="/commercial-hero.webp"
           alt=""
           fill
           priority
           fetchPriority="high"
+          quality={90}
           sizes="(min-width: 1024px) 60vw, 100vw"
-          className="object-cover min-[1440px]:[object-position:center_-400px]"
+          className="object-cover"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black" />
 
-      <div className="relative z-10 flex h-full w-full flex-col p-[30px]">
-        <div className="mt-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
-          <WordReveal
-            as="h2"
-            text={headlineText}
-            startDelay={headlineStart}
-            className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
+      <div className="absolute inset-0 z-10 flex flex-col justify-end">
+        <div className="relative flex w-full flex-col justify-end pb-[30px] px-[30px]">
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 top-[-40px]"
+            style={{
+              background: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.1) 85%, rgba(0,0,0,0) 100%)"
+            }}
           />
-          <HeroRise delay={ctaDelay}>
-            <Pill href="/projects" label="See latest projects" />
-          </HeroRise>
+          <div className="relative z-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+            <WordReveal
+              as="h2"
+              text={headlineText}
+              startDelay={headlineStart}
+              className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
+            />
+            <HeroRise delay={ctaDelay} className="shrink-0">
+              <Pill href="/projects" label="See latest projects" />
+            </HeroRise>
+          </div>
         </div>
       </div>
     </section>
@@ -276,6 +285,7 @@ function ProjectsSection() {
   const total = PROJECTS.length + 1;
   const cardW = useResponsiveCardWidth();
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const router = useRouter();
   const next = () => setActive((i) => Math.min(total - 1, i + 1));
@@ -416,6 +426,7 @@ function ProjectsSection() {
               project={p}
               active={i === active}
               cardW={cardW}
+              priority={i < 3}
             />
           ))}
           <ViewAllCard active={active === PROJECTS.length} cardW={cardW} />
@@ -461,14 +472,17 @@ function ProjectCard({
   project,
   active,
   cardW,
+  priority = false,
 }: {
   project: Project;
   active: boolean;
   cardW: number;
+  priority?: boolean;
 }) {
   return (
-    <article
-      className="flex shrink-0 flex-col gap-2 pt-5"
+    <Link
+      href={`/project/${project.slug}`}
+      className="group flex shrink-0 flex-col gap-2 pt-5"
       style={{
         width: cardW,
         borderTop: "2px solid",
@@ -481,12 +495,13 @@ function ProjectCard({
         src={project.image}
         alt={project.name}
         fill
+        priority={priority}
         sizes="(min-width: 1024px) 380px, (min-width: 640px) 300px, 80vw"
-        className="object-cover"
+        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
         containerClassName="relative aspect-[380/370] w-full"
       />
       <div className="mt-2 flex w-full flex-col gap-3 pr-4">
-        <h4 className="text-[24px] font-normal leading-[1.4] text-white">
+        <h4 className="text-[24px] font-normal leading-[1.4] text-white transition-colors duration-300 group-hover:text-[#C19B4D]">
           {project.name}
         </h4>
         <ul className="flex flex-col gap-2 text-[16px] text-[#737373]">
@@ -504,7 +519,7 @@ function ProjectCard({
           </li>
         </ul>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -657,9 +672,10 @@ function Recognition() {
         <Reveal>
           <div className="relative aspect-[2576/926] w-full">
             <Image
-              src="/rera-credai.png"
+              src="/rera-credai.webp"
               alt="RERA Approved and CREDAI Member"
               fill
+              quality={90}
               sizes="(min-width: 1024px) 560px, (min-width: 640px) 500px, 80vw"
               className="object-contain"
             />

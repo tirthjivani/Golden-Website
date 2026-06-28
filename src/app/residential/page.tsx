@@ -43,9 +43,63 @@ function Hero() {
   const titleWords = "Where Everyday Life Feels Extraordinary".split(/\s+/).length;
   const ctaDelay = headlineStart + titleWords * 70 + 200;
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sec = sectionRef.current;
+    const title = titleRef.current;
+    if (!sec || !title) return;
+
+    let rafId = 0;
+    let scheduled = false;
+
+    const update = () => {
+      scheduled = false;
+      const rect = sec.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const y = -rect.top;
+      const limit = rect.height - vh;
+
+      if (limit <= 0) return;
+
+      const zone = 300; // Transition zone in pixels
+      const H = 100;    // Maximum lift in pixels
+
+      let ty = 0;
+      if (y < limit - zone) {
+        ty = 0;
+      } else if (y >= limit - zone && y < limit) {
+        const t = (y - (limit - zone)) / zone;
+        const ease = t * t * (3 - 2 * t);
+        ty = -H * ease;
+      } else {
+        ty = -H;
+      }
+
+      title.style.transform = `translate3d(0, ${ty}px, 0)`;
+    };
+
+    const onScroll = () => {
+      if (scheduled) return;
+      scheduled = true;
+      rafId = requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   return (
     <section className="relative h-[150svh] min-h-[960px] w-full">
-      {/* Image + gradient clip in their own box so the sticky content below
+      {/* Image clip in its own box so the sticky content below
           isn't trapped by an overflow:hidden ancestor. */}
       <div className="absolute inset-0 overflow-hidden">
         <div className={`absolute inset-0 ${fromHome ? "" : "hero-expand"}`}>
@@ -55,16 +109,19 @@ function Hero() {
             fill
             priority
             fetchPriority="high"
+            quality={90}
             sizes="(min-width: 1024px) 60vw, 100vw"
             className="object-cover object-top"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
       </div>
 
       <div className="relative z-10 h-full w-full">
         <div className="sticky top-0 flex h-[100svh] w-full flex-col justify-end p-[30px]">
-          <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+          {/* Overlay scoped to the visible viewport so the text scrim matches
+              the home page panel exactly — avoids a brightness jump on arrival. */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />
+          <div className="relative z-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
             <WordReveal
               as="h2"
               text={"Where Everyday Life\nFeels Extraordinary"}
@@ -164,7 +221,7 @@ function StatsGallery() {
         <Reveal as="div" delay={260}>
           <div className="flex items-end gap-4">
             <span className="text-[80px] font-medium leading-[0.9] tracking-tight lg:text-[140px] lg:tracking-[-4px]">
-              +6.3k
+              +6.3K
             </span>
             <div className="flex max-w-[120px] flex-col pb-3 text-sm leading-[1.4] text-white/60 md:pb-5">
               <span>Units</span>
@@ -285,6 +342,7 @@ function ProjectsSection() {
   const total = PROJECTS.length + 1;
   const cardW = useResponsiveCardWidth();
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const router = useRouter();
   const next = () => setActive((i) => Math.min(total - 1, i + 1));
@@ -425,6 +483,7 @@ function ProjectsSection() {
               project={p}
               active={i === active}
               cardW={cardW}
+              priority={i < 3}
             />
           ))}
           <ViewAllCard active={active === PROJECTS.length} cardW={cardW} />
@@ -439,10 +498,12 @@ function ProjectCard({
   project,
   active,
   cardW,
+  priority = false,
 }: {
   project: Project;
   active: boolean;
   cardW: number;
+  priority?: boolean;
 }) {
   return (
     <Link
@@ -461,12 +522,13 @@ function ProjectCard({
         src={project.image}
         alt={project.name}
         fill
+        priority={priority}
         sizes="(min-width: 1024px) 380px, (min-width: 640px) 300px, 80vw"
-        className="object-cover"
+        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
         containerClassName="relative aspect-[380/370] w-full"
       />
       <div className="mt-2 flex w-full flex-col gap-3 pr-4">
-        <h4 className="text-[24px] font-normal leading-[1.4] text-white">
+        <h4 className="text-[24px] font-normal leading-[1.4] text-white transition-colors duration-300 group-hover:text-[#C19B4D]">
           {project.name}
         </h4>
         <ul className="flex flex-col gap-2 text-[16px] text-[#737373]">
@@ -666,9 +728,10 @@ function Recognition() {
         <Reveal>
           <div className="relative aspect-[2576/926] w-full">
             <Image
-              src="/rera-credai.png"
+              src="/rera-credai.webp"
               alt="RERA Approved and CREDAI Member"
               fill
+              quality={90}
               sizes="(min-width: 1024px) 560px, (min-width: 640px) 500px, 80vw"
               className="object-contain"
             />
