@@ -137,6 +137,7 @@ export default function Home() {
             fill
             priority
             fetchPriority="high"
+            quality={90}
             sizes="(min-width: 1024px) 60vw, 100vw"
             className="pointer-events-none object-cover object-top"
             style={{
@@ -179,19 +180,19 @@ export default function Home() {
             className="absolute inset-0 z-0"
           />
           <Image
-            src="/commercial-hero.png"
+            src="/commercial-hero.webp"
             alt="Commercial & Industrial"
             fill
             priority
             fetchPriority="high"
+            quality={90}
             sizes="(min-width: 1024px) 60vw, 100vw"
             className="pointer-events-none object-cover"
             style={{
               opacity: rightOpacity,
               transform: rightScale,
-              objectPosition: transitioning === "right" ? "center -400px" : "center",
               transition: fadeTransition,
-              willChange: "opacity, transform, object-position",
+              willChange: "opacity, transform",
             }}
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/45" />

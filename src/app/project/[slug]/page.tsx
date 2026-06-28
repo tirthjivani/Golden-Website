@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getProjectBySlug, listProjects } from "@/lib/projects";
+import { HERO_ASPECT } from "@/lib/heroAspect";
 import { ProjectDetailView } from "./ProjectDetailView";
 
 export function generateStaticParams() {
@@ -26,5 +27,9 @@ export default async function ProjectPage(
   const { slug } = await props.params;
   const project = getProjectBySlug(slug);
   if (!project || !project.detail) notFound();
-  return <ProjectDetailView project={project} />;
+  // Aspect ratios are precomputed (scripts/measure-hero-aspect.ts) so the
+  // route bundle stays small — no sharp / fs / public images dragged into the
+  // serverless function. The hero renders identically.
+  const heroAspect = HERO_ASPECT[slug];
+  return <ProjectDetailView project={project} heroAspect={heroAspect} />;
 }

@@ -16,11 +16,12 @@ import type { Landmark, LandmarkCategory } from "@/lib/projects";
 
 type Coords = [number, number];
 
-// Vector basemap (CARTO Dark Matter) — a polished, detailed dark vector style
-// with real road hierarchy, labels and built-in area shading. Free, no API key,
-// served from a fast CDN. Used natively (no recolor) so its own shading shows.
-const STYLE_URL =
-  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+// Vector basemap: MapTiler "Streets v2 Dark" — a detailed dark vector style
+// (road casing, dense labels, transit, POIs) matching the site's dark theme.
+// The key is a publishable client-side key; restrict it to the site's domain
+// in the MapTiler dashboard. Free tier (100k loads/mo), commercial use allowed.
+const MAPTILER_KEY = "jTWeD4sqej7xVBLZ2f5r";
+const STYLE_URL = `https://api.maptiler.com/maps/basic-v2-dark/style.json?key=${MAPTILER_KEY}`;
 
 const CATEGORY_ICONS: Record<LandmarkCategory, typeof GraduationCap> = {
   education: GraduationCap,
@@ -29,51 +30,10 @@ const CATEGORY_ICONS: Record<LandmarkCategory, typeof GraduationCap> = {
   transit: Train,
 };
 
-// Distribute landmarks across the northern hemisphere of the project (away
-// from the Narmada / Tapi to the south of most sites). Each category gets a
-// home bearing and items in that category fan out across a narrow arc.
-const CATEGORY_BEARING: Record<LandmarkCategory, number> = {
-  education: 25,
-  healthcare: 335,
-  recreation: 95,
-  transit: 265,
-};
-const CATEGORY_ARC = 50;
-
-function offsetCoords(
-  base: Coords,
-  distanceKm: number,
-  bearingDeg: number,
-): Coords {
-  const [lng, lat] = base;
-  const bearingRad = (bearingDeg * Math.PI) / 180;
-  const dLat = (distanceKm * Math.cos(bearingRad)) / 111;
-  const dLng =
-    (distanceKm * Math.sin(bearingRad)) /
-    (111 * Math.cos((lat * Math.PI) / 180));
-  return [lng + dLng, lat + dLat];
-}
-
-function landmarkPosition(
-  landmark: Landmark,
-  base: Coords,
-  indexInCategory: number,
-  totalInCategory: number,
-): Coords {
-  if (landmark.bearing !== undefined) {
-    return offsetCoords(base, landmark.distanceKm, landmark.bearing);
-  }
-  const home = CATEGORY_BEARING[landmark.category];
-  const t =
-    totalInCategory <= 1 ? 0.5 : indexInCategory / (totalInCategory - 1);
-  const bearing = home - CATEGORY_ARC / 2 + CATEGORY_ARC * t;
-  return offsetCoords(base, landmark.distanceKm, bearing);
-}
-
 function iconSvg(category: LandmarkCategory, color = "#ffffff"): string {
   const Icon = CATEGORY_ICONS[category];
   return renderToStaticMarkup(
-    <Icon weight="regular" size={16} color={color} />,
+    <Icon weight="regular" size={20} color={color} />,
   );
 }
 
@@ -104,6 +64,8 @@ export function MinimalMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const landmarkMarkersRef = useRef<maplibregl.Marker[]>([]);
+  // First fitBounds after a (re)mount is instant; later category switches animate.
+  const firstFitRef = useRef(true);
   // Keep the latest onSelectLandmark in a ref so the map-mount effect (which
   // must not re-run on every render) can call the current callback.
   const onSelectRef = useRef(onSelectLandmark);
@@ -115,28 +77,16 @@ export function MinimalMap({
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
+    firstFitRef.current = true;
 
-    const maxKm = landmarks.reduce(
-      (m, l) => (l.distanceKm > m ? l.distanceKm : m),
-      0,
-    );
-    const autoZoom =
-      zoom ??
-      (maxKm <= 1
-        ? 15.5
-        : maxKm <= 3
-        ? 14.8
-        : maxKm <= 6
-        ? 14
-        : maxKm <= 12
-        ? 13.2
-        : 12.5);
-
+    // Real pin positions vary in spread per project/category, so we don't fix a
+    // zoom here — the marker effect calls fitBounds to frame the actual pins.
+    // This initial zoom is just a sensible starting frame around the project.
     const map = new maplibregl.Map({
       container: node,
       style: STYLE_URL,
       center: coords,
-      zoom: autoZoom,
+      zoom: zoom ?? 13,
       cooperativeGestures: true,
       attributionControl: { compact: true },
     });
@@ -203,21 +153,15 @@ export function MinimalMap({
     for (const m of landmarkMarkersRef.current) m.remove();
     landmarkMarkersRef.current = [];
 
-    const visible = activeCategory
-      ? landmarks.filter((l) => l.category === activeCategory)
-      : landmarks;
-
-    const categoryCounts = new Map<LandmarkCategory, number>();
-    for (const l of visible) {
-      categoryCounts.set(l.category, (categoryCounts.get(l.category) ?? 0) + 1);
-    }
-    const categoryIndex = new Map<LandmarkCategory, number>();
+    // Only landmarks with a real geocoded position are pinned — we never
+    // synthesise a fake location, so every pin sits where the place actually is.
+    const visible = (
+      activeCategory
+        ? landmarks.filter((l) => l.category === activeCategory)
+        : landmarks
+    ).filter((l): l is Landmark & { coords: Coords } => Array.isArray(l.coords));
 
     for (const landmark of visible) {
-      const i = categoryIndex.get(landmark.category) ?? 0;
-      categoryIndex.set(landmark.category, i + 1);
-      const total = categoryCounts.get(landmark.category) ?? 1;
-
       const el = document.createElement("div");
       el.className = "golden-landmark";
       el.setAttribute(
@@ -239,7 +183,7 @@ export function MinimalMap({
 
       el.append(icon, name, pop);
 
-      const pos = landmarkPosition(landmark, coords, i, total);
+      const pos = landmark.coords;
       el.dataset.name = landmark.name;
 
       // Click the pin → open its detail panel + fly in to reveal surroundings.
@@ -248,7 +192,7 @@ export function MinimalMap({
         onSelectRef.current?.(landmark);
         map.flyTo({
           center: pos,
-          zoom: Math.max(map.getZoom(), 15.5),
+          zoom: Math.max(map.getZoom(), 14.5),
           speed: 0.8,
           essential: true,
         });
@@ -258,6 +202,18 @@ export function MinimalMap({
         .setLngLat(pos)
         .addTo(map);
       landmarkMarkersRef.current.push(marker);
+    }
+
+    // Frame the project plus all visible pins so the category fills the map.
+    if (visible.length > 0) {
+      const bounds = new maplibregl.LngLatBounds(coords, coords);
+      for (const l of visible) bounds.extend(l.coords);
+      map.fitBounds(bounds, {
+        padding: { top: 90, bottom: 70, left: 60, right: 60 },
+        maxZoom: 14,
+        duration: firstFitRef.current ? 0 : 600,
+      });
+      firstFitRef.current = false;
     }
   }, [landmarks, activeCategory, coords]);
 

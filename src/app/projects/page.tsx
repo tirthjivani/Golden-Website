@@ -138,12 +138,17 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
     const heroRef = projectHeroImage(project);
     if (!heroRef?.src) return;
     const rect = imgEl.getBoundingClientRect();
+    // The card already rendered this image — reuse its exact loaded source so
+    // the zoom shows it immediately instead of fading up from black.
+    const cardImg = imgEl.querySelector("img");
+    const previewSrc = cardImg?.currentSrc || cardImg?.src || undefined;
     sessionStorage.setItem("golden-from-projects", "1");
     sessionStorage.setItem("golden-projects-scroll", String(window.scrollY));
     setNavigating(true);
     setProjectTransition({
       slug: project.slug,
       src: projectImage(heroRef.src),
+      previewSrc,
       alt: heroRef.alt ?? project.name,
       rect: {
         top: rect.top,
@@ -199,11 +204,12 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
 
       {layout === "row" ? (
         <section className="border-t border-[#464646]">
-          {filtered.map((p) => (
+          {filtered.map((p, i) => (
             <ProjectRow
               key={p.id}
               project={p}
               disabled={navigating}
+              priority={i < 2}
               onSelect={(imgEl) => startTransition(p, imgEl)}
             />
           ))}
@@ -211,11 +217,12 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
       ) : (
         <section className="border-t border-[#464646]">
           <div className="grid grid-cols-1 gap-0 md:grid-cols-2 xl:grid-cols-3">
-            {filtered.map((p) => (
+            {filtered.map((p, i) => (
               <ProjectGalleryCard
                 key={p.id}
                 project={p}
                 disabled={navigating}
+                priority={i < 3}
                 onSelect={(imgEl) => startTransition(p, imgEl)}
               />
             ))}
@@ -273,10 +280,12 @@ function ProjectRow({
   project,
   disabled,
   onSelect,
+  priority = false,
 }: {
   project: Project;
   disabled: boolean;
   onSelect: (heroImgEl: HTMLElement) => void;
+  priority?: boolean;
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [shown, setShown] = useState(false);
@@ -380,6 +389,7 @@ function ProjectRow({
                   src={projectImage(img.src)}
                   alt={img.alt ?? `${project.name} - image ${i + 1}`}
                   fill
+                  priority={priority && i === 0}
                   sizes="(min-width: 1024px) 22vw, (min-width: 640px) 24vw, 50vw"
                   className={`object-cover ${i === 0 ? "object-top" : ""}`}
                   containerClassName="relative aspect-[4/3] w-full"
@@ -399,10 +409,12 @@ function ProjectGalleryCard({
   project,
   disabled,
   onSelect,
+  priority = false,
 }: {
   project: Project;
   disabled: boolean;
   onSelect: (heroImgEl: HTMLElement) => void;
+  priority?: boolean;
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [shown, setShown] = useState(false);
@@ -468,6 +480,7 @@ function ProjectGalleryCard({
               src={heroSrc}
               alt={heroRef?.alt ?? project.name}
               fill
+              priority={priority}
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover object-top"
               containerClassName="absolute inset-0"

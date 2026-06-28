@@ -25,15 +25,22 @@ import {
   type Project,
 } from "@/lib/projects";
 import { getProjectMedia } from "@/lib/projectMedia";
+import { LANDMARK_COORDS } from "@/lib/landmarkCoords";
 
-export function ProjectDetailView({ project }: { project: Project }) {
+export function ProjectDetailView({
+  project,
+  heroAspect,
+}: {
+  project: Project;
+  heroAspect?: number;
+}) {
   const detail = project.detail;
   if (!detail) return null;
   const media = getProjectMedia(project.slug);
 
   return (
     <main className="relative min-h-screen w-full bg-black text-white">
-      <Hero project={project} mediaSrc={media?.hero} />
+      <Hero project={project} mediaSrc={media?.hero} heroAspect={heroAspect} />
       <Overview project={project} mediaSrcs={media?.overview} />
       <ProjectFacts project={project} />
       {!media?.hidden.amenities ? (
@@ -55,7 +62,15 @@ export function ProjectDetailView({ project }: { project: Project }) {
 
 // -------------------- Hero --------------------
 
-function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
+function Hero({
+  project,
+  mediaSrc,
+  heroAspect,
+}: {
+  project: Project;
+  mediaSrc?: string;
+  heroAspect?: number;
+}) {
   const detail = project.detail!;
   const heroSrc = mediaSrc
     ? projectImage(`${project.slug}/${mediaSrc}`)
@@ -63,15 +78,75 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
   const fromProjects = useFromProjects();
 
   const titleStart = fromProjects ? 250 : 450;
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
 
+  // Hold the zoom overlay until this hero has actually painted (cleared on the
+  // image's onLoad below); the timer is only a safety fallback so the overlay
+  // can never get stuck if onLoad never fires (e.g. instant cache hit).
   useEffect(() => {
     if (!fromProjects) return;
-    const id = window.setTimeout(() => setProjectTransition(null), 60);
+    const id = window.setTimeout(() => setProjectTransition(null), 700);
     return () => window.clearTimeout(id);
   }, [fromProjects]);
 
+  useEffect(() => {
+    const sec = sectionRef.current;
+    const title = titleRef.current;
+    if (!sec || !title) return;
+
+    let rafId = 0;
+    let scheduled = false;
+
+    const update = () => {
+      scheduled = false;
+      const rect = sec.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const y = -rect.top;
+      const limit = rect.height - vh;
+
+      if (limit <= 0) return;
+
+      const zone = 300; // Transition zone in pixels
+      const H = 100;    // Maximum lift in pixels
+
+      let ty = 0;
+      if (y < limit - zone) {
+        ty = 0;
+      } else if (y >= limit - zone && y < limit) {
+        const t = (y - (limit - zone)) / zone;
+        const ease = t * t * (3 - 2 * t);
+        ty = -H * ease;
+      } else {
+        ty = -H;
+      }
+
+      title.style.transform = `translate3d(0, ${ty}px, 0)`;
+    };
+
+    const onScroll = () => {
+      if (scheduled) return;
+      scheduled = true;
+      rafId = requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   return (
-    <section className="relative h-[200vh] min-h-[1280px] w-full overflow-hidden">
+    <section
+      ref={sectionRef}
+      className={`relative w-full ${heroAspect ? "" : "h-[200vh] min-h-[1280px]"}`}
+      style={heroAspect ? { aspectRatio: String(heroAspect) } : undefined}
+    >
       {heroSrc ? (
         <div className={`absolute inset-0 ${fromProjects ? "" : "hero-expand"}`}>
           <Image
@@ -79,7 +154,10 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
             alt={detail.hero.image.alt ?? project.name}
             fill
             priority
+            fetchPriority="high"
+            quality={90}
             sizes="100vw"
+            onLoad={fromProjects ? () => setProjectTransition(null) : undefined}
             className="object-cover object-top"
           />
         </div>
@@ -92,16 +170,31 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black"
       />
 
-      <div className="relative z-10 h-full w-full">
+      <div className="absolute inset-0 z-10 flex flex-col justify-end">
         <Reveal
           delay={titleStart - 100}
-          className="absolute left-[30px] top-[200px]"
+          className="absolute left-[30px] top-[200px] sm:hidden"
         >
           <Link
             href="/projects"
             className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
           >
-            <span aria-hidden className="text-base leading-none">&larr;</span>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              className="h-3.5 w-3.5"
+              aria-hidden
+            >
+              <path
+                d="M12 7H2m0 0 4-4M2 7l4 4"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
             Back to Our Projects
             <span
               aria-hidden
@@ -109,20 +202,25 @@ function Hero({ project, mediaSrc }: { project: Project; mediaSrc?: string }) {
             />
           </Link>
         </Reveal>
-        <div className="absolute bottom-[calc(50%+30px)] left-[30px] flex flex-col gap-2">
-          <WordReveal
-            as="h1"
-            text={project.name}
-            startDelay={titleStart}
-            className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]"
+        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[30px] pl-[30px]">
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 bottom-[-40px]"
+            style={{
+              background: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.1) 85%, rgba(0,0,0,0) 100%)"
+            }}
           />
-          {detail.intro.headline ? (
-            <Reveal delay={titleStart + project.name.split(/\s+/).length * 70}>
-              <p className="max-w-[44ch] text-base leading-[1.45] text-white/85 md:text-lg">
-                {detail.intro.headline}
-              </p>
-            </Reveal>
-          ) : null}
+          <div
+            ref={titleRef}
+            style={{ willChange: "transform" }}
+            className="relative z-10 flex flex-col gap-2"
+          >
+            <WordReveal
+              as="h1"
+              text={project.name}
+              startDelay={titleStart}
+              className="text-[44px] font-medium leading-[1] tracking-tight md:text-[88px]"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -133,33 +231,38 @@ function ProjectFacts({ project }: { project: Project }) {
   const facts: { label: string; value: string; sub?: string }[] = [
     { label: "Location", value: project.location },
     { label: "Type", value: project.category },
-    {
-      label: "RERA",
-      value: project.rera ?? "Pending",
-      sub: project.reraIssuedOn ? `Issued ${project.reraIssuedOn}` : undefined,
-    },
   ];
-  const cellClass = (i: number, last: boolean) =>
+  if (project.rera) {
+    facts.push({
+      label: "RERA",
+      value: project.rera,
+      sub: project.reraIssuedOn ? `Issued ${project.reraIssuedOn}` : undefined,
+    });
+  }
+  const total = facts.length + 1; // + Carpet Area cell
+  const mdColsClass = total === 4 ? "md:grid-cols-4" : "md:grid-cols-3";
+  const lastBottomRowStart = total % 2 === 0 ? total - 2 : total - 1;
+  const cellClass = (i: number) =>
     `flex flex-col gap-3 px-[30px] py-10 md:py-14 ${
-      !last ? "md:border-r md:border-[#464646]" : ""
-    } ${i < 2 ? "border-b border-[#464646] md:border-b-0" : ""} ${
-      i === 0 || i === 2 ? "border-r border-[#464646]" : ""
-    }`;
+      i < total - 1 ? "md:border-r md:border-[#464646]" : ""
+    } ${
+      i < lastBottomRowStart ? "border-b border-[#464646] md:border-b-0" : ""
+    } ${i % 2 === 0 && i + 1 < total ? "border-r border-[#464646]" : ""}`;
   return (
     <section className="border-t border-[#464646] bg-black">
-      <dl className="grid grid-cols-2 md:grid-cols-4">
+      <dl className={`grid grid-cols-2 ${mdColsClass}`}>
         {facts.map((f, i) => (
           <Reveal
             key={f.label}
             delay={120 + i * 100}
-            className={cellClass(i, false)}
+            className={cellClass(i)}
           >
             <div className="flex items-start justify-between gap-3">
-              <dt className="text-[13px] tracking-tight text-white/55">
+              <dt className="text-[13px] tracking-normal text-white/55">
                 {f.label}
               </dt>
               {f.sub && (
-                <span className="text-[11px] tracking-[0.14em] text-white/55">
+                <span className="text-[13px] tracking-normal text-white/55">
                   {f.sub}
                 </span>
               )}
@@ -172,7 +275,7 @@ function ProjectFacts({ project }: { project: Project }) {
         <CarpetAreaCell
           project={project}
           delay={120 + facts.length * 100}
-          className={cellClass(facts.length, true)}
+          className={cellClass(facts.length)}
         />
       </dl>
     </section>
@@ -228,7 +331,7 @@ function CarpetAreaCell({
   return (
     <Reveal delay={delay} className={`relative ${className}`}>
       <div className="flex items-start justify-between gap-3">
-        <dt className="text-[13px] tracking-tight text-white/55">Carpet Area</dt>
+        <dt className="text-[13px] tracking-tight text-white/55">{project.areaLabel ?? "Carpet Area"}</dt>
         {hasBoth ? (
           <div ref={wrapRef} className="relative">
             <button
@@ -365,8 +468,6 @@ function Overview({
     };
   }, [cards.length]);
 
-  if (cards.length === 0) return null;
-
   return (
     <section
       id="overview"
@@ -374,11 +475,13 @@ function Overview({
       className="relative scroll-mt-24 overflow-hidden bg-black px-[30px] py-20 md:flex md:h-[100vh] md:min-h-[720px] md:items-center md:py-0"
     >
       <div className="relative mx-auto grid w-full max-w-[1500px] grid-cols-2 gap-6 md:h-full md:grid-cols-12 md:grid-rows-[1fr_auto_1fr] md:gap-x-10 md:gap-y-10 md:py-20">
-        <OverviewCard
-          card={cards[0]}
-          cardRef={(el) => { cardRefs.current[0] = el; }}
-          className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-1 md:self-start"
-        />
+        {cards[0] ? (
+          <OverviewCard
+            card={cards[0]}
+            cardRef={(el) => { cardRefs.current[0] = el; }}
+            className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-1 md:self-start"
+          />
+        ) : null}
         {cards[1] ? (
           <OverviewCard
             card={cards[1]}
@@ -449,6 +552,7 @@ function OverviewCard({
           src={projectImage(card.src)}
           alt={card.alt ?? `${card.metric} ${card.label}`}
           fill
+          quality={90}
           sizes="(min-width: 768px) 22vw, 50vw"
           className="object-cover"
           fetchPriority="high"
@@ -496,7 +600,7 @@ function Amenities({
           {featureSrc ? (
             <RevealImage
               src={featureSrc}
-              alt={detail.amenities.feature.alt ?? `${project.name} amenities`}
+              alt={detail.amenities.feature?.alt ?? `${project.name} amenities`}
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover"
@@ -823,24 +927,36 @@ const LANDMARK_ICONS: Record<LandmarkCategory, typeof GraduationCap> = {
 
 function LocationSection({ project }: { project: Project }) {
   const location = project.detail?.location;
-  const availableCategories = useMemo(() => {
-    if (!location) return [] as LandmarkCategory[];
-    return LANDMARK_CATEGORIES.filter((c) =>
-      location.landmarks.some((l) => l.category === c.key),
-    ).map((c) => c.key);
-  }, [location]);
+  // Attach real geocoded positions (Mappls) and keep only landmarks we could
+  // place — pins are never synthesised, so an un-geocoded landmark is omitted
+  // rather than dropped onto a fake spot.
+  const mappedLandmarks = useMemo<Landmark[]>(() => {
+    if (!location) return [];
+    return location.landmarks.flatMap((l) => {
+      const coords = LANDMARK_COORDS[`${project.slug}::${l.name}`];
+      return coords ? [{ ...l, coords }] : [];
+    });
+  }, [location, project.slug]);
 
-  const [active, setActive] = useState<LandmarkCategory | null>(
-    () => availableCategories[0] ?? null,
+  const availableCategories = useMemo(
+    () =>
+      LANDMARK_CATEGORIES.filter((c) =>
+        mappedLandmarks.some((l) => l.category === c.key),
+      ).map((c) => c.key),
+    [mappedLandmarks],
   );
+
+  // No category selected by default → the map shows every kind of pin at once
+  // ("all the things nearby" at a glance). Selecting a tab filters to it.
+  const [active, setActive] = useState<LandmarkCategory | null>(null);
   const [selected, setSelected] = useState<Landmark | null>(null);
 
-  if (!location || location.landmarks.length === 0) return null;
+  if (!location || mappedLandmarks.length === 0) return null;
 
   return (
     <section
       id="location"
-      className="scroll-mt-24 border-t border-[#464646] bg-black py-16 md:py-24"
+      className="scroll-mt-24 border-t border-[#464646] bg-black pt-16 md:pt-24"
     >
       <div className="flex flex-col gap-2 px-[30px]">
         <Reveal>
@@ -860,7 +976,7 @@ function LocationSection({ project }: { project: Project }) {
       <div className="relative mt-10 md:mt-14">
         <MinimalMap
           coords={location.coords}
-          landmarks={location.landmarks}
+          landmarks={mappedLandmarks}
           activeCategory={active ?? undefined}
           className="aspect-[3/4] md:aspect-auto md:h-[80vh] md:min-h-[640px]"
           projectName={project.name}
@@ -877,7 +993,9 @@ function LocationSection({ project }: { project: Project }) {
                 key={key}
                 type="button"
                 onClick={() => {
-                  setActive(key);
+                  // Toggle: tapping the active tab again clears the filter and
+                  // returns to showing every category.
+                  setActive((prev) => (prev === key ? null : key));
                   setSelected(null);
                 }}
                 className="golden-map-tab"
