@@ -44,6 +44,7 @@ function InfoGrid() {
   return (
     <div className="grid grid-cols-2 -mt-px h-full">
       <InfoCard
+        className="border-l-0"
         label="Email"
         value="info@goldengroup.in"
         action={{ kind: "copy", text: "info@goldengroup.in", verb: "Email" }}
@@ -59,7 +60,7 @@ function InfoGrid() {
         }}
       />
       <InfoCard
-        className="-mt-px"
+        className="-mt-px border-l-0"
         label="Location"
         value={
           <span className="block">
