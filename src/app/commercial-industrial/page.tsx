@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Handshake, SealCheck, ShieldCheck } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -590,19 +591,19 @@ function WhyChooseUs() {
       title: "Quality",
       body:
         "Every project reflects our standards from material selection to construction to final handover.",
-      icon: "/icons/quality.svg",
+      Icon: SealCheck,
     },
     {
       title: "Commitment",
       body:
         "We plan every project around our customers and deliver on time, every time.",
-      icon: "/icons/commitment.svg",
+      Icon: Handshake,
     },
     {
       title: "Trust",
       body:
         "Transparency is at the core of everything we do, from development to sales.",
-      icon: "/icons/trust.svg",
+      Icon: ShieldCheck,
     },
   ];
   return (
@@ -627,15 +628,11 @@ function WhyChooseUs() {
                 >
                   <Reveal delay={120 + i * 120}>
                     <div className="flex items-start gap-8 px-[30px] py-10 md:px-8 md:py-12">
-                      <div className="relative h-[48px] w-[48px] shrink-0 md:h-[56px] md:w-[56px]">
-                        <Image
-                          src={item.icon}
-                          alt=""
-                          width={56}
-                          height={56}
-                          className="h-full w-full object-contain"
-                        />
-                      </div>
+                      <item.Icon
+                        weight="light"
+                        className="h-[48px] w-[48px] shrink-0 text-[#C19B4D] md:h-[56px] md:w-[56px]"
+                        aria-hidden
+                      />
                       <div className="flex flex-col gap-2">
                         <h4 className="text-[20px] font-normal leading-[1.4] text-white">
                           {item.title}

@@ -3,6 +3,8 @@
 // stored as keys under `projects/<slug>/...` so they can resolve to the local
 // `public/` tree today and a Cloudflare CDN tomorrow without touching pages.
 
+import studioData from "@/data/projects.json";
+
 const RAW_CDN_BASE = process.env.NEXT_PUBLIC_PROJECT_IMAGE_BASE ?? "/projects";
 
 function trimSlash(value: string) {
@@ -101,6 +103,20 @@ export type Pillar = {
   iconKey: "zero-out" | "smart-power" | "climate-capsule" | "zero-waste";
 };
 
+// ---------- Custom (studio-authored) sections ----------
+// A generic, themed content block the studio can add to any project and place
+// anywhere in the section order. Kept deliberately simple: a heading, body
+// copy, an optional media grid, and an optional video embed.
+export type CustomSection = {
+  id: string;
+  label?: string; // shown in the section nav
+  headline?: string;
+  body?: string;
+  media?: ImageRef[];
+  columns?: 2 | 3 | 4;
+  videoUrl?: string;
+};
+
 export type ProjectDetail = {
   hero: {
     image: ImageRef;
@@ -183,6 +199,15 @@ export type Project = {
   reraIssuedOn?: string;
   images: ImageRef[];
   detail?: ProjectDetail;
+  // ---- Studio-managed layout controls (all optional, back-compatible) ----
+  // Section keys turned off for this project. Keys are the canonical section
+  // ids (see SECTION_DEFS) or `custom:<id>` for custom sections.
+  disabledSections?: string[];
+  // Explicit render order of section keys. When absent, the default order is
+  // used and any customSections are appended at the end.
+  sectionOrder?: string[];
+  // Studio-authored generic sections, placed via sectionOrder when present.
+  customSections?: CustomSection[];
 };
 
 // ---------- Shared building blocks ----------
@@ -469,45 +494,6 @@ const goldenLuxuria: Project = {
             },
           ],
         },
-        {
-          id: "ground-floor",
-          label: "Ground Floor",
-          plans: [
-            {
-              id: "ground-floor-plan",
-              label: "Ground Floor Plan",
-              metrics: [
-                { label: "Drive Way", value: "33'0\" Wide" },
-              ],
-              features: [
-                "Entry, security cabin and pick-up/drop zone at the front.",
-                "Drive-ways with car and bike parking along all blocks.",
-                "Central landscape with water body, gazebo, jogging track and open gym.",
-                "Indoor games, party hall and party lawn at the central club.",
-              ],
-              image: { src: "golden-luxuria/ground_floor_plan.webp", dimFill: true },
-            },
-          ],
-        },
-        {
-          id: "typical",
-          label: "Typical Floor",
-          plans: [
-            {
-              id: "typical-floor",
-              label: "Typical Floor Plate",
-              metrics: [
-                { label: "Configuration", value: "2 + 3 BHK" },
-              ],
-              features: [
-                "Block A, B, D & E: 2 BHK units.",
-                "Block C: 3 BHK units.",
-                "Connected lobby and high-speed lifts on every floor.",
-              ],
-              image: { src: "golden-luxuria/typical_floor_plan.webp" },
-            },
-          ],
-        },
       ],
     },
     specifications: {
@@ -650,72 +636,6 @@ const goldenHeaven: Project = {
             },
           ],
         },
-        {
-          id: "typical",
-          label: "Typical Floor",
-          plans: [
-            {
-              id: "typical-plan",
-              label: "Typical Floor Plate",
-              metrics: [{ label: "Configuration", value: "3 + 4 BHK" }],
-              features: [
-                "3 BHK in Buildings A & C, 4 BHK in Building B.",
-                "Building core with two elevators and stair lobby.",
-              ],
-              image: { src: "golden-heaven/typical_plan.webp" },
-            },
-          ],
-        },
-        {
-          id: "layout",
-          label: "Layout Plan",
-          plans: [
-            {
-              id: "layout-plan",
-              label: "Ground Layout",
-              metrics: [],
-              features: [
-                "Entrance gate, security cabin and entrance foyer.",
-                "Water body with deck, gymnasium, banquet hall and skating rink.",
-                "Car wash, child play area, senior-citizen and landscape gardens.",
-                "Ramp to basement, wide internal roads and walkways.",
-              ],
-              image: { src: "golden-heaven/layout_plan.webp" },
-            },
-          ],
-        },
-        {
-          id: "basement-1",
-          label: "1st Basement",
-          plans: [
-            {
-              id: "basement-1-plan",
-              label: "1st Basement Floor Plan",
-              metrics: [{ label: "Level", value: "Parking" }],
-              features: [
-                "Covered car parking with internal driveways.",
-                "Ramp connection to ground and second basement.",
-              ],
-              image: { src: "golden-heaven/1st_basement_floor_plan.webp" },
-            },
-          ],
-        },
-        {
-          id: "basement-2",
-          label: "2nd Basement",
-          plans: [
-            {
-              id: "basement-2-plan",
-              label: "2nd Basement Floor Plan",
-              metrics: [{ label: "Level", value: "Parking" }],
-              features: [
-                "Additional covered car-parking level.",
-                "Internal driveways with ramp access.",
-              ],
-              image: { src: "golden-heaven/2nd_basement_floor_plan.webp" },
-            },
-          ],
-        },
       ],
     },
     specifications: {
@@ -840,17 +760,8 @@ const goldenNirvana: Project = {
                 "Combined kitchen and dining with a connected wash area.",
                 "Living room opening to the central passage and twin lifts.",
               ],
-              image: { src: "golden-nirvana/2bhk_typical_floor_plan_2nd_to_7th_floor_block_a,b,c,d,e.webp" },
+              image: { src: "golden-nirvana/2bhk_typical_floor_plan_2nd_to_7th_floor_block_abcde.webp" },
               note: "*Final dimensions may vary on site.",
-            },
-            {
-              id: "2bhk-first-floor",
-              label: "1st Floor Plate",
-              metrics: [{ label: "Floor", value: "1st" }],
-              features: [
-                "First-floor layout for blocks A–E, with utility access and lobby core.",
-              ],
-              image: { src: "golden-nirvana/1st_floor_plan.webp" },
             },
           ],
         },
@@ -870,19 +781,6 @@ const goldenNirvana: Project = {
                 "Private covered parking with otta, garden and dry/wash areas.",
               ],
               image: { src: "golden-nirvana/bungalow_ground_floor_layout_plan.webp" },
-            },
-            {
-              id: "bungalow-first",
-              label: "First Floor",
-              metrics: [
-                { label: "First Floor", value: "622 SQ.FT." },
-                { label: "Terrace", value: "90 SQ.FT." },
-              ],
-              features: [
-                "Two more bedrooms with a dress-toilet and a store on the first floor.",
-                "Private terrace for outdoor relaxation.",
-              ],
-              image: { src: "golden-nirvana/bungalow_first_floor_layout_plan.webp" },
             },
           ],
         },
@@ -1039,35 +937,6 @@ const goldenVilla: Project = {
                 "Standing balcony extending the upper living space outdoors.",
               ],
               image: { src: "golden-villa/second_floor_plan.webp" },
-            },
-          ],
-        },
-        {
-          id: "shopping",
-          label: "Shopping",
-          plans: [
-            {
-              id: "villa-shop-ground",
-              label: "Ground Floor",
-              metrics: [{ label: "Shops", value: "7" }],
-              features: [
-                "Seven street-facing retail units, with larger shops anchoring each rounded corner.",
-                "Covered otta frontage and a vehicle ramp for direct ground-level access.",
-                "Central lift, staircase and meter room serving the complex.",
-              ],
-              // Ground-floor shopping plan asset to be supplied (black style).
-              image: { src: "golden-villa/shopping_ground_plan.webp" },
-            },
-            {
-              id: "villa-shop-upper",
-              label: "1st & 2nd Floor",
-              metrics: [{ label: "Shops / Floor", value: "7" }],
-              features: [
-                "Seven retail units per floor opening onto a central circulation passage.",
-                "Larger corner shops at either end of the floor plate.",
-                "Shared lift, staircase and a common toilet block on each level.",
-              ],
-              image: { src: "golden-villa/shopping_plan.webp" },
             },
           ],
         },
@@ -1462,7 +1331,7 @@ const goldenResidency: Project = {
                 "Living and kitchen-dining open off a central lift-and-stair core.",
                 "Both bedrooms served by attached toilets and an architectural projection balcony.",
               ],
-              image: { src: "golden-residency/typical_floor_plan_2bhk_wing_a,b,c,d,g-h.webp" },
+              image: { src: "golden-residency/typical_floor_plan_2bhk_wing_abcdg-h.webp" },
             },
           ],
         },
@@ -1480,38 +1349,6 @@ const goldenResidency: Project = {
                 "Attached and common toilets with a utility wash area.",
               ],
               image: { src: "golden-residency/project_1bhk_typical_floor_plan.webp" },
-            },
-          ],
-        },
-        {
-          id: "typical-floor",
-          label: "Typical Floor",
-          plans: [
-            {
-              id: "typical-floor-plan",
-              label: "Typical Floor Plan",
-              metrics: [],
-              features: [
-                "Eight residential wings (A–H) arranged around a central landscaped garden.",
-                "Street-facing shops along the roadside blocks; perimeter driveways with clubhouse and play zones.",
-              ],
-              image: { src: "golden-residency/typical_floor_plan.webp" },
-            },
-          ],
-        },
-        {
-          id: "basement",
-          label: "Basement Parking",
-          plans: [
-            {
-              id: "basement-parking",
-              label: "Basement Parking Plan",
-              metrics: [],
-              features: [
-                "Covered basement parking spanning the full site.",
-                "Wide internal driveways with entry/exit ramps and a lift core per wing.",
-              ],
-              image: { src: "golden-residency/basement_parking_plan.webp" },
             },
           ],
         },
@@ -1975,6 +1812,7 @@ const goldenIndustrialEstate: Project = {
     { src: "/commercial-hero.webp" },
     { src: "/commercial-hero.webp" },
   ],
+  disabledSections: ["overview", "amenities"],
   detail: {
     hero: {
       image: { src: "/commercial-hero.webp" },
@@ -2016,7 +1854,7 @@ const goldenIndustrialEstate: Project = {
                 "Full utility support: electricity point, gas line, and drainage.",
                 "Attractive entry gate with compound wall for security.",
               ],
-              image: { src: "" },
+              image: { src: "golden-industrial-estate/industrial_plots_layout.webp" },
             },
           ],
         },
@@ -2039,7 +1877,12 @@ const goldenIndustrialEstate: Project = {
   },
 };
 
-export const PROJECTS: Project[] = [
+// The TypeScript objects above are the immutable SEED dataset. At runtime the
+// site reads from src/data/projects.json (edited by the local /studio). When
+// that file has no projects, we fall back to the seed so the site always
+// renders. The JSON is a static import so it works in both server and client
+// bundles; editing it in dev triggers a normal HMR recompile.
+const SEED_PROJECTS: Project[] = [
   goldenLuxuria,
   goldenHeaven,
   goldenResidency,
@@ -2053,6 +1896,17 @@ export const PROJECTS: Project[] = [
   goldenIndustrialEstate,
 ];
 
+const STUDIO_PROJECTS = (studioData as unknown as { projects?: Project[] })
+  .projects;
+
+export const PROJECTS: Project[] =
+  STUDIO_PROJECTS && STUDIO_PROJECTS.length > 0
+    ? STUDIO_PROJECTS
+    : SEED_PROJECTS;
+
+// Exposed so the studio API can serialise the current seed when no JSON exists.
+export const SEED = SEED_PROJECTS;
+
 export function listProjects(): Project[] {
   return PROJECTS;
 }
@@ -2061,46 +1915,116 @@ export function getProjectBySlug(slug: string): Project | undefined {
   return PROJECTS.find((p) => p.slug === slug);
 }
 
-export type SectionKey =
-  | "overview"
-  | "highlights"
-  | "amenities"
-  | "master-plan"
-  | "floor-plans"
-  | "gallery"
-  | "walkthrough"
-  | "specifications"
-  | "location";
+// ---------- Section layout ----------
+
+export type SectionKey = string;
 
 export type SectionItem = { key: SectionKey; label: string };
 
+// Canonical section catalogue. `navable` controls whether the section gets an
+// anchor entry in the on-page section nav. Order here is the default render
+// order when a project has no explicit sectionOrder.
+export const SECTION_DEFS: {
+  key: string;
+  label: string;
+  navable: boolean;
+}[] = [
+  { key: "hero", label: "Hero", navable: false },
+  { key: "overview", label: "Overview", navable: true },
+  { key: "facts", label: "Facts", navable: false },
+  { key: "amenities", label: "Amenities", navable: true },
+  { key: "master-plan", label: "Master Plan", navable: true },
+  { key: "floor-plans", label: "Floor Plans", navable: true },
+  { key: "gallery", label: "Gallery", navable: true },
+  { key: "specifications", label: "Specifications", navable: true },
+  { key: "location", label: "Location", navable: true },
+  { key: "pillars", label: "Pillars", navable: false },
+  { key: "walkthrough", label: "Walkthrough", navable: true },
+];
+
+export const DEFAULT_SECTION_ORDER = SECTION_DEFS.map((s) => s.key);
+
+export type OrderedSection =
+  | { kind: "known"; key: string; label: string; navable: boolean }
+  | { kind: "custom"; key: string; label: string; custom: CustomSection };
+
+// Resolve the final, ordered, enabled list of sections for a project. Honours
+// disabledSections and sectionOrder; appends any custom sections not already
+// placed by sectionOrder.
+export function getOrderedSections(project: Project): OrderedSection[] {
+  const disabled = new Set(project.disabledSections ?? []);
+  const custom = project.customSections ?? [];
+  const customById = new Map(custom.map((c) => [`custom:${c.id}`, c]));
+
+  const order =
+    project.sectionOrder && project.sectionOrder.length > 0
+      ? project.sectionOrder
+      : DEFAULT_SECTION_ORDER;
+
+  const seen = new Set<string>();
+  const result: OrderedSection[] = [];
+
+  const pushKey = (key: string) => {
+    if (seen.has(key) || disabled.has(key)) return;
+    seen.add(key);
+    if (key.startsWith("custom:")) {
+      const c = customById.get(key);
+      if (c) {
+        result.push({
+          kind: "custom",
+          key,
+          label: c.label || c.headline || "Section",
+          custom: c,
+        });
+      }
+      return;
+    }
+    const def = SECTION_DEFS.find((s) => s.key === key);
+    if (def) {
+      result.push({
+        kind: "known",
+        key,
+        label: def.label,
+        navable: def.navable,
+      });
+    }
+  };
+
+  order.forEach(pushKey);
+  // Append any custom sections not referenced by sectionOrder.
+  custom.forEach((c) => pushKey(`custom:${c.id}`));
+
+  return result;
+}
+
+// Nav entries (anchored sections) for the on-page section nav and header.
+// Keeps the original data-presence checks so empty stock sections don't get a
+// nav link, while always surfacing enabled custom sections.
 export function getProjectSections(project: Project): SectionItem[] {
   const d = project.detail;
   if (!d) return [];
 
-  const sections: SectionItem[] = [{ key: "overview", label: "Overview" }];
+  const hasData: Record<string, boolean> = {
+    overview: (d.summary?.cards.length ?? 0) > 0,
+    amenities: d.amenities.items.length > 0,
+    "master-plan": Boolean(d.masterPlan && d.masterPlan.image.src),
+    "floor-plans": d.floorPlans.groups.length > 0,
+    gallery: d.gallery.images.length > 0,
+    specifications: d.specifications.items.length > 0,
+    location: Boolean(d.location && d.location.landmarks.length > 0),
+    walkthrough: Boolean(d.walkthrough && d.walkthrough.videoUrl),
+  };
 
-  if (d.amenities.items.length > 0) {
-    sections.push({ key: "amenities", label: "Amenities" });
+  const sections: SectionItem[] = [];
+  for (const s of getOrderedSections(project)) {
+    if (s.kind === "custom") {
+      sections.push({ key: s.key, label: s.label });
+      continue;
+    }
+    if (!s.navable) continue;
+    // overview always shown for nav even if cards empty (keeps prior behaviour)
+    if (s.key !== "overview" && hasData[s.key] === false) continue;
+    sections.push({ key: s.key, label: s.label });
   }
-  if (d.masterPlan && d.masterPlan.image.src) {
-    sections.push({ key: "master-plan", label: "Master Plan" });
-  }
-  if (d.floorPlans.groups.length > 0) {
-    sections.push({ key: "floor-plans", label: "Floor Plans" });
-  }
-  if (d.gallery.images.length > 0) {
-    sections.push({ key: "gallery", label: "Gallery" });
-  }
-  if (d.specifications.items.length > 0) {
-    sections.push({ key: "specifications", label: "Specifications" });
-  }
-  if (d.location && d.location.landmarks.length > 0) {
-    sections.push({ key: "location", label: "Location" });
-  }
-  if (d.walkthrough && d.walkthrough.videoUrl) {
-    sections.push({ key: "walkthrough", label: "Walkthrough" });
-  }
-
   return sections;
 }

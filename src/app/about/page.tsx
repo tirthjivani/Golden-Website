@@ -2,6 +2,13 @@
 
 import Image from "next/image";
 import {
+  Binoculars,
+  Buildings,
+  Handshake,
+  Plant,
+  ThumbsUp,
+} from "@phosphor-icons/react";
+import {
   useEffect,
   useMemo,
   useRef,
@@ -392,9 +399,37 @@ function ArrowDown() {
 
 function StorySection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const yearRef = useRef<HTMLDivElement>(null);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const [year, setYear] = useState(2005);
   const [progress, setProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  // Desktop: pin the paragraph a constant 20px below the year's measured box
+  // so the gap never drifts with viewport height or font scaling.
+  const [paraTop, setParaTop] = useState<number | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const apply = () => setIsMobile(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setParaTop(null);
+      return;
+    }
+    const y = yearRef.current;
+    const s = stickyRef.current;
+    if (!y || !s) return;
+    const gap = 20;
+    setParaTop(
+      y.getBoundingClientRect().bottom - s.getBoundingClientRect().top + gap,
+    );
+  }, [progress, isMobile, year]);
 
   useEffect(() => {
     const HOLD_PX = 100;
@@ -437,10 +472,16 @@ function StorySection() {
   // Year stays centered + full size until counter reaches current year (progress 0..0.6),
   // then shrinks + lifts into final position during progress 0.6..1.
   const transformP = ease(clamp((progress - 0.6) / 0.4, 0, 1));
-  const yearScale = 1 - transformP * 0.55;
+  // Mobile keeps the final year centered (with side padding) and only mildly
+  // shrunk so it stays legible; desktop shrinks more and slides to the left.
+  const yearScale = 1 - transformP * (isMobile ? 0.4 : 0.55);
   // During counting, year sits a bit above the absolute center.
-  // After counting, lifts further up to its final spot on large screens.
-  const yearLiftPx = -40 + transformP * (-117 - -40);
+  // After counting, lifts further up to make room for the story text below.
+  const yearLiftPx = -40 + transformP * ((isMobile ? -180 : -117) - -40);
+  const yearLeft = isMobile
+    ? "50%"
+    : `calc(${(1 - transformP) * 50}% + ${transformP * 40}px)`;
+  const yearTranslateX = isMobile ? "-50%" : `${-(1 - transformP) * 50}%`;
   // Buildings + text fade in alongside the transform
   const buildingsP = ease(clamp((progress - 0.65) / 0.35, 0, 1));
   const textP = ease(clamp((progress - 0.75) / 0.25, 0, 1));
@@ -451,11 +492,14 @@ function StorySection() {
         ref={sectionRef}
         className="relative h-[260vh] min-h-[1600px] w-full border-b border-[#464646] bg-black"
       >
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <div
+          ref={stickyRef}
+          className="sticky top-0 h-screen w-full overflow-hidden"
+        >
           {/* Building — single tower anchored at the bottom-right */}
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 right-0 hidden h-[100%] w-[60%] md:block"
+            className="pointer-events-none absolute bottom-0 right-0 h-[55%] w-[92%] md:-right-[70px] md:h-[90%] md:w-[55%]"
             style={{
               opacity: buildingsP,
               transform: `translateY(${(1 - buildingsP) * 60}px)`,
@@ -463,10 +507,10 @@ function StorySection() {
             }}
           >
             <Image
-              src="/about/story/building-single-2.png"
+              src="/about/story/building-towers.png"
               alt=""
               fill
-              sizes="60vw"
+              sizes="(min-width: 768px) 60vw, 92vw"
               quality={90}
               className="object-contain object-right-bottom"
             />
@@ -474,15 +518,16 @@ function StorySection() {
 
           {/* Year — starts huge at center, shrinks + slides up as scroll progresses */}
           <div
+            ref={yearRef}
             className="pointer-events-none absolute top-1/2 z-10 inline-flex"
             style={{
-              left: `calc(${(1 - transformP) * 50}% + ${transformP * 40}px)`,
-              transform: `translate(${-(1 - transformP) * 50}%, calc(-50% + ${yearLiftPx}px)) scale(${yearScale})`,
-              transformOrigin: "left center",
+              left: yearLeft,
+              transform: `translate(${yearTranslateX}, calc(-50% + ${yearLiftPx}px)) scale(${yearScale})`,
+              transformOrigin: isMobile ? "center center" : "left center",
               willChange: "transform, left",
             }}
           >
-            <span className="flex text-[160px] font-medium leading-[0.9] tracking-tight tabular-nums md:text-[260px] lg:text-[360px] lg:tracking-[-8px]">
+            <span className="flex text-[120px] font-medium leading-[0.9] tracking-tight tabular-nums md:text-[260px] lg:text-[360px] lg:tracking-[-8px]">
               {digits.map((ch, i) => (
                 <span key={i} className="inline-block">
                   {ch}
@@ -508,22 +553,31 @@ function StorySection() {
           </div>
 
           {/* Story text — absolute, sits at its final spot under year; word-by-word reveal */}
-          <StoryParagraphs textStarted={textP > 0.01} />
+          <StoryParagraphs textStarted={textP > 0.01} topPx={paraTop} />
         </div>
       </section>
     </>
   );
 }
 
-function StoryParagraphs({ textStarted }: { textStarted: boolean }) {
+function StoryParagraphs({
+  textStarted,
+  topPx,
+}: {
+  textStarted: boolean;
+  topPx?: number | null;
+}) {
   const paragraphs = [
     "Golden Group was founded on the belief that real estate should stand for confidence, stability, and long-term value, not just buildings. Its name reflects enduring quality and collective strength, built for today and valued for tomorrow.",
     "It bridges premium design with dependable delivery, grounded in transparency, consistency, and structural integrity. More than spaces, it builds trust, rising steadily like its skyline-inspired identity.",
   ];
   let cumulative = 0;
   return (
-    <div className="absolute inset-x-0 top-[460px] z-10 flex justify-start px-[24px] md:top-[500px] md:px-[40px]">
-      <div className="max-w-[560px] text-left text-sm leading-[1.5] text-white/80 md:text-base">
+    <div
+      className="absolute inset-x-0 top-[460px] z-10 flex justify-center px-[24px] md:top-[500px] md:justify-start md:px-[40px]"
+      style={topPx != null ? { top: topPx } : undefined}
+    >
+      <div className="max-w-[560px] text-center text-sm leading-[1.5] text-white/80 md:text-left md:text-base">
         {paragraphs.map((para, pi) => {
           const words = para.split(/\s+/);
           const startIdx = cumulative;
@@ -570,32 +624,36 @@ function Statement({
   imageAlt?: string;
 }) {
   const text = (
-    <div className="flex flex-col gap-8 px-[30px] py-16 md:px-12 md:py-24">
-      <Reveal>
-        <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-          {label}
-        </h3>
-      </Reveal>
-      <Reveal delay={150}>
-        <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
-          {body}
-        </p>
-      </Reveal>
+    <div className="flex flex-col gap-8 px-[30px] py-16 md:h-full md:justify-between md:gap-0 md:px-12 md:py-24">
+      <div className="flex flex-col gap-8">
+        <Reveal>
+          <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+            {label}
+          </h3>
+        </Reveal>
+        <Reveal delay={150}>
+          <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
+            {body}
+          </p>
+        </Reveal>
+      </div>
       {label2 && body2 ? (
         <>
           <Reveal delay={200}>
             <hr className="-mx-[30px] border-t border-[#464646] md:-mx-12" />
           </Reveal>
-          <Reveal delay={250}>
-            <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-              {label2}
-            </h3>
-          </Reveal>
-          <Reveal delay={300}>
-            <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
-              {body2}
-            </p>
-          </Reveal>
+          <div className="flex flex-col gap-8">
+            <Reveal delay={250}>
+              <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+                {label2}
+              </h3>
+            </Reveal>
+            <Reveal delay={300}>
+              <p className="max-w-[52ch] text-sm leading-[1.5] text-white/80 md:text-base">
+                {body2}
+              </p>
+            </Reveal>
+          </div>
         </>
       ) : null}
     </div>
@@ -646,44 +704,50 @@ function Statement({
 
 function WhyChooseUs() {
   const items = [
-    "Integrity & Transparency",
-    "Structural Strength & Quality",
-    "Long-Term Vision",
-    "Customer Confidence",
-    "Responsible Growth",
+    { title: "Integrity & Transparency", Icon: Handshake },
+    { title: "Structural Strength & Quality", Icon: Buildings },
+    { title: "Long-Term Vision", Icon: Binoculars },
+    { title: "Customer Confidence", Icon: ThumbsUp },
+    { title: "Responsible Growth", Icon: Plant },
   ];
   return (
     <section className="border-t border-[#464646] bg-black">
-      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0 md:[&>*:first-child]:border-r md:[&>*:first-child]:border-[#464646]">
-        <div className="px-[30px] pt-16 md:pr-16 md:pt-20">
-          <Reveal>
-            <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-              What we stand for
-            </h3>
-          </Reveal>
-        </div>
+      <Reveal className="flex flex-col gap-4 px-[30px] py-16 md:px-8 md:py-20">
+        <h3 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+          What we stand for
+        </h3>
+      </Reveal>
 
-        <div>
-          <ul>
-            {items.map((title, i) => {
-              const isLast = i === items.length - 1;
-              return (
-                <li
-                  key={title}
-                  className={isLast ? "" : "border-b border-[#464646]"}
-                >
-                  <Reveal delay={120 + i * 120}>
-                    <div className="px-[30px] py-8 md:px-8 md:py-10">
-                      <h4 className="text-[20px] font-normal leading-[1.4] text-white md:text-[22px]">
-                        {title}
-                      </h4>
-                    </div>
-                  </Reveal>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      <div className="grid grid-cols-1 border-t border-[#464646] sm:grid-cols-2 lg:grid-cols-5">
+        {items.map(({ title, Icon }, i) => {
+          const mobileBorder =
+            i < items.length - 1
+              ? "border-b border-[#464646] lg:border-b-0"
+              : "";
+          const smRight =
+            i % 2 === 0 ? "sm:border-r sm:border-[#464646]" : "sm:border-r-0";
+          const lgRight =
+            i < items.length - 1
+              ? "lg:border-r lg:border-[#464646]"
+              : "lg:border-r-0";
+          return (
+            <Reveal
+              key={title}
+              delay={120 + i * 120}
+              className={`flex flex-col gap-6 px-[30px] py-10 md:px-8 md:py-12 ${mobileBorder} ${smRight} ${lgRight}`}
+            >
+              <Icon
+                size={48}
+                weight="light"
+                className="shrink-0 text-[#c19b4d]"
+                aria-hidden
+              />
+              <h4 className="text-[20px] font-normal leading-[1.4] text-white md:text-[22px]">
+                {title}
+              </h4>
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );
