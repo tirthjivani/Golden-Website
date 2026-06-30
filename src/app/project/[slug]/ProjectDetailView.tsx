@@ -2,23 +2,36 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { MinimalMap } from "@/components/MinimalMap";
 import { RevealImage } from "@/components/RevealImage";
 import { setProjectTransition } from "@/lib/projectTransition";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
-  GraduationCap,
+  Armchair,
+  Barbell,
+  BabyCarriage,
+  Books,
+  Car,
+  Elevator,
   FirstAid,
-  Tree,
-  Train,
-  X,
+  GraduationCap,
+  type Icon,
   NavigationArrow,
+  PersonSimpleWalk,
+  SecurityCamera,
+  SolarPanel,
+  SwimmingPool,
+  Train,
+  Tree,
+  X,
 } from "@phosphor-icons/react";
 import { WordReveal, useFromProjects } from "@/components/HeroIntro";
 import {
+  getOrderedSections,
   projectImage,
   type AmenityKey,
+  type CustomSection,
   type Landmark,
   type LandmarkCategory,
   type Pillar,
@@ -38,23 +51,42 @@ export function ProjectDetailView({
   if (!detail) return null;
   const media = getProjectMedia(project.slug);
 
+  // Map each known section key to its rendered node. Legacy projectMedia
+  // visibility flags fold into the studio's disabledSections via get
+  // OrderedSections — but we also respect them here defensively.
+  const renderers: Record<string, () => ReactNode> = {
+    hero: () => (
+      <Hero project={project} mediaSrc={media?.hero} heroAspect={heroAspect} />
+    ),
+    overview: () => <Overview project={project} mediaSrcs={media?.overview} />,
+    facts: () => <ProjectFacts project={project} />,
+    amenities: () =>
+      media?.hidden.amenities ? null : (
+        <Amenities project={project} mediaSrc={media?.amenities} />
+      ),
+    "master-plan": () => <MasterPlan project={project} />,
+    "floor-plans": () => <FloorPlans project={project} />,
+    gallery: () =>
+      media?.hidden.gallery ? null : (
+        <Gallery project={project} mediaSrcs={media?.gallery} />
+      ),
+    specifications: () => <Specifications project={project} />,
+    location: () => <LocationSection project={project} />,
+    pillars: () => <Pillars project={project} />,
+    walkthrough: () => <Walkthrough project={project} />,
+  };
+
+  const sections = getOrderedSections(project);
+
   return (
     <main className="relative min-h-screen w-full bg-black text-white">
-      <Hero project={project} mediaSrc={media?.hero} heroAspect={heroAspect} />
-      <Overview project={project} mediaSrcs={media?.overview} />
-      <ProjectFacts project={project} />
-      {!media?.hidden.amenities ? (
-        <Amenities project={project} mediaSrc={media?.amenities} />
-      ) : null}
-      <MasterPlan project={project} />
-      <FloorPlans project={project} />
-      {!media?.hidden.gallery ? (
-        <Gallery project={project} mediaSrcs={media?.gallery} />
-      ) : null}
-      <Specifications project={project} />
-      <LocationSection project={project} />
-      <Pillars project={project} />
-      <Walkthrough project={project} />
+      {sections.map((s) => {
+        if (s.kind === "custom") {
+          return <CustomSectionView key={s.key} section={s.custom} />;
+        }
+        const node = renderers[s.key]?.();
+        return node ? <Fragment key={s.key}>{node}</Fragment> : null;
+      })}
       <SiteFooter />
     </main>
   );
@@ -144,7 +176,7 @@ function Hero({
   return (
     <section
       ref={sectionRef}
-      className={`relative w-full ${heroAspect ? "" : "h-[200vh] min-h-[1280px]"}`}
+      className={`relative w-full ${heroAspect ? "min-h-[100svh]" : "h-[200vh] min-h-[1280px]"}`}
       style={heroAspect ? { aspectRatio: String(heroAspect) } : undefined}
     >
       {heroSrc ? (
@@ -243,7 +275,7 @@ function ProjectFacts({ project }: { project: Project }) {
   const mdColsClass = total === 4 ? "md:grid-cols-4" : "md:grid-cols-3";
   const lastBottomRowStart = total % 2 === 0 ? total - 2 : total - 1;
   const cellClass = (i: number) =>
-    `flex flex-col gap-3 px-[30px] py-10 md:py-14 ${
+    `flex flex-col gap-3 border-t border-[#464646] px-[30px] py-10 md:py-14 ${
       i < total - 1 ? "md:border-r md:border-[#464646]" : ""
     } ${
       i < lastBottomRowStart ? "border-b border-[#464646] md:border-b-0" : ""
@@ -633,6 +665,16 @@ function Amenities({
 
 // -------------------- Master Plan --------------------
 
+// Floor-plan & master-plan images are re-exported in place (same filename)
+// when updated, so a browser/CDN holding an older copy would serve it stale.
+// Bump this version whenever those plan assets change to force a refetch.
+const PLAN_ASSET_VERSION = "20260701";
+function planImage(src: string): string {
+  const url = projectImage(src);
+  if (!src) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}v=${PLAN_ASSET_VERSION}`;
+}
+
 function MasterPlan({ project }: { project: Project }) {
   const block = project.detail?.masterPlan;
   if (!block || !block.image.src) return null;
@@ -655,9 +697,10 @@ function MasterPlan({ project }: { project: Project }) {
 
       <div className="mt-10 md:mt-14">
         <RevealImage
-          src={projectImage(block.image.src)}
+          src={planImage(block.image.src)}
           alt={block.image.alt ?? `${project.name} master plan`}
           fill
+          unoptimized
           sizes="100vw"
           className="object-contain"
           containerClassName="relative aspect-[16/10] w-full bg-white/[0.03]"
@@ -699,33 +742,35 @@ function FloorPlans({ project }: { project: Project }) {
         </div>
       </div>
 
-      <div className="mt-10 flex flex-wrap border border-[#2a2a2a]">
-        {groups.map((g) => {
-          const active = g.id === activeGroup.id;
-          return (
-            <button
-              key={g.id}
-              type="button"
-              onClick={() => {
-                setGroupId(g.id);
-                const firstPlan = g.plans[0]?.id ?? "";
-                setPlanId(firstPlan);
-              }}
-              className={`-ml-px h-[56px] flex-1 border-l border-[#2a2a2a] px-5 text-[12px] uppercase tracking-[0.08em] first:ml-0 ${
-                active ? "z-10 bg-white text-black" : "bg-transparent text-white/80 hover:bg-white/5"
-              }`}
-              aria-pressed={active}
-            >
-              {g.label}
-            </button>
-          );
-        })}
-      </div>
+      <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-10 md:items-start">
+        <div className="md:col-span-6">
+          {groups.length > 1 ? (
+            <div className="flex w-fit max-w-full flex-wrap border border-[#2a2a2a]">
+              {groups.map((g) => {
+                const active = g.id === activeGroup.id;
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    onClick={() => {
+                      setGroupId(g.id);
+                      const firstPlan = g.plans[0]?.id ?? "";
+                      setPlanId(firstPlan);
+                    }}
+                    className={`-ml-px h-[56px] border-l border-[#2a2a2a] px-5 text-[12px] uppercase tracking-[0.08em] first:ml-0 ${
+                      active ? "z-10 bg-white text-black" : "bg-transparent text-white/80 hover:bg-white/5"
+                    }`}
+                    aria-pressed={active}
+                  >
+                    {g.label}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
 
-      <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-10">
-        <div className="md:col-span-5">
           {activeGroup.plans.length > 1 ? (
-            <div className="mb-6 flex flex-wrap gap-2">
+            <div className="mt-6 flex flex-wrap gap-2">
               {activeGroup.plans.map((p) => {
                 const active = p.id === activePlan.id;
                 return (
@@ -744,7 +789,7 @@ function FloorPlans({ project }: { project: Project }) {
             </div>
           ) : null}
 
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-y border-[#2a2a2a] py-5">
+          <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-y border-[#2a2a2a] py-5">
             <div>
               <dt className="text-[11px] uppercase tracking-[0.12em] text-white/55">Plan type</dt>
               <dd className="mt-2 text-[18px] text-white">{activePlan.label}</dd>
@@ -757,7 +802,7 @@ function FloorPlans({ project }: { project: Project }) {
             ))}
           </dl>
 
-          <ul className="mt-6 grid grid-cols-1 gap-2 text-sm text-white/75 sm:grid-cols-2">
+          <ul className="mt-6 flex flex-col gap-2 text-sm text-white/75">
             {activePlan.features.map((f) => (
               <li key={f} className="flex items-start gap-2">
                 <span aria-hidden className="mt-2 inline-block h-px w-3 bg-white/40" />
@@ -771,13 +816,14 @@ function FloorPlans({ project }: { project: Project }) {
           ) : null}
         </div>
 
-        <div className="md:col-span-7">
+        <div className="md:col-span-6">
           {activePlan.image.src ? (
             <RevealImage
               key={activePlan.id}
-              src={projectImage(activePlan.image.src)}
+              src={planImage(activePlan.image.src)}
               alt={activePlan.image.alt ?? `${project.name} ${activePlan.label} floor plan`}
               fill
+              unoptimized
               sizes="(min-width: 768px) 55vw, 100vw"
               className={`object-contain${activePlan.image.dimFill ? " [filter:contrast(1.6)_brightness(0.85)]" : ""}`}
               containerClassName={`relative aspect-[4/3] w-full${activePlan.image.dimFill ? " bg-black" : " bg-white/[0.03]"}`}
@@ -1206,6 +1252,100 @@ function Walkthrough({ project }: { project: Project }) {
   );
 }
 
+// -------------------- Custom (studio-authored) section --------------------
+
+function CustomSectionView({ section }: { section: CustomSection }) {
+  const media = (section.media ?? []).filter((m) => m && m.src);
+  const embed = section.videoUrl ? youTubeEmbedSrc(section.videoUrl) : null;
+  const hasContent =
+    section.headline || section.body || media.length > 0 || section.videoUrl;
+  if (!hasContent) return null;
+
+  const cols = section.columns ?? 3;
+  const colClass =
+    cols === 2
+      ? "sm:grid-cols-2"
+      : cols === 4
+      ? "sm:grid-cols-2 lg:grid-cols-4"
+      : "sm:grid-cols-2 lg:grid-cols-3";
+
+  return (
+    <section
+      id={`custom:${section.id}`}
+      className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24"
+    >
+      {section.headline || section.body ? (
+        <div className="flex flex-col gap-2">
+          {section.headline ? (
+            <Reveal>
+              <h2 className="text-[32px] font-normal leading-[1.2] tracking-tight md:text-[42px]">
+                {section.headline}
+              </h2>
+            </Reveal>
+          ) : null}
+          {section.body ? (
+            <Reveal delay={150}>
+              <p className="max-w-[70ch] whitespace-pre-line text-sm leading-[1.6] text-white/70 md:text-base">
+                {section.body}
+              </p>
+            </Reveal>
+          ) : null}
+        </div>
+      ) : null}
+
+      {media.length > 0 ? (
+        <div className={`mt-10 grid grid-cols-1 gap-3 md:mt-14 ${colClass}`}>
+          {media.map((img, i) => (
+            <figure key={`${img.src}-${i}`} className="flex flex-col gap-2">
+              <RevealImage
+                src={projectImage(img.src)}
+                alt={img.alt ?? ""}
+                fill
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                quality={90}
+                className="object-cover"
+                containerClassName="relative aspect-[4/3] w-full bg-white/[0.03]"
+                delay={(i % 4) * 120}
+              />
+              {img.caption ? (
+                <figcaption className="text-xs leading-[1.4] text-white/50">
+                  {img.caption}
+                </figcaption>
+              ) : null}
+            </figure>
+          ))}
+        </div>
+      ) : null}
+
+      {embed ? (
+        <div className="mt-10 md:mt-14">
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-black">
+            <iframe
+              src={embed}
+              title={section.headline || "Video"}
+              className="absolute inset-0 h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        </div>
+      ) : section.videoUrl ? (
+        <div className="mt-10 md:mt-14">
+          <a
+            href={section.videoUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex aspect-[16/9] w-full items-center justify-center bg-white/[0.03] text-sm text-white/60 underline"
+          >
+            Watch video
+          </a>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 // -------------------- Shared bits --------------------
 
 function BrochurePill({ href, label = "Download Brochure" }: { href: string; label?: string }) {
@@ -1236,106 +1376,24 @@ function StarIcon() {
 
 // -------------------- Icons --------------------
 
-function AmenityIcon({ iconKey }: { iconKey: AmenityKey }) {
-  const common = {
-    width: 28,
-    height: 28,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.4,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true,
-    className: "text-white/85",
-  };
+const AMENITY_ICONS: Record<AmenityKey, Icon> = {
+  "walking-track": PersonSimpleWalk,
+  security: SecurityCamera,
+  "solar-power": SolarPanel,
+  garden: Tree,
+  "play-area": BabyCarriage,
+  elevators: Elevator,
+  parking: Car,
+  gym: Barbell,
+  pool: SwimmingPool,
+  clubhouse: Armchair,
+  library: Books,
+};
 
-  switch (iconKey) {
-    case "walking-track":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="6" r="2" />
-          <path d="M9 14l3-4 3 4-1 6h-4l-1-6z" />
-          <path d="M5 22c2-2 5-3 7-3s5 1 7 3" />
-        </svg>
-      );
-    case "security":
-      return (
-        <svg {...common}>
-          <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" />
-          <path d="M9 12l2 2 4-4" />
-        </svg>
-      );
-    case "solar-power":
-      return (
-        <svg {...common}>
-          <rect x="3" y="6" width="18" height="11" rx="1" />
-          <path d="M7 6v11M12 6v11M17 6v11M3 11h18" />
-        </svg>
-      );
-    case "garden":
-      return (
-        <svg {...common}>
-          <path d="M12 21V11" />
-          <path d="M12 11c-4 0-6-3-6-6 4 0 6 2 6 6z" />
-          <path d="M12 11c4 0 6-2 6-5-4 0-6 2-6 5z" />
-        </svg>
-      );
-    case "play-area":
-      return (
-        <svg {...common}>
-          <path d="M5 21l3-9h8l3 9" />
-          <path d="M9 12V8M15 12V8" />
-          <path d="M5 8h14" />
-          <circle cx="9" cy="5" r="1.2" />
-          <circle cx="15" cy="5" r="1.2" />
-        </svg>
-      );
-    case "elevators":
-      return (
-        <svg {...common}>
-          <rect x="5" y="3" width="14" height="18" rx="1" />
-          <path d="M9 9l3-3 3 3M9 15l3 3 3-3" />
-        </svg>
-      );
-    case "parking":
-      return (
-        <svg {...common}>
-          <rect x="3" y="3" width="18" height="18" rx="1" />
-          <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
-        </svg>
-      );
-    case "gym":
-      return (
-        <svg {...common}>
-          <path d="M3 12h18M5 9v6M19 9v6M8 6v12M16 6v12" />
-        </svg>
-      );
-    case "pool":
-      return (
-        <svg {...common}>
-          <path d="M3 17c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1" />
-          <path d="M3 21c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1" />
-          <path d="M7 13V5a2 2 0 0 1 2-2M17 13V5a2 2 0 0 0-2-2" />
-        </svg>
-      );
-    case "clubhouse":
-      return (
-        <svg {...common}>
-          <path d="M3 11l9-7 9 7v9H3z" />
-          <path d="M9 20v-6h6v6" />
-        </svg>
-      );
-    case "library":
-      return (
-        <svg {...common}>
-          <path d="M5 4h6v16H5zM13 4h6v16h-6z" />
-          <path d="M5 8h6M13 8h6" />
-        </svg>
-      );
-    default:
-      return null;
-  }
+function AmenityIcon({ iconKey }: { iconKey: AmenityKey }) {
+  const Icon = AMENITY_ICONS[iconKey];
+  if (!Icon) return null;
+  return <Icon size={28} weight="light" className="text-white" aria-hidden />;
 }
 
 const PILLAR_ICON_SRC: Record<Pillar["iconKey"], string> = {

@@ -170,13 +170,16 @@ function IntroSection() {
 }
 
 const PROJECT_IMAGES = [
+  // Buildings
   "/projects/golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp",
-  "/projects/golden-heaven/Residential_Complex_Birdview_Aerial.webp",
-  "/projects/golden-residency/Residential_Complex_Birdview_Aerial.webp",
-  "/projects/golden-nirvana/Residential_Complex_Birdview_Day_Aerial.webp",
-  "/projects/golden-villa/Residential_Layout_Birdview_Aerial.webp",
-  "/projects/golden-homes/Residential_Layout_Birdview_Aerial.webp",
-  "/projects/golden-palm-villa/Community_Park_And_Landscaping_Aerial.webp",
+  "/projects/golden-heaven/Building_Full_Elevation_Twilight.webp",
+  "/projects/golden-residency/Building_Full_Front_Elevation_Day.webp",
+  // Amenities
+  "/projects/golden-luxuria/Interior_Fitness_Gym_Amenities.webp",
+  "/projects/golden-heaven/Garden_Landscaping_Water_Feature.webp",
+  "/projects/golden-luxuria/Children_Play_Area_Community_Park.webp",
+  // Zen garden
+  "/projects/golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.webp",
 ];
 
 function StatsGallery() {
@@ -244,6 +247,7 @@ function StatsGallery() {
             className="object-cover"
             style={{
               opacity: i === index ? 1 : 0,
+              objectPosition: i === 0 ? "top" : "center",
               transition: `opacity 800ms ${EASE}`,
             }}
             containerClassName="absolute inset-0"

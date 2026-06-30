@@ -712,42 +712,42 @@ function WhyChooseUs() {
   ];
   return (
     <section className="border-t border-[#464646] bg-black">
-      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0 md:[&>*:first-child]:border-r md:[&>*:first-child]:border-[#464646]">
-        <div className="px-[30px] pt-16 md:pr-16 md:pt-20">
-          <Reveal>
-            <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
-              What we stand for
-            </h3>
-          </Reveal>
-        </div>
+      <Reveal className="flex flex-col gap-4 px-[30px] py-16 md:px-8 md:py-20">
+        <h3 className="text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
+          What we stand for
+        </h3>
+      </Reveal>
 
-        <div>
-          <ul>
-            {items.map(({ title, Icon }, i) => {
-              const isLast = i === items.length - 1;
-              return (
-                <li
-                  key={title}
-                  className={isLast ? "" : "border-b border-[#464646]"}
-                >
-                  <Reveal delay={120 + i * 120}>
-                    <div className="flex items-center gap-4 px-[30px] py-8 md:px-8 md:py-10">
-                      <Icon
-                        size={28}
-                        weight="light"
-                        className="shrink-0 text-[#c19b4d]"
-                        aria-hidden
-                      />
-                      <h4 className="text-[20px] font-normal leading-[1.4] text-white md:text-[22px]">
-                        {title}
-                      </h4>
-                    </div>
-                  </Reveal>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      <div className="grid grid-cols-1 border-t border-[#464646] sm:grid-cols-2 lg:grid-cols-5">
+        {items.map(({ title, Icon }, i) => {
+          const mobileBorder =
+            i < items.length - 1
+              ? "border-b border-[#464646] lg:border-b-0"
+              : "";
+          const smRight =
+            i % 2 === 0 ? "sm:border-r sm:border-[#464646]" : "sm:border-r-0";
+          const lgRight =
+            i < items.length - 1
+              ? "lg:border-r lg:border-[#464646]"
+              : "lg:border-r-0";
+          return (
+            <Reveal
+              key={title}
+              delay={120 + i * 120}
+              className={`flex flex-col gap-6 px-[30px] py-10 md:px-8 md:py-12 ${mobileBorder} ${smRight} ${lgRight}`}
+            >
+              <Icon
+                size={48}
+                weight="light"
+                className="shrink-0 text-[#c19b4d]"
+                aria-hidden
+              />
+              <h4 className="text-[20px] font-normal leading-[1.4] text-white md:text-[22px]">
+                {title}
+              </h4>
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );
