@@ -3567,19 +3567,9 @@
               "label": "Location"
             },
             {
-              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp",
+              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp",
               "metric": "100 Units",
               "label": "Total Inventory"
-            },
-            {
-              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp",
-              "metric": "Shops + Offices",
-              "label": "Mix Use"
-            },
-            {
-              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp",
-              "metric": "5 Floors",
-              "label": "Levels"
             }
           ]
         },
