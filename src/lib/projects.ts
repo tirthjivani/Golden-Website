@@ -1751,21 +1751,6 @@ const goldenSquareBharuch: Project = {
             },
           ],
         },
-        {
-          id: "basement",
-          label: "Basement Parking",
-          plans: [
-            {
-              id: "basement-plan",
-              label: "Basement Parking",
-              metrics: [{ label: "Type", value: "Multi-level" }],
-              features: [
-                "Wide visitor and tenant parking provisions.",
-              ],
-              image: { src: "golden-square-bharuch/basement_parking_layout.webp" },
-            },
-          ],
-        },
       ],
     },
     specifications: {
@@ -2008,7 +1993,9 @@ export function getProjectSections(project: Project): SectionItem[] {
     overview: (d.summary?.cards.length ?? 0) > 0,
     amenities: d.amenities.items.length > 0,
     "master-plan": Boolean(d.masterPlan && d.masterPlan.image.src),
-    "floor-plans": d.floorPlans.groups.length > 0,
+    "floor-plans": d.floorPlans.groups.some((g) =>
+      g.plans.some((p) => p.image?.src?.trim()),
+    ),
     gallery: d.gallery.images.length > 0,
     specifications: d.specifications.items.length > 0,
     location: Boolean(d.location && d.location.landmarks.length > 0),

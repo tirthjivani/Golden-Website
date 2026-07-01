@@ -3,16 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { EnquiryModal } from "@/components/EnquiryModal";
+import { PROJECT_GALLERY } from "@/lib/projectGallery";
 import { MinimalMap } from "@/components/MinimalMap";
 import { RevealImage } from "@/components/RevealImage";
 import { setProjectTransition } from "@/lib/projectTransition";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
+  ArrowUpRight,
   Armchair,
   Barbell,
   BabyCarriage,
   Books,
   Car,
+  Check,
+  Copy,
   Elevator,
   FirstAid,
   GraduationCap,
@@ -88,6 +93,7 @@ export function ProjectDetailView({
         return node ? <Fragment key={s.key}>{node}</Fragment> : null;
       })}
       <SiteFooter />
+      <EnquiryModal projectName={project.name} />
     </main>
   );
 }
@@ -259,8 +265,94 @@ function Hero({
   );
 }
 
+const GUJRERA_URL = "https://gujrera.gujarat.gov.in/#/project-preview";
+
+// A real GujRERA registration number (e.g. "RAA11279"); excludes free text like
+// "Pre-RERA project" so only genuine numbers become clickable.
+function isReraNumber(rera: string | undefined): rera is string {
+  return !!rera && /^[A-Za-z]{2,}\d{3,}$/.test(rera.trim());
+}
+
+// Copy synchronously so the write completes before focus leaves the document
+// (async navigator.clipboard.writeText rejects once a new tab steals focus).
+function copyTextSync(text: string) {
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+  } catch {
+    // best-effort async fallback
+    try {
+      void navigator.clipboard?.writeText(text);
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+// The RERA registration number, linked to the GujRERA portal. Clicking copies
+// the number and opens the project-preview page (the portal has no deep-link to
+// prefill its search, so the user pastes it into the search bar there).
+function ReraLink({ number }: { number: string }) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  }, []);
+  const copy = () => {
+    copyTextSync(number);
+    setCopied(true);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <dd className="flex items-center gap-2.5">
+      <span className="group inline-flex items-center gap-2.5">
+        <button
+          type="button"
+          onClick={copy}
+          title="Click to copy RERA number"
+          className="text-[20px] font-medium leading-[1.2] tracking-tight text-white transition-colors group-hover:text-[#c19b4d] md:text-[24px]"
+        >
+          {number}
+        </button>
+        <button
+          type="button"
+          onClick={copy}
+          aria-label="Copy RERA number"
+          title="Copy RERA number"
+          className="text-white/45 transition-colors group-hover:text-[#c19b4d]"
+        >
+          {copied ? (
+            <Check size={18} weight="bold" className="text-[#c19b4d]" />
+          ) : (
+            <Copy size={18} />
+          )}
+        </button>
+      </span>
+      <a
+        href={GUJRERA_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open GujRERA portal"
+        title="Open GujRERA portal"
+        className="text-white/45 transition-colors hover:text-[#c19b4d]"
+      >
+        <ArrowUpRight size={18} weight="bold" />
+      </a>
+    </dd>
+  );
+}
+
 function ProjectFacts({ project }: { project: Project }) {
-  const facts: { label: string; value: string; sub?: string }[] = [
+  const facts: { label: string; value: string; sub?: string; link?: boolean }[] = [
     { label: "Location", value: project.location },
     { label: "Type", value: project.category },
   ];
@@ -269,6 +361,7 @@ function ProjectFacts({ project }: { project: Project }) {
       label: "RERA",
       value: project.rera,
       sub: project.reraIssuedOn ? `Issued ${project.reraIssuedOn}` : undefined,
+      link: isReraNumber(project.rera),
     });
   }
   const total = facts.length + 1; // + Carpet Area cell
@@ -299,9 +392,13 @@ function ProjectFacts({ project }: { project: Project }) {
                 </span>
               )}
             </div>
-            <dd className="text-[20px] font-medium leading-[1.2] tracking-tight text-white md:text-[24px]">
-              {f.value}
-            </dd>
+            {f.link ? (
+              <ReraLink number={f.value} />
+            ) : (
+              <dd className="text-[20px] font-medium leading-[1.2] tracking-tight text-white md:text-[24px]">
+                {f.value}
+              </dd>
+            )}
           </Reveal>
         ))}
         <CarpetAreaCell
@@ -500,6 +597,15 @@ function Overview({
     };
   }, [cards.length]);
 
+  // Corner assignment: 4 images fill all corners; fewer than 4 sit on opposite
+  // diagonal corners (top-left + bottom-right) so the layout stays balanced; a
+  // lone image sits top-left.
+  const n = cards.length;
+  const tl = cards[0];
+  const tr = n >= 4 ? cards[1] : undefined;
+  const bl = n >= 4 ? cards[2] : undefined;
+  const br = n >= 4 ? cards[3] : n >= 2 ? cards[1] : undefined;
+
   return (
     <section
       id="overview"
@@ -507,16 +613,16 @@ function Overview({
       className="relative scroll-mt-24 overflow-hidden bg-black px-[30px] py-20 md:flex md:h-[100vh] md:min-h-[720px] md:items-center md:py-0"
     >
       <div className="relative mx-auto grid w-full max-w-[1500px] grid-cols-2 gap-6 md:h-full md:grid-cols-12 md:grid-rows-[1fr_auto_1fr] md:gap-x-10 md:gap-y-10 md:py-20">
-        {cards[0] ? (
+        {tl ? (
           <OverviewCard
-            card={cards[0]}
+            card={tl}
             cardRef={(el) => { cardRefs.current[0] = el; }}
             className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-1 md:self-start"
           />
         ) : null}
-        {cards[1] ? (
+        {tr ? (
           <OverviewCard
-            card={cards[1]}
+            card={tr}
             cardRef={(el) => { cardRefs.current[1] = el; }}
             className="col-span-1 md:col-span-3 md:col-start-10 md:row-start-1 md:self-start"
           />
@@ -549,16 +655,16 @@ function Overview({
           ) : null}
         </div>
 
-        {cards[2] ? (
+        {bl ? (
           <OverviewCard
-            card={cards[2]}
+            card={bl}
             cardRef={(el) => { cardRefs.current[2] = el; }}
             className="col-span-1 md:col-span-3 md:col-start-1 md:row-start-3 md:self-end"
           />
         ) : null}
-        {cards[3] ? (
+        {br ? (
           <OverviewCard
-            card={cards[3]}
+            card={br}
             cardRef={(el) => { cardRefs.current[3] = el; }}
             className="col-span-1 md:col-span-3 md:col-start-10 md:row-start-3 md:self-end"
           />
@@ -721,7 +827,13 @@ function FloorPlans({ project }: { project: Project }) {
   const activePlan =
     activeGroup?.plans.find((p) => p.id === planId) ?? activeGroup?.plans[0];
 
-  if (!activeGroup || !activePlan) return null;
+  // Hide the whole section when no tab has an actual plan image (otherwise it
+  // would render "Floor plan coming soon" for every tab).
+  const hasAnyImage = groups.some((g) =>
+    g.plans.some((p) => p.image?.src?.trim()),
+  );
+
+  if (!activeGroup || !activePlan || !hasAnyImage) return null;
 
   return (
     <section id="floor-plans" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
@@ -912,8 +1024,12 @@ function Gallery({
   mediaSrcs?: string[];
 }) {
   const detail = project.detail!;
-  const images = mediaSrcs && mediaSrcs.length > 0
-    ? mediaSrcs.map((file, i) => ({
+  // Prefer the full precomputed set (every photo in the project folder); fall
+  // back to the curated projectMedia slots, then the seed gallery list.
+  const allFiles = PROJECT_GALLERY[project.slug];
+  const files = allFiles && allFiles.length > 0 ? allFiles : mediaSrcs;
+  const images = files && files.length > 0
+    ? files.map((file, i) => ({
         src: `${project.slug}/${file}`,
         alt: detail.gallery.images[i]?.alt,
       }))

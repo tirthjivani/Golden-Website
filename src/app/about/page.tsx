@@ -477,7 +477,7 @@ function StorySection() {
   const yearScale = 1 - transformP * (isMobile ? 0.4 : 0.55);
   // During counting, year sits a bit above the absolute center.
   // After counting, lifts further up to make room for the story text below.
-  const yearLiftPx = -40 + transformP * ((isMobile ? -180 : -117) - -40);
+  const yearLiftPx = -40 + transformP * ((isMobile ? -250 : -117) - -40);
   const yearLeft = isMobile
     ? "50%"
     : `calc(${(1 - transformP) * 50}% + ${transformP * 40}px)`;
@@ -499,20 +499,29 @@ function StorySection() {
           {/* Building — single tower anchored at the bottom-right */}
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 right-0 h-[55%] w-[92%] md:-right-[70px] md:h-[90%] md:w-[55%]"
+            className="pointer-events-none absolute -bottom-[30px] -right-[30px] h-[72%] w-full md:-right-[120px] md:-bottom-[70px] md:h-full md:w-[74%]"
             style={{
               opacity: buildingsP,
               transform: `translateY(${(1 - buildingsP) * 60}px)`,
               willChange: "transform, opacity",
             }}
           >
+            {/* Wide two-tower render on phones; tall single-tower on desktop. */}
             <Image
-              src="/about/story/building-towers.png"
+              src="/about/story/building-towers-mobile.webp"
               alt=""
               fill
-              sizes="(min-width: 768px) 60vw, 92vw"
+              sizes="92vw"
               quality={90}
-              className="object-contain object-right-bottom"
+              className="object-contain object-right-bottom md:hidden"
+            />
+            <Image
+              src="/about/story/building-towers-desktop.webp"
+              alt=""
+              fill
+              sizes="60vw"
+              quality={90}
+              className="hidden object-contain object-right-bottom md:block"
             />
           </div>
 
@@ -527,7 +536,7 @@ function StorySection() {
               willChange: "transform, left",
             }}
           >
-            <span className="flex text-[120px] font-medium leading-[0.9] tracking-tight tabular-nums md:text-[260px] lg:text-[360px] lg:tracking-[-8px]">
+            <span className="flex text-[150px] font-medium leading-[0.9] tracking-tight tabular-nums md:text-[260px] lg:text-[360px] lg:tracking-[-8px]">
               {digits.map((ch, i) => (
                 <span key={i} className="inline-block">
                   {ch}
@@ -574,7 +583,7 @@ function StoryParagraphs({
   let cumulative = 0;
   return (
     <div
-      className="absolute inset-x-0 top-[460px] z-10 flex justify-center px-[24px] md:top-[500px] md:justify-start md:px-[40px]"
+      className="absolute inset-x-0 top-[360px] z-10 flex justify-center px-[24px] md:top-[500px] md:justify-start md:px-[40px]"
       style={topPx != null ? { top: topPx } : undefined}
     >
       <div className="max-w-[560px] text-center text-sm leading-[1.5] text-white/80 md:text-left md:text-base">
@@ -704,11 +713,31 @@ function Statement({
 
 function WhyChooseUs() {
   const items = [
-    { title: "Integrity & Transparency", Icon: Handshake },
-    { title: "Structural Strength & Quality", Icon: Buildings },
-    { title: "Long-Term Vision", Icon: Binoculars },
-    { title: "Customer Confidence", Icon: ThumbsUp },
-    { title: "Responsible Growth", Icon: Plant },
+    {
+      title: "Integrity & Transparency",
+      Icon: Handshake,
+      body: "Honest dealings and clear communication at every step, from first visit to final handover.",
+    },
+    {
+      title: "Structural Strength & Quality",
+      Icon: Buildings,
+      body: "Engineered to last, with rigorous material standards and precise execution on every project.",
+    },
+    {
+      title: "Long-Term Vision",
+      Icon: Binoculars,
+      body: "We build for decades, not deadlines, shaping spaces that hold their value over time.",
+    },
+    {
+      title: "Customer Confidence",
+      Icon: ThumbsUp,
+      body: "Thousands of families and businesses trust us to deliver exactly what we promise.",
+    },
+    {
+      title: "Responsible Growth",
+      Icon: Plant,
+      body: "Scaling thoughtfully, balancing ambition with the communities and standards we uphold.",
+    },
   ];
   return (
     <section className="border-t border-[#464646] bg-black">
@@ -719,7 +748,7 @@ function WhyChooseUs() {
       </Reveal>
 
       <div className="grid grid-cols-1 border-t border-[#464646] sm:grid-cols-2 lg:grid-cols-5">
-        {items.map(({ title, Icon }, i) => {
+        {items.map(({ title, Icon, body }, i) => {
           const mobileBorder =
             i < items.length - 1
               ? "border-b border-[#464646] lg:border-b-0"
@@ -742,9 +771,14 @@ function WhyChooseUs() {
                 className="shrink-0 text-[#c19b4d]"
                 aria-hidden
               />
-              <h4 className="text-[20px] font-normal leading-[1.4] text-white md:text-[22px]">
-                {title}
-              </h4>
+              <div className="flex flex-col gap-3">
+                <h4 className="text-[20px] font-normal leading-[1.4] text-white md:text-[22px]">
+                  {title}
+                </h4>
+                <p className="text-[13px] leading-[1.6] text-white/55 md:text-sm">
+                  {body}
+                </p>
+              </div>
             </Reveal>
           );
         })}
