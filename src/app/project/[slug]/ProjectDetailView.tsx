@@ -754,6 +754,12 @@ function FloorPlans({ project }: { project: Project }) {
 
   if (!activeGroup || !activePlan || !hasAnyImage) return null;
 
+  // Tabs show only the config ("2 BHK"); any "(Block …)" detail in the group
+  // label is surfaced in the details list below instead.
+  const tabLabel = (label: string) => label.replace(/\s*\([^)]*\)\s*$/, "").trim();
+  const blocksOf = (label: string) => label.match(/\(([^)]*)\)\s*$/)?.[1]?.trim() ?? "";
+  const activeBlocks = blocksOf(activeGroup.label);
+
   return (
     <section id="floor-plans" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10">
@@ -793,7 +799,7 @@ function FloorPlans({ project }: { project: Project }) {
                     }`}
                     aria-pressed={active}
                   >
-                    {g.label}
+                    {tabLabel(g.label)}
                   </button>
                 );
               })}
@@ -825,6 +831,12 @@ function FloorPlans({ project }: { project: Project }) {
               <dt className="text-[11px] uppercase tracking-[0.12em] text-white/55">Plan type</dt>
               <dd className="mt-2 text-[18px] text-white">{activePlan.label}</dd>
             </div>
+            {activeBlocks ? (
+              <div>
+                <dt className="text-[11px] uppercase tracking-[0.12em] text-white/55">Blocks</dt>
+                <dd className="mt-2 text-[18px] text-white">{activeBlocks}</dd>
+              </div>
+            ) : null}
             {activePlan.metrics.map((m) => (
               <div key={m.label}>
                 <dt className="text-[11px] uppercase tracking-[0.12em] text-white/55">{m.label}</dt>
@@ -856,8 +868,8 @@ function FloorPlans({ project }: { project: Project }) {
               fill
               unoptimized
               sizes="(min-width: 768px) 55vw, 100vw"
-              className={`object-contain${activePlan.image.dimFill ? " [filter:contrast(1.6)_brightness(0.85)]" : ""}`}
-              containerClassName={`relative aspect-[4/3] w-full${activePlan.image.dimFill ? " bg-black" : " bg-white/[0.03]"}`}
+              className="object-contain"
+              containerClassName="relative aspect-[4/3] w-full"
             />
           ) : (
             <div className="flex aspect-[4/3] w-full items-center justify-center bg-white/[0.03] text-sm text-white/35">

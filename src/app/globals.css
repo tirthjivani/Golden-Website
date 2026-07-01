@@ -35,12 +35,25 @@ h3 {
   font-family: var(--font-satoshi), system-ui, sans-serif;
 }
 
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
 .pill-wipe {
   transform: translateY(100%);
 }
 
 .pill-hover:hover .pill-wipe {
   animation: pill-wipe-pass 800ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* After the gold wipe passes, the revealed base reads as cream (#FBF7EA)
+   instead of pure white, marking the hovered state. */
+.pill-hover:hover {
+  background-color: #fbf7ea;
 }
 
 

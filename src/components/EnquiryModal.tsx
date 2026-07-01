@@ -7,7 +7,8 @@ import {
   useState,
   type FormEvent,
 } from "react";
-import { ChatCircleText, X } from "@phosphor-icons/react";
+import { createPortal } from "react-dom";
+import { ChatText, X } from "@phosphor-icons/react";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -18,7 +19,38 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [buttonHidden, setButtonHidden] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const showEmailError = email.length > 0 && !emailValid;
+  const phoneValid = /^\d{10}$/.test(phone);
+  const formValid = name.trim().length > 0 && emailValid && phoneValid && agree;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Portal to <body> so `position: fixed` escapes SiteShell's transformed
+  // wrapper (a transform ancestor makes fixed resolve against it, not the
+  // viewport — which pushed the button off-screen).
+  useEffect(() => setMounted(true), []);
+
+  // Slide the button off-screen once the walkthrough section is half-reached
+  // (i.e. the section before it has ended); bring it back on scroll up.
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.getElementById("walkthrough");
+      if (!el) return setButtonHidden(false);
+      setButtonHidden(el.getBoundingClientRect().top <= window.innerHeight * 0.5);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [mounted]);
 
   // Lock page scroll while the modal is open, and close on Escape.
   useEffect(() => {
@@ -43,25 +75,38 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
     setOpen(false);
     setSubmitted(false);
     setAgree(false);
+    setName("");
+    setEmail("");
+    setPhone("");
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!agree) return;
+    if (!formValid) return;
     setSubmitted(true);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(close, 2500);
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 z-[80] inline-flex items-center gap-2 rounded-full bg-[#c19b4d] px-5 py-3.5 text-sm font-medium text-black shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-colors hover:bg-[#d6b25e] md:bottom-8 md:right-8"
+        className={`pill-hover fixed bottom-4 right-4 z-[80] block h-12 overflow-hidden bg-white text-black shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:bottom-5 md:right-5 ${
+          buttonHidden ? "translate-x-[calc(100%+24px)]" : "translate-x-0"
+        }`}
       >
-        <ChatCircleText size={18} weight="fill" aria-hidden />
-        Enquire Now
+        <span
+          aria-hidden
+          className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
+        />
+        <span className="relative z-10 inline-flex h-full items-center gap-2 px-5 text-sm font-medium">
+          <ChatText size={18} weight="fill" aria-hidden />
+          Enquire Now
+        </span>
       </button>
 
       {open ? (
@@ -76,7 +121,7 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden />
           <div
-            className="relative w-full max-w-[620px] rounded-2xl bg-[#FBF7EA] p-7 text-[#1c1c1c] shadow-2xl md:p-10"
+            className="relative w-full max-w-[620px] bg-[#FBF7EA] p-7 text-[#1c1c1c] shadow-2xl md:p-10"
             style={{ animation: `enquiry-pop 320ms ${EASE} both` }}
           >
             <button
@@ -99,38 +144,76 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
             ) : (
               <>
                 <h2 className="mb-7 text-center text-[26px] font-bold tracking-tight">
-                  Contact
+                  Enquire
                 </h2>
-                <form onSubmit={onSubmit} className="flex flex-col">
-                  <ModalInput name="name" placeholder="Name" required />
-                  <ModalInput
-                    name="email"
-                    type="email"
-                    placeholder="Email ID"
+                <form onSubmit={onSubmit} className="flex flex-col gap-4">
+                  <input
+                    aria-label="Name"
+                    name="name"
+                    placeholder="Name"
                     required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-black/[0.04] px-3 py-4 text-[15px] text-[#1c1c1c] outline-none transition-colors placeholder:text-black/45 focus:bg-black/[0.07]"
                   />
-                  <ModalInput
-                    name="phone"
-                    type="tel"
-                    placeholder="Contact Number"
-                    required
-                  />
+                  <div>
+                    <input
+                      aria-label="Email ID"
+                      name="email"
+                      type="email"
+                      inputMode="email"
+                      placeholder="Email ID"
+                      required
+                      aria-invalid={showEmailError}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={`w-full bg-black/[0.04] px-3 py-4 text-[15px] text-[#1c1c1c] outline-none transition-colors placeholder:text-black/45 focus:bg-black/[0.07] ${
+                        showEmailError ? "ring-1 ring-red-500/70" : ""
+                      }`}
+                    />
+                    {showEmailError ? (
+                      <p className="mt-1.5 text-[12px] text-red-600">
+                        Enter a valid email address.
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="flex items-center bg-black/[0.04] transition-colors focus-within:bg-black/[0.07]">
+                    <span className="select-none pl-3 text-[15px] text-[#1c1c1c]">
+                      +91
+                    </span>
+                    <input
+                      aria-label="Contact Number"
+                      name="phone"
+                      type="tel"
+                      inputMode="numeric"
+                      pattern="[0-9]{10}"
+                      maxLength={10}
+                      required
+                      placeholder="Contact Number"
+                      value={phone}
+                      onChange={(e) =>
+                        setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                      }
+                      className="w-full bg-transparent px-2 py-4 text-[15px] text-[#1c1c1c] outline-none placeholder:text-black/45"
+                    />
+                  </div>
                   <textarea
+                    aria-label="Query"
                     name="query"
-                    rows={2}
+                    rows={3}
                     placeholder="Query"
                     defaultValue={
                       projectName ? `Interested in ${projectName}. ` : undefined
                     }
-                    className="resize-none border-b border-black/15 bg-transparent py-3.5 text-[15px] text-[#1c1c1c] outline-none transition-colors placeholder:text-black/45 focus:border-black/60"
+                    className="resize-none bg-black/[0.04] px-3 py-4 text-[15px] text-[#1c1c1c] outline-none transition-colors placeholder:text-black/45 focus:bg-black/[0.07]"
                   />
 
-                  <label className="mt-5 flex items-center gap-2.5 text-[15px] text-[#1c1c1c]">
+                  <label className="mt-2 flex items-center gap-2.5 text-[15px] text-[#1c1c1c]">
                     <input
                       type="checkbox"
                       checked={agree}
                       onChange={(e) => setAgree(e.target.checked)}
-                      className="h-4 w-4 accent-blue-600"
+                      className="h-4 w-4 accent-[#c19b4d]"
                     />
                     <span>
                       I Agree to the{" "}
@@ -146,8 +229,8 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
 
                   <button
                     type="submit"
-                    disabled={!agree}
-                    className="mt-5 h-[52px] w-full rounded-full bg-[#241c19] text-[15px] font-medium text-white transition-colors hover:bg-[#3a2f29] disabled:cursor-not-allowed disabled:opacity-40"
+                    disabled={!formValid}
+                    className="mt-5 h-[52px] w-full bg-black text-[15px] font-medium text-white transition-colors hover:bg-[#2a2a2a] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Send
                   </button>
@@ -159,28 +242,7 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
       ) : null}
 
       <style>{`@keyframes enquiry-pop {0%{opacity:0;transform:translateY(12px) scale(0.98)}100%{opacity:1;transform:translateY(0) scale(1)}}`}</style>
-    </>
-  );
-}
-
-function ModalInput({
-  name,
-  type = "text",
-  placeholder,
-  required,
-}: {
-  name: string;
-  type?: string;
-  placeholder: string;
-  required?: boolean;
-}) {
-  return (
-    <input
-      name={name}
-      type={type}
-      required={required}
-      placeholder={placeholder}
-      className="border-b border-black/15 bg-transparent py-3.5 text-[15px] text-[#1c1c1c] outline-none transition-colors placeholder:text-black/45 focus:border-black/60"
-    />
+    </>,
+    document.body,
   );
 }
