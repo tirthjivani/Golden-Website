@@ -499,7 +499,7 @@ function StorySection() {
           {/* Building — single tower anchored at the bottom-right */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -bottom-[30px] -right-[30px] h-[72%] w-full md:-right-[120px] md:-bottom-[70px] md:h-full md:w-[74%]"
+            className="pointer-events-none absolute -bottom-[30px] -right-[30px] -mb-5 h-[72%] w-full md:right-0 md:bottom-0 md:mb-0 md:h-full md:w-[74%]"
             style={{
               opacity: buildingsP,
               transform: `translateY(${(1 - buildingsP) * 60}px)`,
@@ -516,7 +516,7 @@ function StorySection() {
               className="object-contain object-right-bottom md:hidden"
             />
             <Image
-              src="/about/story/building-towers-desktop.webp"
+              src="/about/story/building-towers-desktop-v2.webp"
               alt=""
               fill
               sizes="60vw"
