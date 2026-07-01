@@ -165,7 +165,7 @@
                     "Foyer, store and two bathrooms."
                   ],
                   "image": {
-                    "src": "golden-luxuria/2bhk_typical_unit.webp"
+                    "src": "golden-luxuria/2bhk_typical_unit.png"
                   },
                   "note": "*Final dimensions may vary on site."
                 }
@@ -195,7 +195,7 @@
                     "Store room plus attached and common bathrooms."
                   ],
                   "image": {
-                    "src": "golden-luxuria/3bhk_typical_unit.webp"
+                    "src": "golden-luxuria/3bhk_typical_unit.png"
                   },
                   "note": "*Final dimensions may vary on site."
                 }
@@ -592,7 +592,7 @@
                     "Three bathrooms - attached, secondary and common."
                   ],
                   "image": {
-                    "src": "golden-heaven/3bhk_floor_plan.webp"
+                    "src": "golden-heaven/3bhk_floor_plan.png"
                   },
                   "note": "*Final dimensions may vary on site."
                 }
@@ -618,7 +618,7 @@
                     "Bedrooms with dressing-toilets, plus common and powder bathrooms."
                   ],
                   "image": {
-                    "src": "golden-heaven/4bhk_floor_plan.webp"
+                    "src": "golden-heaven/4bhk_floor_plan.png"
                   },
                   "note": "*Final dimensions may vary on site."
                 }
@@ -703,7 +703,7 @@
           "headline": "Master Plan",
           "body": "Township site layout across all 5 towers.",
           "image": {
-            "src": "golden-heaven/layout_plan.webp"
+            "src": "golden-heaven/layout_plan.png"
           }
         },
         "location": {
@@ -1016,7 +1016,7 @@
                     "Both bedrooms served by attached toilets and an architectural projection balcony."
                   ],
                   "image": {
-                    "src": "golden-residency/typical_floor_plan_2bhk_wing_abcdg-h.webp"
+                    "src": "golden-residency/typical_floor_plan_2bhk_wing_abcdg-h.png"
                   }
                 }
               ]
@@ -1040,7 +1040,7 @@
                     "Attached and common toilets with a utility wash area."
                   ],
                   "image": {
-                    "src": "golden-residency/project_1bhk_typical_floor_plan.webp"
+                    "src": "golden-residency/project_1bhk_typical_floor_plan.png"
                   }
                 }
               ]
@@ -1118,7 +1118,7 @@
           "headline": "Master Plan",
           "body": "Ground layout and block placement.",
           "image": {
-            "src": "golden-residency/ground_layout_plan.webp"
+            "src": "golden-residency/ground_layout_plan.png"
           }
         },
         "location": {
@@ -1425,7 +1425,7 @@
                     "Dedicated floors for retail, food court, and multiplex."
                   ],
                   "image": {
-                    "src": "golden-square-bharuch/ground_floor_plan.webp"
+                    "src": "golden-square-bharuch/ground_floor_plan.png"
                   }
                 }
               ]
@@ -1447,7 +1447,7 @@
                     "High-speed elevators and wide corridors for smooth traffic flow."
                   ],
                   "image": {
-                    "src": "golden-square-bharuch/first_floor_plan.webp"
+                    "src": "golden-square-bharuch/first_floor_plan.png"
                   }
                 }
               ]
@@ -1469,7 +1469,7 @@
                     "Continuous retail concourse linked by the central atrium."
                   ],
                   "image": {
-                    "src": "golden-square-bharuch/second_floor.webp"
+                    "src": "golden-square-bharuch/second_floor.png"
                   }
                 }
               ]
@@ -1492,7 +1492,7 @@
                     "Modular floor plates suit corporate and boutique tenants."
                   ],
                   "image": {
-                    "src": "golden-square-bharuch/4th_to_9th_floor_plan.webp"
+                    "src": "golden-square-bharuch/4th_to_9th_floor_plan.png"
                   }
                 }
               ]
@@ -1753,7 +1753,7 @@
                     "Living room opening to the central passage and twin lifts."
                   ],
                   "image": {
-                    "src": "golden-nirvana/2bhk_typical_floor_plan_2nd_to_7th_floor_block_abcde.webp"
+                    "src": "golden-nirvana/2bhk_typical_floor_plan_2nd_to_7th_floor_block_abcde.png"
                   },
                   "note": "*Final dimensions may vary on site."
                 }
@@ -1781,7 +1781,7 @@
                     "Private covered parking with otta, garden and dry/wash areas."
                   ],
                   "image": {
-                    "src": "golden-nirvana/bungalow_ground_floor_layout_plan.webp"
+                    "src": "golden-nirvana/bungalow_ground_floor_layout_plan.png"
                   }
                 }
               ]
@@ -1874,7 +1874,7 @@
           "headline": "Master Plan",
           "body": "Township layout - towers and bungalow plots.",
           "image": {
-            "src": "golden-nirvana/ground_layout_plan_bungalow.webp"
+            "src": "golden-nirvana/ground_layout_plan_bungalow.png"
           }
         },
         "location": {
@@ -2197,7 +2197,7 @@
                     "Covered car parking and a front otta framing the entrance."
                   ],
                   "image": {
-                    "src": "golden-villa/ground_floor_plan.webp"
+                    "src": "golden-villa/ground_floor_plan.png"
                   }
                 }
               ]
@@ -2215,7 +2215,7 @@
                     "Standing balcony and a central passage linking the rooms."
                   ],
                   "image": {
-                    "src": "golden-villa/first_floor_plan.webp"
+                    "src": "golden-villa/first_floor_plan.png"
                   }
                 }
               ]
@@ -2233,7 +2233,7 @@
                     "Standing balcony extending the upper living space outdoors."
                   ],
                   "image": {
-                    "src": "golden-villa/second_floor_plan.webp"
+                    "src": "golden-villa/second_floor_plan.png"
                   }
                 }
               ]
@@ -2296,7 +2296,7 @@
           "headline": "Master Plan",
           "body": "Site layout across the row villa community.",
           "image": {
-            "src": "golden-villa/layout_plan.webp"
+            "src": "golden-villa/layout_plan.png"
           }
         },
         "location": {
@@ -2629,7 +2629,7 @@
                     "Front Garden area and dedicated 8'9\" x 18'0\" private parking slot."
                   ],
                   "image": {
-                    "src": "golden-homes/ground_floor_unit_plan.webp"
+                    "src": "golden-homes/ground_floor_unit_plan.png"
                   }
                 }
               ]
@@ -2656,7 +2656,7 @@
                     "Multi-bedroom configuration with dedicated common toilet."
                   ],
                   "image": {
-                    "src": "golden-homes/first_floor_unit_plan.webp"
+                    "src": "golden-homes/first_floor_unit_plan.png"
                   }
                 }
               ]
@@ -2716,7 +2716,7 @@
           "headline": "Master Plan",
           "body": "Plotted layout of the bungalow community.",
           "image": {
-            "src": "golden-homes/master_layout_plan.webp"
+            "src": "golden-homes/master_layout_plan.png"
           }
         },
         "location": {

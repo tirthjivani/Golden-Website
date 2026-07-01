@@ -8,7 +8,7 @@ import {
   type FormEvent,
 } from "react";
 import { createPortal } from "react-dom";
-import { ChatText, X } from "@phosphor-icons/react";
+import { ChatText, Phone, X } from "@phosphor-icons/react";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -21,6 +21,7 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
   const [agree, setAgree] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [buttonHidden, setButtonHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -34,6 +35,16 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
   // wrapper (a transform ancestor makes fixed resolve against it, not the
   // viewport — which pushed the button off-screen).
   useEffect(() => setMounted(true), []);
+
+  // Follow SiteShell's menu slide: when the menu opens the content shifts left
+  // by --panel-w, so shift this body-portaled button by the same amount to
+  // keep it pinned to the visible content area.
+  useEffect(() => {
+    const onMenu = (e: Event) =>
+      setMenuOpen(Boolean((e as CustomEvent<boolean>).detail));
+    window.addEventListener("golden-menu", onMenu);
+    return () => window.removeEventListener("golden-menu", onMenu);
+  }, []);
 
   // Slide the button off-screen once the walkthrough section is half-reached
   // (i.e. the section before it has ended); bring it back on scroll up.
@@ -92,22 +103,43 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
 
   return createPortal(
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className={`pill-hover fixed bottom-4 right-4 z-[80] block h-12 overflow-hidden bg-white text-black shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:bottom-5 md:right-5 ${
-          buttonHidden ? "translate-x-[calc(100%+24px)]" : "translate-x-0"
-        }`}
+      <div
+        className="fixed bottom-4 right-4 z-[80] flex items-center gap-3 transition-transform ease-[cubic-bezier(0.32,0.72,0,1)] md:bottom-5 md:right-5"
+        style={{
+          transform: buttonHidden
+            ? "translateX(calc(100% + 24px))"
+            : menuOpen
+            ? "translateX(calc(-1 * var(--panel-w)))"
+            : "translateX(0)",
+          transitionDuration: "700ms",
+        }}
       >
-        <span
-          aria-hidden
-          className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
-        />
-        <span className="relative z-10 inline-flex h-full items-center gap-2 px-5 text-sm font-medium">
-          <ChatText size={18} weight="fill" aria-hidden />
-          Enquire Now
-        </span>
-      </button>
+        <a
+          href="tel:+919876543210"
+          aria-label="Call us"
+          className="pill-hover relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden bg-white text-black shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+        >
+          <span
+            aria-hidden
+            className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
+          />
+          <Phone size={20} weight="fill" aria-hidden className="relative z-10" />
+        </a>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="pill-hover relative block h-12 overflow-hidden bg-white text-black shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+        >
+          <span
+            aria-hidden
+            className="pill-wipe pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
+          />
+          <span className="relative z-10 inline-flex h-full items-center gap-2 px-5 text-sm font-medium">
+            <ChatText size={18} weight="fill" aria-hidden />
+            Enquire Now
+          </span>
+        </button>
+      </div>
 
       {open ? (
         <div

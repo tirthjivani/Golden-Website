@@ -66,6 +66,11 @@ export default function SiteShell({
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
+    // Signal menu state to body-portaled fixed UI (e.g. the enquiry button)
+    // so it can follow the content as it slides left.
+    window.dispatchEvent(
+      new CustomEvent("golden-menu", { detail: menuOpen }),
+    );
     return () => {
       document.body.style.overflow = "";
     };
