@@ -36,8 +36,6 @@ export default function AboutPage() {
         label2="Mission"
         body2="To design and deliver well-planned residential and commercial spaces by following ethical practices, maintaining precision in execution, and creating long-term value for customers, investors, and communities."
         imageAlign="left"
-        imageSrc="/about/mission.webp"
-        imageAlt="Family welcomed to Golden Luxuria"
       />
       <WhyChooseUs />
       <Accreditations />
@@ -633,7 +631,7 @@ function Statement({
   imageAlt?: string;
 }) {
   const text = (
-    <div className="flex flex-col gap-8 px-[30px] py-16 md:h-full md:justify-between md:gap-0 md:px-12 md:py-24">
+    <div className="flex flex-col gap-8 px-[30px] py-16 md:gap-12 md:px-12 md:py-20">
       <div className="flex flex-col gap-8">
         <Reveal>
           <h3 className="max-w-[14ch] text-[32px] font-medium leading-[1.2] tracking-tight md:text-[42px]">
@@ -689,6 +687,17 @@ function Statement({
       )}
     </Reveal>
   );
+
+  if (!imageSrc) {
+    return (
+      <section className="border-t border-[#464646] bg-black">
+        <div className="grid grid-cols-1 md:grid-cols-2 md:[&>*:first-child]:border-r md:[&>*:first-child]:border-[#464646]">
+          <div aria-hidden className="hidden md:block" />
+          {text}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="border-t border-[#464646] bg-black">

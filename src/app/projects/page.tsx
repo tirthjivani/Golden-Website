@@ -25,7 +25,6 @@ import {
   type ProjectStatus,
   type ProjectType,
 } from "@/lib/projects";
-import { getProjectMedia } from "@/lib/projectMedia";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 const REVEAL_STAGGER = 140;
@@ -61,10 +60,6 @@ function statusLabel(status: ProjectStatus): string {
 }
 
 function projectHeroImage(project: Project) {
-  const media = getProjectMedia(project.slug);
-  if (media?.hero) {
-    return { src: `${project.slug}/${media.hero}`, alt: project.name };
-  }
   return project.detail?.hero.image ?? project.images[0];
 }
 
@@ -310,20 +305,21 @@ function ProjectRow({
   }, []);
 
   const displayImages = (() => {
-    const media = getProjectMedia(project.slug);
-    if (media) {
-      const slots: { src: string; alt?: string }[] = [];
-      if (media.hero) slots.push({ src: `${project.slug}/${media.hero}`, alt: project.name });
-      for (const f of [...media.overview, ...(media.amenities ? [media.amenities] : []), ...media.gallery]) {
-        const src = `${project.slug}/${f}`;
-        if (!slots.some((s) => s.src === src)) slots.push({ src, alt: project.name });
+    const d = project.detail;
+    const candidates: { src: string; alt?: string }[] = [];
+    const push = (src?: string, alt?: string) => {
+      if (src && !candidates.some((c) => c.src === src)) {
+        candidates.push({ src, alt: alt ?? project.name });
       }
-      return slots.slice(0, 4);
+    };
+    if (d) {
+      push(d.hero?.image?.src);
+      d.summary?.cards?.forEach((c) => push(c.src, c.alt));
+      push(d.amenities?.feature?.src);
+      d.gallery?.images?.forEach((img) => push(img.src, img.alt));
     }
-    const heroImg = projectHeroImage(project);
-    if (!heroImg) return project.images.slice(0, 4);
-    const rest = project.images.filter((i) => i.src !== heroImg.src);
-    return [heroImg, ...rest].slice(0, 4);
+    if (candidates.length > 0) return candidates.slice(0, 4);
+    return project.images.slice(0, 4);
   })();
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {

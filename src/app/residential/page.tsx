@@ -17,7 +17,6 @@ import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 import { listProjects, projectImage } from "@/lib/projects";
-import { getProjectMedia } from "@/lib/projectMedia";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -310,10 +309,7 @@ type Project = {
 const PROJECTS: Project[] = listProjects()
   .filter((p) => p.type === "residential")
   .map((p) => {
-    const media = getProjectMedia(p.slug);
-    const src = media?.hero
-      ? `${p.slug}/${media.hero}`
-      : p.images[0]?.src ?? "";
+    const src = p.detail?.hero.image.src ?? p.images[0]?.src ?? "";
     return {
       name: p.name,
       bhk: p.category,

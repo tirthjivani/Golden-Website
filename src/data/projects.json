@@ -28,7 +28,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg"
+            "src": "golden-luxuria/Building_Front_Elevation_Courtyard_View.webp"
           },
           "eyebrow": "Premium Residences",
           "tagline": "For those who never settled - this is the reward."
@@ -54,22 +54,22 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-luxuria/Main_Entrance_Gate_Day_Perspective.jpg",
+              "src": "golden-luxuria/Main_Entrance_Gate_Day_Perspective.webp",
               "metric": "Tavra, Bharuch",
               "label": "Location"
             },
             {
-              "src": "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg",
+              "src": "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp",
               "metric": "676 - 959 Sq.Ft.",
               "label": "Carpet"
             },
             {
-              "src": "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg",
+              "src": "golden-luxuria/Interior_Entrance_Lobby_Reception.webp",
               "metric": "2 & 3 BHK",
               "label": "Type"
             },
             {
-              "src": "golden-luxuria/Residential_Complex_Birdview_Aerial.jpg",
+              "src": "golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.webp",
               "metric": "5 Blocks",
               "label": "A, B, C, D & E"
             }
@@ -100,7 +100,7 @@
           "headline": "Resort-style Amenities",
           "body": "From quiet zen gardens to a private banquet hall, every shared space is engineered to make daily life feel a little more thoughtful.",
           "feature": {
-            "src": "golden-luxuria/Landscape_Garden_Walking_Track.jpg"
+            "src": "golden-luxuria/Landscape_Garden_Walking_Track.webp"
           },
           "items": [
             {
@@ -234,28 +234,40 @@
           "body": "A look at what awaits you.",
           "images": [
             {
-              "src": "golden-luxuria/Building_Front_Elevation_Courtyard_View.jpg"
+              "src": "golden-luxuria/Building_Front_Elevation_Courtyard_View.webp"
             },
             {
-              "src": "golden-luxuria/Building_Side_Elevation_Daylight.jpg"
+              "src": "golden-luxuria/Main_Entrance_Gate_Day_Perspective.webp"
             },
             {
-              "src": "golden-luxuria/Children_Play_Area_Community_Park.jpg"
+              "src": "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp"
             },
             {
-              "src": "golden-luxuria/Interior_Fitness_Gym_Amenities.jpg"
+              "src": "golden-luxuria/Interior_Entrance_Lobby_Reception.webp"
             },
             {
-              "src": "golden-luxuria/Interior_Recreation_Indoor_Games_Room.jpg"
+              "src": "golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.webp"
             },
             {
-              "src": "golden-luxuria/Landscape_Garden_Walking_Track.jpg"
+              "src": "golden-luxuria/Landscape_Garden_Walking_Track.webp"
             },
             {
-              "src": "golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.jpg"
+              "src": "golden-luxuria/Building_Side_Elevation_Daylight.webp"
             },
             {
-              "src": "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg"
+              "src": "golden-luxuria/Children_Play_Area_Community_Park.webp"
+            },
+            {
+              "src": "golden-luxuria/Interior_Fitness_Gym_Amenities.webp"
+            },
+            {
+              "src": "golden-luxuria/Interior_Recreation_Indoor_Games_Room.webp"
+            },
+            {
+              "src": "golden-luxuria/Interior_Banquet_Hall_Formal_Setup.webp"
+            },
+            {
+              "src": "golden-luxuria/Residential_Complex_Birdview_Aerial.webp"
             }
           ]
         },
@@ -447,7 +459,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-heaven/Building_Front_Perspective_Daylight.jpg"
+            "src": "golden-heaven/Building_Full_Elevation_Twilight.webp"
           },
           "eyebrow": "Family Residences",
           "tagline": "Built for the family that earned this moment."
@@ -473,22 +485,22 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-heaven/Main_Entrance_Gate_Day_View.jpg",
+              "src": "golden-heaven/Main_Entrance_Gate_Day_View.webp",
               "metric": "Uttran, Surat",
               "label": "Location"
             },
             {
-              "src": "golden-heaven/Building_Front_Perspective_Daylight.jpg",
+              "src": "golden-heaven/Building_Front_Perspective_Daylight.webp",
               "metric": "1381 - 1943 Sq.Ft.",
               "label": "Carpet"
             },
             {
-              "src": "golden-heaven/Building_Full_Elevation_Twilight.jpg",
+              "src": "golden-heaven/Garden_Landscaping_Water_Feature.webp",
               "metric": "3 & 4 BHK",
               "label": "Type"
             },
             {
-              "src": "golden-heaven/Residential_Complex_Birdview_Aerial.jpg",
+              "src": "golden-heaven/Interiors_Gymnasium 2.webp",
               "metric": "3 Buildings",
               "label": "A, B & C"
             }
@@ -519,7 +531,7 @@
           "headline": "Everyday Amenities",
           "body": "Spaces that turn a building into a community.",
           "feature": {
-            "src": "golden-heaven/Garden_Landscaping_Water_Feature.jpg"
+            "src": "golden-heaven/Garden_Seating_Aesthetic_Bench.webp"
           },
           "items": [
             {
@@ -644,31 +656,46 @@
           "body": "A look at what awaits you.",
           "images": [
             {
-              "src": "golden-heaven/Children_Play_Area_Aerial.jpg"
+              "src": "golden-heaven/Building_Full_Elevation_Twilight.webp"
             },
             {
-              "src": "golden-heaven/Garden_Landscaping_Water_Feature.jpg"
+              "src": "golden-heaven/Main_Entrance_Gate_Day_View.webp"
             },
             {
-              "src": "golden-heaven/Garden_Seating_Aesthetic_Bench.jpg"
+              "src": "golden-heaven/Building_Front_Perspective_Daylight.webp"
             },
             {
-              "src": "golden-heaven/Sunken_Seating_and_Parking.jpg"
-            },
-            {
-              "src": "golden-heaven/Interiors_Banquet_Hall 2.webp",
-              "alt": "Banquet hall"
+              "src": "golden-heaven/Garden_Landscaping_Water_Feature.webp"
             },
             {
               "src": "golden-heaven/Interiors_Gymnasium 2.webp",
+              "alt": "Banquet hall"
+            },
+            {
+              "src": "golden-heaven/Garden_Seating_Aesthetic_Bench.webp",
               "alt": "Gymnasium"
             },
             {
-              "src": "golden-heaven/Interiors_Indoor_Games 2.webp",
+              "src": "golden-heaven/Children_Play_Area_Aerial.webp",
               "alt": "Indoor games"
             },
             {
-              "src": "golden-heaven/Building_Full_Elevation_Twilight.jpg"
+              "src": "golden-heaven/Residential_Complex_Birdview_Aerial.webp"
+            },
+            {
+              "src": "golden-heaven/Interiors_Indoor_Games 2.webp"
+            },
+            {
+              "src": "golden-heaven/Garden_Landscaping_Lawn_Area.webp"
+            },
+            {
+              "src": "golden-heaven/Sunken_Seating_and_Parking.webp"
+            },
+            {
+              "src": "golden-heaven/Interiors_Banquet_Hall 2.webp"
+            },
+            {
+              "src": "golden-heaven/Children_Play_Area_Amenities.webp"
             }
           ]
         },
@@ -857,7 +884,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-residency/Building_Full_Front_Elevation_Day.jpg"
+            "src": "golden-residency/Building_Full_Front_Elevation_Day.webp"
           },
           "eyebrow": "Urban Apartments",
           "tagline": "A well-designed home at a price that makes sense."
@@ -883,22 +910,22 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-residency/Building_Side_Elevation_Daylight.jpg",
+              "src": "golden-residency/Building_Central_Tower_Twilight.webp",
               "metric": "Tavra, Bharuch",
               "label": "Location"
             },
             {
-              "src": "golden-residency/Building_Full_Front_Elevation_Day.jpg",
+              "src": "golden-residency/Main_Entrance_Gate_Retail_Day.webp",
               "metric": "500 - 671 Sq.Ft.",
               "label": "Carpet Area"
             },
             {
-              "src": "golden-residency/Residential_Complex_Birdview_Aerial.jpg",
+              "src": "golden-residency/Building_Side_Elevation_Daylight.webp",
               "metric": "1 & 2 BHK",
               "label": "Type"
             },
             {
-              "src": "golden-residency/Building_Side_Elevation_Daylight.jpg",
+              "src": "golden-residency/Landscape_Courtyard_Garden_Twilight.webp",
               "metric": "8 Wings",
               "label": "A - H Blocks"
             }
@@ -929,7 +956,7 @@
           "headline": "Everyday Amenities",
           "body": "All the essentials for value-led modern living.",
           "feature": {
-            "src": "golden-residency/Building_Side_Elevation_Daylight.jpg"
+            "src": "golden-residency/Courtyard_Garden_Aerial_Night.webp"
           },
           "items": [
             {
@@ -1050,13 +1077,40 @@
           "body": "A look at what awaits you.",
           "images": [
             {
-              "src": "golden-residency/Building_Full_Front_Elevation_Day.jpg"
+              "src": "golden-residency/Building_Full_Front_Elevation_Day.webp"
             },
             {
-              "src": "golden-residency/Building_Side_Elevation_Daylight.jpg"
+              "src": "golden-residency/Building_Central_Tower_Twilight.webp"
             },
             {
-              "src": "golden-residency/Residential_Complex_Birdview_Aerial.jpg"
+              "src": "golden-residency/Main_Entrance_Gate_Retail_Day.webp"
+            },
+            {
+              "src": "golden-residency/Building_Side_Elevation_Daylight.webp"
+            },
+            {
+              "src": "golden-residency/Landscape_Courtyard_Garden_Twilight.webp"
+            },
+            {
+              "src": "golden-residency/Courtyard_Garden_Aerial_Night.webp"
+            },
+            {
+              "src": "golden-residency/Interior_Entrance_Lobby_Reception.webp"
+            },
+            {
+              "src": "golden-residency/Interior_Fitness_Gym.webp"
+            },
+            {
+              "src": "golden-residency/Interior_Indoor_Games_Room.webp"
+            },
+            {
+              "src": "golden-residency/Interior_Banquet_Hall.webp"
+            },
+            {
+              "src": "golden-residency/Children_Play_Area.webp"
+            },
+            {
+              "src": "golden-residency/Residential_Complex_Birdview_Aerial.webp"
             }
           ]
         },
@@ -1224,7 +1278,10 @@
           "headline": "Walkthrough",
           "videoUrl": "https://youtu.be/bAC1K9kYdF8"
         }
-      }
+      },
+      "disabledSections": [
+        "amenities"
+      ]
     },
     {
       "id": "golden-square-bharuch",
@@ -1254,7 +1311,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.jpg"
+            "src": "golden-square-bharuch/Building_Street_Perspective_View.webp"
           },
           "eyebrow": "Mixed-use Commercial",
           "tagline": "The new standard for business in the port city."
@@ -1279,22 +1336,22 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.jpg",
+              "src": "golden-square-bharuch/new Cam_09.webp",
               "metric": "Bharuch",
               "label": "Location"
             },
             {
-              "src": "golden-square-bharuch/Entrance_Parking_Ramp_Close_up.jpg",
+              "src": "golden-square-bharuch/Entrance Foyer-Final.webp",
               "metric": "252 Units",
               "label": "150 Shops + 102 Offices"
             },
             {
-              "src": "golden-square-bharuch/Interior_Atrium_Mall_View.jpg",
+              "src": "golden-square-bharuch/Exterior_Walkway_Ivy_Lights.webp",
               "metric": "G + 9",
               "label": "Floors"
             },
             {
-              "src": "golden-square-bharuch/Cinemas entry-01.jpg",
+              "src": "golden-square-bharuch/Food court-04.webp",
               "metric": "Mall + Cinema",
               "label": "Mix Use"
             }
@@ -1325,7 +1382,7 @@
           "headline": "Building Amenities",
           "body": "From triple-height atrium to dedicated cinema and food court - designed for footfall.",
           "feature": {
-            "src": "golden-square-bharuch/Interior_Atrium_Mall_View.jpg"
+            "src": "golden-square-bharuch/Theater lobby-06.webp"
           },
           "items": [
             {
@@ -1467,28 +1524,37 @@
           "body": "A look at the building.",
           "images": [
             {
-              "src": "golden-square-bharuch/Building_Street_Perspective_View.jpg"
+              "src": "golden-square-bharuch/Building_Street_Perspective_View.webp"
             },
             {
-              "src": "golden-square-bharuch/Entrance Foyer-Final.jpg"
+              "src": "golden-square-bharuch/new Cam_09.webp"
             },
             {
-              "src": "golden-square-bharuch/Theater lobby-06.jpg"
+              "src": "golden-square-bharuch/Entrance Foyer-Final.webp"
             },
             {
-              "src": "golden-square-bharuch/Passage.jpg"
+              "src": "golden-square-bharuch/Exterior_Walkway_Ivy_Lights.webp"
             },
             {
-              "src": "golden-square-bharuch/new Cam_09.jpg"
+              "src": "golden-square-bharuch/Food court-04.webp"
             },
             {
-              "src": "golden-square-bharuch/Food court-04.jpg"
+              "src": "golden-square-bharuch/Theater lobby-06.webp"
             },
             {
-              "src": "golden-square-bharuch/Cinemas entry-01.jpg"
+              "src": "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.webp"
             },
             {
-              "src": "golden-square-bharuch/Exterior_Walkway_Ivy_Lights.jpg"
+              "src": "golden-square-bharuch/Cinemas entry-01.webp"
+            },
+            {
+              "src": "golden-square-bharuch/Passage.webp"
+            },
+            {
+              "src": "golden-square-bharuch/Interior_Atrium_Mall_View.webp"
+            },
+            {
+              "src": "golden-square-bharuch/Entrance_Parking_Ramp_Close_up.webp"
             }
           ]
         },
@@ -1550,7 +1616,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-nirvana/Building_Low_Angle_Street_View.jpg"
+            "src": "golden-nirvana/Bungalow_Entrance_Parking_Day.webp"
           },
           "eyebrow": "Township",
           "tagline": "A township built around everything that matters."
@@ -1576,22 +1642,22 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-nirvana/Building_Low_Angle_Street_View.jpg",
+              "src": "golden-nirvana/Main_Entrance_Gate.webp",
               "metric": "GIDC, Ankleshwar",
               "label": "Location"
             },
             {
-              "src": "golden-nirvana/Exterior_Frontage_Aerial.jpg",
+              "src": "golden-nirvana/Landscape_Garden_Zen_Seating_Area.webp",
               "metric": "705 - 1334 Sq.Ft.",
               "label": "Carpet"
             },
             {
-              "src": "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp",
+              "src": "golden-nirvana/Garden_and_Tower_View.webp",
               "metric": "2 BHK, Bungalow & Shops",
               "label": "Type"
             },
             {
-              "src": "golden-nirvana/Community_Park_Aerial_Birdview.jpg",
+              "src": "golden-nirvana/Bungalow_Entrance_Parking_Day.webp",
               "metric": "5 Blocks",
               "label": "A - E"
             }
@@ -1622,7 +1688,7 @@
           "headline": "Township Amenities",
           "body": "Open parks, walking loops, and recreational pockets - all woven into the daily route.",
           "feature": {
-            "src": "golden-nirvana/Garden_and_Tower_View.webp"
+            "src": "golden-nirvana/Landscape_Garden_Sunken_Seating.webp"
           },
           "items": [
             {
@@ -1752,28 +1818,55 @@
           "body": "A look at what awaits you.",
           "images": [
             {
-              "src": "golden-nirvana/Bungalow_Entrance_Parking_Day.jpg"
+              "src": "golden-nirvana/Building_Side_Front_Corner_Perspective.webp"
+            },
+            {
+              "src": "golden-nirvana/Main_Entrance_Gate.webp"
+            },
+            {
+              "src": "golden-nirvana/Landscape_Garden_Zen_Seating_Area.webp"
+            },
+            {
+              "src": "golden-nirvana/Garden_and_Tower_View.webp"
+            },
+            {
+              "src": "golden-nirvana/Bungalow_Entrance_Parking_Day.webp"
+            },
+            {
+              "src": "golden-nirvana/Landscape_Garden_Sunken_Seating.webp"
             },
             {
               "src": "golden-nirvana/Bungalow_Internal_Road_Parking_View.webp"
             },
             {
-              "src": "golden-nirvana/Childrens_Play_Area.webp"
+              "src": "golden-nirvana/Amenity_Area_Aerial.webp"
+            },
+            {
+              "src": "golden-nirvana/Landscape_Garden_Aesthetic_Seating.webp"
+            },
+            {
+              "src": "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp"
+            },
+            {
+              "src": "golden-nirvana/Community_Park_Aerial_Birdview.webp"
             },
             {
               "src": "golden-nirvana/Community_Park_Children_Play_Area_Detail.webp"
             },
             {
-              "src": "golden-nirvana/Community_Park_Ground_Perspective.jpg"
+              "src": "golden-nirvana/Community_Park_Ground_Perspective.webp"
             },
             {
-              "src": "golden-nirvana/Amenity_Area_Aerial.webp"
+              "src": "golden-nirvana/Exterior_Frontage_Aerial.webp"
             },
             {
-              "src": "golden-nirvana/Building_Side_Front_Corner_Perspective.webp"
+              "src": "golden-nirvana/Residential_Complex_Birdview_Night_Aerial.webp"
             },
             {
-              "src": "golden-nirvana/Garden_and_Tower_View.webp"
+              "src": "golden-nirvana/Building_Low_Angle_Street_View.webp"
+            },
+            {
+              "src": "golden-nirvana/Childrens_Play_Area.webp"
             }
           ]
         },
@@ -1978,7 +2071,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-villa/Bungalow_Main_Front_Elevation_Day.jpg"
+            "src": "golden-villa/Bungalow_Main_Front_Elevation_Day.webp"
           },
           "eyebrow": "Bungalows & Shopping",
           "tagline": "Three floors of space, one address you will always be proud of."
@@ -2004,22 +2097,22 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-villa/Main_Entrance_Gate_Day_Perspective.jpg",
+              "src": "golden-villa/Main_Entrance_Gate_Day_Perspective.webp",
               "metric": "Ankleshwar",
               "label": "Location"
             },
             {
-              "src": "golden-villa/Bungalow_Main_Front_Elevation_Day.jpg",
+              "src": "golden-villa/Residential_Layout_Birdview_Aerial.webp",
               "metric": "2000 Sq.Ft.",
               "label": "Built-up Area"
             },
             {
-              "src": "golden-villa/Community_Park_Aerial_Birdview.jpg",
+              "src": "golden-villa/Landscape_Garden_Seating_Ground_View.webp",
               "metric": "4 BHK",
               "label": "Bungalows"
             },
             {
-              "src": "golden-villa/Residential_Layout_Birdview_Aerial.jpg",
+              "src": "golden-villa/Landscape_Zen_Garden_Buddha_Statue.webp",
               "metric": "G + 2",
               "label": "Floors"
             }
@@ -2050,7 +2143,7 @@
           "headline": "Community Amenities",
           "body": "Designed for owners who value space and privacy.",
           "feature": {
-            "src": "golden-villa/Community_Park_Aerial_Birdview.jpg"
+            "src": "golden-villa/Community_Park_Aerial_Birdview.webp"
           },
           "items": [
             {
@@ -2177,28 +2270,25 @@
           "body": "A look at what awaits you.",
           "images": [
             {
-              "src": "golden-villa/Bungalow_Full_Front_View_Daylight.jpg"
+              "src": "golden-villa/Bungalow_Main_Front_Elevation_Day.webp"
             },
             {
-              "src": "golden-villa/Bungalow_Main_Front_Elevation_Night.jpg"
+              "src": "golden-villa/Main_Entrance_Gate_Day_Perspective.webp"
             },
             {
-              "src": "golden-villa/Bungalow_Side_Elevation_Perspective.jpg"
+              "src": "golden-villa/Landscape_Garden_Seating_Ground_View.webp"
             },
             {
-              "src": "golden-villa/Landscape_Zen_Garden_Buddha_Statue.jpg"
+              "src": "golden-villa/Landscape_Zen_Garden_Buddha_Statue.webp"
             },
             {
-              "src": "golden-villa/Landscape_Garden_Seating_Ground_View.jpg"
+              "src": "golden-villa/Community_Park_Aerial_Birdview.webp"
             },
             {
-              "src": "golden-villa/Community_Park_Aerial_Birdview.jpg"
+              "src": "golden-villa/Bungalow_Full_Front_View_Daylight.webp"
             },
             {
-              "src": "golden-villa/Main_Entrance_Gate_Day_Perspective.jpg"
-            },
-            {
-              "src": "golden-villa/Residential_Layout_Birdview_Aerial.jpg"
+              "src": "golden-villa/Bungalow_Main_Front_Elevation_Night.webp"
             }
           ]
         },
@@ -2403,7 +2493,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-homes/Bungalow_Full_Front_View_Day.jpg"
+            "src": "golden-homes/Bungalow_Full_Front_View_Night.webp"
           },
           "eyebrow": "Independent Bungalows",
           "tagline": "Independent living, the way it was always meant to be."
@@ -2429,22 +2519,22 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-homes/Bungalow_Entrance_Parking_View.jpg",
+              "src": "golden-homes/Community_Park_Area_Amenities.webp",
               "metric": "Ankleshwar",
               "label": "Location"
             },
             {
-              "src": "golden-homes/Bungalow_Full_Front_View_Day.jpg",
+              "src": "golden-homes/Bungalow_Entrance_Parking_View.webp",
               "metric": "1029 Sq.Ft.",
               "label": "Built-up Area"
             },
             {
-              "src": "golden-homes/Bungalow_Full_Front_View_Day.jpg",
+              "src": "golden-homes/Bungalow_Full_Front_View_Day.webp",
               "metric": "3 BHK Villa",
               "label": "Type"
             },
             {
-              "src": "golden-homes/Residential_Layout_Birdview_Aerial.jpg",
+              "src": "golden-homes/Residential_Layout_Birdview_Aerial.webp",
               "metric": "G + 1",
               "label": "Floors"
             }
@@ -2475,7 +2565,7 @@
           "headline": "Community Amenities",
           "body": "Quiet streets, generous green pockets, and space to make your own.",
           "feature": {
-            "src": "golden-homes/Community_Park_Area_Amenities.jpg"
+            "src": "golden-homes/Bungalow_Internal_Road_Perspective.webp"
           },
           "items": [
             {
@@ -2603,22 +2693,22 @@
           "body": "A look at what awaits you.",
           "images": [
             {
-              "src": "golden-homes/Bungalow_Full_Front_View_Night.jpg"
+              "src": "golden-homes/Bungalow_Full_Front_View_Night.webp"
             },
             {
-              "src": "golden-homes/Bungalow_Internal_Road_Perspective.jpg"
+              "src": "golden-homes/Community_Park_Area_Amenities.webp"
             },
             {
-              "src": "golden-homes/Bungalow_Side_Elevation_Landscaping.jpg"
+              "src": "golden-homes/Bungalow_Entrance_Parking_View.webp"
             },
             {
-              "src": "golden-homes/Bungalow_Entrance_Parking_View.jpg"
+              "src": "golden-homes/Bungalow_Full_Front_View_Day.webp"
             },
             {
-              "src": "golden-homes/Community_Park_Area_Amenities.jpg"
+              "src": "golden-homes/Bungalow_Internal_Road_Perspective.webp"
             },
             {
-              "src": "golden-homes/Residential_Layout_Birdview_Aerial.jpg"
+              "src": "golden-homes/Bungalow_Side_Elevation_Landscaping.webp"
             }
           ]
         },
@@ -2822,7 +2912,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-palm-villa/Bungalow_Main_Front_Elevation_Night.jpg"
+            "src": "golden-palm-villa/Bungalow_Street_Landscape_Night_Perspective.webp"
           },
           "eyebrow": "Bungalow Community",
           "tagline": "Seventy-four families. One exceptional address."
@@ -2847,22 +2937,22 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.jpg",
+              "src": "golden-palm-villa/Community_Park_And_Landscaping_Aerial.webp",
               "metric": "Ankleshwar",
               "label": "Location"
             },
             {
-              "src": "golden-palm-villa/Bungalow_Main_Front_Elevation_Night.jpg",
+              "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.webp",
               "metric": "74 Homes",
               "label": "Community"
             },
             {
-              "src": "golden-palm-villa/Community_Park_And_Landscaping_Aerial.jpg",
+              "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.webp",
               "metric": "3 BHK",
               "label": "Bungalow"
             },
             {
-              "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.jpg",
+              "src": "golden-palm-villa/Clubhouse_Exterior_Day.webp",
               "metric": "Club House",
               "label": "Amenities"
             }
@@ -2989,16 +3079,19 @@
           "body": "A look at what awaits you.",
           "images": [
             {
-              "src": "golden-palm-villa/Community_Park_And_Landscaping_Aerial.jpg"
+              "src": "golden-palm-villa/Bungalow_Street_Landscape_Night_Perspective.webp"
             },
             {
-              "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.jpg"
+              "src": "golden-palm-villa/Community_Park_And_Landscaping_Aerial.webp"
             },
             {
-              "src": "golden-palm-villa/Bungalow_Street_Landscape_Night_Perspective.jpg"
+              "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.webp"
             },
             {
-              "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.jpg"
+              "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.webp"
+            },
+            {
+              "src": "golden-palm-villa/Clubhouse_Exterior_Day.webp"
             }
           ]
         },
@@ -3161,7 +3254,10 @@
             }
           ]
         }
-      }
+      },
+      "disabledSections": [
+        "amenities"
+      ]
     },
     {
       "id": "golden-square",
@@ -3217,7 +3313,7 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-square/Building_Main_Front_Elevation_Day.webp",
+              "src": "golden-square/Interior_Courtyard_Seating_Area.webp",
               "metric": "Ankleshwar",
               "label": "Location"
             },
@@ -3227,12 +3323,12 @@
               "label": "Retail"
             },
             {
-              "src": "golden-square/Interior_Mall_Retail_Floor.webp",
+              "src": "golden-square/Interior_Atrium_Mall_View.webp",
               "metric": "72 Offices",
               "label": "Workspaces"
             },
             {
-              "src": "golden-square/Interior_Office_Block_Atrium.webp",
+              "src": "golden-square/Interior_Mall_Retail_Floor.webp",
               "metric": "1,00,000 Sq.Ft.",
               "label": "Built-up Area"
             }
@@ -3262,7 +3358,7 @@
         "amenities": {
           "headline": "Building Amenities",
           "feature": {
-            "src": "golden-square/Interior_Atrium_Mall_View.webp"
+            "src": "golden-square/Interior_Office_Block_Atrium.webp"
           },
           "items": [
             {
@@ -3364,7 +3460,7 @@
               "src": "golden-square/Building_Main_Front_Elevation_Day.webp"
             },
             {
-              "src": "golden-square/Building_Front_Elevation_Parking_View.webp"
+              "src": "golden-square/Interior_Courtyard_Seating_Area.webp"
             },
             {
               "src": "golden-square/Building_Street_Perspective_View.webp"
@@ -3373,13 +3469,13 @@
               "src": "golden-square/Interior_Atrium_Mall_View.webp"
             },
             {
-              "src": "golden-square/Interior_Courtyard_Seating_Area.webp"
-            },
-            {
               "src": "golden-square/Interior_Mall_Retail_Floor.webp"
             },
             {
               "src": "golden-square/Interior_Office_Block_Atrium.webp"
+            },
+            {
+              "src": "golden-square/Building_Front_Elevation_Parking_View.webp"
             }
           ]
         },
@@ -3441,7 +3537,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp"
+            "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp"
           },
           "eyebrow": "Retail & Office",
           "tagline": "Premium retail and office spaces in the heart of Ankleshwar."
@@ -3466,7 +3562,7 @@
         "summary": {
           "cards": [
             {
-              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp",
+              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp",
               "metric": "Ankleshwar",
               "label": "Location"
             },
@@ -3610,6 +3706,12 @@
           "body": "A look at the plaza.",
           "images": [
             {
+              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp"
+            },
+            {
+              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp"
+            },
+            {
               "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp"
             },
             {
@@ -3645,7 +3747,10 @@
             }
           ]
         }
-      }
+      },
+      "disabledSections": [
+        "amenities"
+      ]
     },
     {
       "id": "golden-industrial-estate",

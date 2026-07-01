@@ -3,7 +3,7 @@
 // stored as keys under `projects/<slug>/...` so they can resolve to the local
 // `public/` tree today and a Cloudflare CDN tomorrow without touching pages.
 
-import studioData from "@/data/projects.json";
+import projectData from "@/data/projects.json";
 
 const RAW_CDN_BASE = process.env.NEXT_PUBLIC_PROJECT_IMAGE_BASE ?? "/projects";
 
@@ -1862,11 +1862,12 @@ const goldenIndustrialEstate: Project = {
   },
 };
 
-// The TypeScript objects above are the immutable SEED dataset. At runtime the
-// site reads from src/data/projects.json (edited by the local /studio). When
-// that file has no projects, we fall back to the seed so the site always
-// renders. The JSON is a static import so it works in both server and client
-// bundles; editing it in dev triggers a normal HMR recompile.
+// The TypeScript objects above are the immutable SEED dataset used only as a
+// fallback. src/data/projects.json is the SINGLE SOURCE OF TRUTH the site
+// renders from — every image path, headline, and section lives there. Edit the
+// JSON and the change shows up directly (a static import, so it works in server
+// and client bundles and HMR-recompiles in dev). The seed only renders if the
+// JSON somehow has no projects.
 const SEED_PROJECTS: Project[] = [
   goldenLuxuria,
   goldenHeaven,
@@ -1881,16 +1882,11 @@ const SEED_PROJECTS: Project[] = [
   goldenIndustrialEstate,
 ];
 
-const STUDIO_PROJECTS = (studioData as unknown as { projects?: Project[] })
+const JSON_PROJECTS = (projectData as unknown as { projects?: Project[] })
   .projects;
 
 export const PROJECTS: Project[] =
-  STUDIO_PROJECTS && STUDIO_PROJECTS.length > 0
-    ? STUDIO_PROJECTS
-    : SEED_PROJECTS;
-
-// Exposed so the studio API can serialise the current seed when no JSON exists.
-export const SEED = SEED_PROJECTS;
+  JSON_PROJECTS && JSON_PROJECTS.length > 0 ? JSON_PROJECTS : SEED_PROJECTS;
 
 export function listProjects(): Project[] {
   return PROJECTS;

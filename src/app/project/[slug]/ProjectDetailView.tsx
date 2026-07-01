@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { EnquiryModal } from "@/components/EnquiryModal";
-import { PROJECT_GALLERY } from "@/lib/projectGallery";
 import { MinimalMap } from "@/components/MinimalMap";
 import { RevealImage } from "@/components/RevealImage";
 import { setProjectTransition } from "@/lib/projectTransition";
@@ -42,7 +41,6 @@ import {
   type Pillar,
   type Project,
 } from "@/lib/projects";
-import { getProjectMedia } from "@/lib/projectMedia";
 import { LANDMARK_COORDS } from "@/lib/landmarkCoords";
 
 export function ProjectDetailView({
@@ -54,27 +52,18 @@ export function ProjectDetailView({
 }) {
   const detail = project.detail;
   if (!detail) return null;
-  const media = getProjectMedia(project.slug);
 
-  // Map each known section key to its rendered node. Legacy projectMedia
-  // visibility flags fold into the studio's disabledSections via get
-  // OrderedSections — but we also respect them here defensively.
+  // Single source of truth: everything renders from the project's `detail`
+  // (src/data/projects.json). Section visibility is controlled by
+  // disabledSections via getOrderedSections.
   const renderers: Record<string, () => ReactNode> = {
-    hero: () => (
-      <Hero project={project} mediaSrc={media?.hero} heroAspect={heroAspect} />
-    ),
-    overview: () => <Overview project={project} mediaSrcs={media?.overview} />,
+    hero: () => <Hero project={project} heroAspect={heroAspect} />,
+    overview: () => <Overview project={project} />,
     facts: () => <ProjectFacts project={project} />,
-    amenities: () =>
-      media?.hidden.amenities ? null : (
-        <Amenities project={project} mediaSrc={media?.amenities} />
-      ),
+    amenities: () => <Amenities project={project} />,
     "master-plan": () => <MasterPlan project={project} />,
     "floor-plans": () => <FloorPlans project={project} />,
-    gallery: () =>
-      media?.hidden.gallery ? null : (
-        <Gallery project={project} mediaSrcs={media?.gallery} />
-      ),
+    gallery: () => <Gallery project={project} />,
     specifications: () => <Specifications project={project} />,
     location: () => <LocationSection project={project} />,
     pillars: () => <Pillars project={project} />,
@@ -102,17 +91,13 @@ export function ProjectDetailView({
 
 function Hero({
   project,
-  mediaSrc,
   heroAspect,
 }: {
   project: Project;
-  mediaSrc?: string;
   heroAspect?: number;
 }) {
   const detail = project.detail!;
-  const heroSrc = mediaSrc
-    ? projectImage(`${project.slug}/${mediaSrc}`)
-    : projectImage(detail.hero.image.src);
+  const heroSrc = projectImage(detail.hero.image.src);
   const fromProjects = useFromProjects();
 
   const titleStart = fromProjects ? 250 : 450;
@@ -127,57 +112,6 @@ function Hero({
     const id = window.setTimeout(() => setProjectTransition(null), 700);
     return () => window.clearTimeout(id);
   }, [fromProjects]);
-
-  useEffect(() => {
-    const sec = sectionRef.current;
-    const title = titleRef.current;
-    if (!sec || !title) return;
-
-    let rafId = 0;
-    let scheduled = false;
-
-    const update = () => {
-      scheduled = false;
-      const rect = sec.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const y = -rect.top;
-      const limit = rect.height - vh;
-
-      if (limit <= 0) return;
-
-      const zone = 300; // Transition zone in pixels
-      const H = 100;    // Maximum lift in pixels
-
-      let ty = 0;
-      if (y < limit - zone) {
-        ty = 0;
-      } else if (y >= limit - zone && y < limit) {
-        const t = (y - (limit - zone)) / zone;
-        const ease = t * t * (3 - 2 * t);
-        ty = -H * ease;
-      } else {
-        ty = -H;
-      }
-
-      title.style.transform = `translate3d(0, ${ty}px, 0)`;
-    };
-
-    const onScroll = () => {
-      if (scheduled) return;
-      scheduled = true;
-      rafId = requestAnimationFrame(update);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", update);
-    update();
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", update);
-      cancelAnimationFrame(rafId);
-    };
-  }, []);
 
   return (
     <section
@@ -249,7 +183,6 @@ function Hero({
           />
           <div
             ref={titleRef}
-            style={{ willChange: "transform" }}
             className="relative z-10 flex flex-col gap-2"
           >
             <WordReveal
@@ -534,22 +467,12 @@ type OverviewCardData = {
 
 function Overview({
   project,
-  mediaSrcs,
 }: {
   project: Project;
-  mediaSrcs?: string[];
 }) {
   const detail = project.detail!;
   const rawCards = detail.summary?.cards ?? [];
-  const baseCards: OverviewCardData[] = rawCards.slice(0, 4);
-  const cards: OverviewCardData[] = mediaSrcs && mediaSrcs.length > 0
-    ? mediaSrcs.slice(0, 4).map((file, i) => ({
-        src: `${project.slug}/${file}`,
-        alt: baseCards[i]?.alt,
-        metric: baseCards[i]?.metric ?? "",
-        label: baseCards[i]?.label ?? "",
-      }))
-    : baseCards;
+  const cards: OverviewCardData[] = rawCards.slice(0, 4);
 
   const sectionRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -704,15 +627,11 @@ function OverviewCard({
 
 function Amenities({
   project,
-  mediaSrc,
 }: {
   project: Project;
-  mediaSrc?: string;
 }) {
   const detail = project.detail!;
-  const featureSrc = mediaSrc
-    ? projectImage(`${project.slug}/${mediaSrc}`)
-    : detail.amenities.feature?.src
+  const featureSrc = detail.amenities.feature?.src
     ? projectImage(detail.amenities.feature.src)
     : null;
   return (
@@ -1018,22 +937,11 @@ function Specifications({ project }: { project: Project }) {
 
 function Gallery({
   project,
-  mediaSrcs,
 }: {
   project: Project;
-  mediaSrcs?: string[];
 }) {
   const detail = project.detail!;
-  // Prefer the full precomputed set (every photo in the project folder); fall
-  // back to the curated projectMedia slots, then the seed gallery list.
-  const allFiles = PROJECT_GALLERY[project.slug];
-  const files = allFiles && allFiles.length > 0 ? allFiles : mediaSrcs;
-  const images = files && files.length > 0
-    ? files.map((file, i) => ({
-        src: `${project.slug}/${file}`,
-        alt: detail.gallery.images[i]?.alt,
-      }))
-    : detail.gallery.images;
+  const images = detail.gallery.images;
   if (images.length === 0) return null;
   return (
     <section id="gallery" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">

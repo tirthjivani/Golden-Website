@@ -17,7 +17,6 @@ export default function SiteShell({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const isStudio = pathname?.startsWith("/studio") ?? false;
   const [menuOpen, setMenuOpen] = useState(false);
   const [stickyVisible, setStickyVisible] = useState(false);
   const [chromeReady, setChromeReady] = useState(!isHome);
@@ -73,9 +72,6 @@ export default function SiteShell({
   }, [menuOpen]);
 
   const showSticky = stickyVisible || menuOpen;
-
-  // Studio is a standalone local tool — no site header / menu chrome.
-  if (isStudio) return <>{children}</>;
 
   return (
     <div className="relative min-h-screen w-full overflow-x-clip">
