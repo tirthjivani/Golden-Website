@@ -116,8 +116,14 @@ function Hero({
   return (
     <section
       ref={sectionRef}
-      className={`relative w-full ${heroAspect ? "min-h-[100svh]" : "h-[200vh] min-h-[1280px]"}`}
-      style={heroAspect ? { aspectRatio: String(heroAspect) } : undefined}
+      className={`relative w-full ${
+        !heroSrc
+          ? "min-h-[80svh]"
+          : heroAspect
+          ? "min-h-[100svh]"
+          : "h-[200vh] min-h-[1280px]"
+      }`}
+      style={heroSrc && heroAspect ? { aspectRatio: String(heroAspect) } : undefined}
     >
       {heroSrc ? (
         <div className={`absolute inset-0 ${fromProjects ? "" : "hero-expand"}`}>
@@ -134,7 +140,7 @@ function Hero({
           />
         </div>
       ) : (
-        <div className="absolute inset-0 bg-[#1a1a1a]" />
+        <div className="absolute inset-0 bg-black" />
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
       <div
@@ -693,7 +699,7 @@ function Amenities({
 // Floor-plan & master-plan images are re-exported in place (same filename)
 // when updated, so a browser/CDN holding an older copy would serve it stale.
 // Bump this version whenever those plan assets change to force a refetch.
-const PLAN_ASSET_VERSION = "20260701";
+const PLAN_ASSET_VERSION = "20260703";
 function planImage(src: string): string {
   const url = projectImage(src);
   if (!src) return url;
@@ -727,8 +733,8 @@ function MasterPlan({ project }: { project: Project }) {
           fill
           unoptimized
           sizes="100vw"
-          className="object-contain"
-          containerClassName="relative aspect-[16/10] w-full bg-white/[0.03]"
+          className="object-contain p-6 md:p-12"
+          containerClassName="relative aspect-[16/10] w-full"
         />
       </div>
     </section>
@@ -782,7 +788,7 @@ function FloorPlans({ project }: { project: Project }) {
       <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-10 md:items-start">
         <div className="md:col-span-6">
           {groups.length > 1 ? (
-            <div className="flex w-fit max-w-full flex-wrap border border-[#2a2a2a]">
+            <div className="flex w-full border border-[#2a2a2a]">
               {groups.map((g) => {
                 const active = g.id === activeGroup.id;
                 return (
@@ -794,7 +800,7 @@ function FloorPlans({ project }: { project: Project }) {
                       const firstPlan = g.plans[0]?.id ?? "";
                       setPlanId(firstPlan);
                     }}
-                    className={`-ml-px h-[56px] border-l border-[#2a2a2a] px-5 text-[12px] uppercase tracking-[0.08em] first:ml-0 ${
+                    className={`-ml-px flex-1 h-[56px] border-l border-[#2a2a2a] px-3 text-center text-[12px] uppercase tracking-[0.08em] first:ml-0 ${
                       active ? "z-10 bg-white text-black" : "bg-transparent text-white/80 hover:bg-white/5"
                     }`}
                     aria-pressed={active}
@@ -886,7 +892,7 @@ function FloorPlans({ project }: { project: Project }) {
 
 function Specifications({ project }: { project: Project }) {
   const detail = project.detail!;
-  const [openId, setOpenId] = useState<string | null>(detail.specifications.items[0]?.id ?? null);
+  const [openId, setOpenId] = useState<string | null>(null);
   return (
     <section id="specifications" className="scroll-mt-24 border-t border-[#464646] bg-black">
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0">

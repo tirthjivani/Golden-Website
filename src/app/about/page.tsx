@@ -691,7 +691,7 @@ function Statement({
   if (!imageSrc) {
     return (
       <section className="border-t border-[#464646] bg-black">
-        <div className="grid grid-cols-1 md:grid-cols-2 md:[&>*:first-child]:border-r md:[&>*:first-child]:border-[#464646]">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr] md:[&>*:first-child]:border-r md:[&>*:first-child]:border-[#464646]">
           <div aria-hidden className="hidden md:block" />
           {text}
         </div>

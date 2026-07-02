@@ -1408,6 +1408,23 @@
           "body": "Retail & Office Floor Plans.",
           "groups": [
             {
+              "id": "basement",
+              "label": "Basement Parking",
+              "plans": [
+                {
+                  "id": "basement-plan",
+                  "label": "Basement Parking",
+                  "metrics": [],
+                  "features": [
+                    "Dedicated basement parking layout with ramp access and circulation aisles."
+                  ],
+                  "image": {
+                    "src": "golden-square-bharuch/basement_parking_layout.png"
+                  }
+                }
+              ]
+            },
+            {
               "id": "ground",
               "label": "Ground Floor",
               "plans": [
@@ -1782,6 +1799,18 @@
                   ],
                   "image": {
                     "src": "golden-nirvana/bungalow_ground_floor_layout_plan.png"
+                  }
+                },
+                {
+                  "id": "bungalow-first",
+                  "label": "First Floor",
+                  "metrics": [],
+                  "features": [
+                    "Bedrooms including a master suite arranged around a central passage.",
+                    "Attached and common toilets with a standing balcony."
+                  ],
+                  "image": {
+                    "src": "golden-nirvana/bungalow_first_floor_layout_plan.png"
                   }
                 }
               ]
@@ -3754,20 +3783,7 @@
       "area": "468 (17x100 / 17x120 ft)",
       "areaLabel": "Plots",
       "status": "Completed",
-      "images": [
-        {
-          "src": "/commercial-hero.webp"
-        },
-        {
-          "src": "/commercial-hero.webp"
-        },
-        {
-          "src": "/commercial-hero.webp"
-        },
-        {
-          "src": "/commercial-hero.webp"
-        }
-      ],
+      "images": [],
       "disabledSections": [
         "overview",
         "amenities"
@@ -3775,7 +3791,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "/commercial-hero.webp"
+            "src": ""
           },
           "eyebrow": "Industrial Estate",
           "tagline": "The strategic gateway for Surat's industrial growth."
@@ -3787,7 +3803,7 @@
         "amenities": {
           "headline": "Estate Amenities",
           "feature": {
-            "src": "/commercial-hero.webp"
+            "src": ""
           },
           "items": [
             {
