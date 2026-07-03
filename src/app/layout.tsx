@@ -4,6 +4,7 @@ import SiteShell from "@/components/SiteShell";
 import SmoothScroll from "@/components/SmoothScroll";
 import ProjectTransitionOverlay from "@/components/ProjectTransitionOverlay";
 import Agentation from "@/components/Agentation";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const satoshi = localFont({
@@ -24,6 +25,7 @@ const satoshi = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Golden Group | Residential & Commercial Real Estate in Gujarat",
   description:
     "Golden Group develops trusted residential apartments, row villas, commercial plazas and industrial estates across Bharuch, Ankleshwar and Surat. Three generations of building communities in Gujarat.",

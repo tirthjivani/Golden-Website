@@ -17,7 +17,7 @@ export default function TermsPage() {
   return (
     <LegalPage title="Terms & Conditions" updated="May 2026">
       <P>
-        Welcome to ____________________. This website is owned and operated by
+        Welcome to goldengroupindia.com. This website is owned and operated by
         Golden Lifespace Developers LLP, the official project entity for
         Golden Group.
       </P>

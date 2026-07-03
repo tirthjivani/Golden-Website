@@ -3,6 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  CONTACT_EMAIL,
+  INSTAGRAM_URL,
+  OFFICE_ADDRESS,
+  PHONE_DISPLAY,
+  PHONE_TEL,
+} from "@/lib/site";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -17,8 +24,8 @@ const navLinks = [
 ];
 
 const socials = [
-  { href: "https://www.instagram.com/goldengroupofficial", label: "Instagram" },
-  { href: "mailto:contact@goldengroupblr.com", label: "Email" },
+  { href: INSTAGRAM_URL, label: "Instagram" },
+  { href: `mailto:${CONTACT_EMAIL}`, label: "Email" },
 ];
 
 export function SiteFooter() {
@@ -88,18 +95,17 @@ export function SiteFooter() {
             <div className="flex w-full flex-col gap-6 md:w-1/2 md:max-w-none">
               <div className="flex flex-col gap-2 pb-6 md:pb-0">
                 <p className="hidden text-base leading-[1.5] text-white md:block">
-                  3rd Floor, Part-B, Plot No-5, Block No-4, Kohinoor Industrial
-                  Estate, Varachha Road, Varachha, Surat, Gujarat - 395006
+                  {OFFICE_ADDRESS}
                 </p>
                 <div className="flex flex-col text-base leading-[1.5] text-white/55">
                   <a
-                    href="mailto:contact@goldengroupblr.com"
+                    href={`mailto:${CONTACT_EMAIL}`}
                     className="hover:text-white"
                   >
-                    contact@goldengroupblr.com
+                    {CONTACT_EMAIL}
                   </a>
-                  <a href="tel:+919876543210" className="hover:text-white">
-                    +91 98765 43210
+                  <a href={`tel:${PHONE_TEL}`} className="hover:text-white">
+                    {PHONE_DISPLAY}
                   </a>
                 </div>
               </div>
@@ -107,7 +113,7 @@ export function SiteFooter() {
           </div>
           <div className="flex w-full flex-col gap-6 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
             <span className="flex w-full items-center justify-between sm:block sm:w-auto">
-              <span>© 2026 Golden Group.</span>
+              <span>© {new Date().getFullYear()} Golden Group.</span>
               <span className="sm:block">All rights reserved.</span>
             </span>
             <FooterPill href="/contact" label="Contact Us" />

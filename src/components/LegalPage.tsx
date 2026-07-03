@@ -1,5 +1,13 @@
 import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
+import {
+  ALT_SITE_URL,
+  COMPANY_LEGAL_NAME,
+  CONTACT_EMAIL,
+  OFFICE_ADDRESS,
+  PHONE_DISPLAY,
+  SITE_URL,
+} from "@/lib/site";
 
 export function LegalPage({
   title,
@@ -54,12 +62,15 @@ export function LI({ children }: { children: ReactNode }) {
 export function ContactBlock() {
   return (
     <div className="mt-4 border-t border-[#464646] pt-8">
-      <p className="font-medium text-white">Golden Lifespace Developers LLP</p>
+      <p className="font-medium text-white">{COMPANY_LEGAL_NAME}</p>
       <ul className="mt-3 flex flex-col gap-1 text-white/80">
-        <li>Official Website: ____________________</li>
-        <li>Phone: +91 98765 43210</li>
-        <li>Email: contact@goldengroupblr.com</li>
-        <li>Registered Office: [insert full registered office address, Surat, Gujarat]</li>
+        <li>
+          Official Website: {SITE_URL.replace("https://", "")} /{" "}
+          {ALT_SITE_URL.replace("https://", "")}
+        </li>
+        <li>Phone: {PHONE_DISPLAY}</li>
+        <li>Email: {CONTACT_EMAIL}</li>
+        <li>Registered Office: {OFFICE_ADDRESS}</li>
       </ul>
     </div>
   );

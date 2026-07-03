@@ -9,6 +9,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { ChatText, Phone, X } from "@phosphor-icons/react";
+import { PHONE_TEL } from "@/lib/site";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -136,7 +137,7 @@ export function EnquiryModal({
         }}
       >
         <a
-          href="tel:+919876543210"
+          href={`tel:${PHONE_TEL}`}
           aria-label="Call us"
           className="pill-hover relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden bg-white text-black shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
         >

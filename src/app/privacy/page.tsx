@@ -29,7 +29,7 @@ export default function PrivacyPolicyPage() {
       </P>
       <P>
         This Privacy Policy explains how we collect, use, store, disclose, and
-        protect your information when you visit ____________________, submit
+        protect your information when you visit goldengroupindia.com, submit
         an enquiry form, request a callback, download project information,
         interact with our advertisements, or communicate with our sales and
         customer support teams.

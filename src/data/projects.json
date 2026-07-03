@@ -13,16 +13,16 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-luxuria/Main_Entrance_Gate_Day_Perspective.jpg"
+          "src": "golden-luxuria/Main_Entrance_Gate_Day_Perspective.webp"
         },
         {
-          "src": "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg"
+          "src": "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp"
         },
         {
-          "src": "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg"
+          "src": "golden-luxuria/Interior_Entrance_Lobby_Reception.webp"
         },
         {
-          "src": "golden-luxuria/Residential_Complex_Birdview_Aerial.jpg"
+          "src": "golden-luxuria/Residential_Complex_Birdview_Aerial.webp"
         }
       ],
       "detail": {
@@ -37,11 +37,11 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-luxuria/Main_Entrance_Gate_Day_Perspective.jpg",
+              "src": "golden-luxuria/Main_Entrance_Gate_Day_Perspective.webp",
               "caption": "Main Entrance"
             },
             {
-              "src": "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.jpg",
+              "src": "golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp",
               "caption": "Front Elevation"
             }
           ]
@@ -79,19 +79,19 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-luxuria/Interior_Entrance_Lobby_Reception.jpg",
+              "src": "golden-luxuria/Interior_Entrance_Lobby_Reception.webp",
               "caption": "Grand entrance lobby"
             },
             {
-              "src": "golden-luxuria/Interior_Banquet_Hall_Formal_Setup.jpg",
+              "src": "golden-luxuria/Interior_Banquet_Hall_Formal_Setup.webp",
               "caption": "Private banquet hall"
             },
             {
-              "src": "golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.jpg",
+              "src": "golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.webp",
               "caption": "Zen garden & meditation spaces"
             },
             {
-              "src": "golden-luxuria/Residential_Complex_Birdview_Aerial.jpg",
+              "src": "golden-luxuria/Residential_Complex_Birdview_Aerial.webp",
               "caption": "2 BHK & 3 BHK residences"
             }
           ]
@@ -444,16 +444,16 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-heaven/Main_Entrance_Gate_Day_View.jpg"
+          "src": "golden-heaven/Main_Entrance_Gate_Day_View.webp"
         },
         {
-          "src": "golden-heaven/Building_Front_Perspective_Daylight.jpg"
+          "src": "golden-heaven/Building_Front_Perspective_Daylight.webp"
         },
         {
-          "src": "golden-heaven/Building_Full_Elevation_Twilight.jpg"
+          "src": "golden-heaven/Building_Full_Elevation_Twilight.webp"
         },
         {
-          "src": "golden-heaven/Residential_Complex_Birdview_Aerial.jpg"
+          "src": "golden-heaven/Residential_Complex_Birdview_Aerial.webp"
         }
       ],
       "detail": {
@@ -468,11 +468,11 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-heaven/Main_Entrance_Gate_Day_View.jpg",
+              "src": "golden-heaven/Main_Entrance_Gate_Day_View.webp",
               "caption": "Main Entrance"
             },
             {
-              "src": "golden-heaven/Building_Front_Perspective_Daylight.jpg",
+              "src": "golden-heaven/Building_Front_Perspective_Daylight.webp",
               "caption": "Front Elevation"
             }
           ]
@@ -510,19 +510,19 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-heaven/Building_Full_Elevation_Twilight.jpg",
+              "src": "golden-heaven/Building_Full_Elevation_Twilight.webp",
               "caption": "Modern tower façade"
             },
             {
-              "src": "golden-heaven/Children_Play_Area_Amenities.jpg",
+              "src": "golden-heaven/Children_Play_Area_Amenities.webp",
               "caption": "Children's play & recreation zone"
             },
             {
-              "src": "golden-heaven/Garden_Landscaping_Lawn_Area.jpg",
+              "src": "golden-heaven/Garden_Landscaping_Lawn_Area.webp",
               "caption": "Landscaped gardens & open lawns"
             },
             {
-              "src": "golden-heaven/Residential_Complex_Birdview_Aerial.jpg",
+              "src": "golden-heaven/Residential_Complex_Birdview_Aerial.webp",
               "caption": "3 BHK & 4 BHK, 3 buildings"
             }
           ]
@@ -872,13 +872,13 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-residency/Building_Side_Elevation_Daylight.jpg"
+          "src": "golden-residency/Building_Side_Elevation_Daylight.webp"
         },
         {
-          "src": "golden-residency/Building_Full_Front_Elevation_Day.jpg"
+          "src": "golden-residency/Building_Full_Front_Elevation_Day.webp"
         },
         {
-          "src": "golden-residency/Residential_Complex_Birdview_Aerial.jpg"
+          "src": "golden-residency/Residential_Complex_Birdview_Aerial.webp"
         }
       ],
       "detail": {
@@ -893,11 +893,11 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-residency/Building_Side_Elevation_Daylight.jpg",
+              "src": "golden-residency/Building_Side_Elevation_Daylight.webp",
               "caption": "Main Entrance Approach"
             },
             {
-              "src": "golden-residency/Building_Full_Front_Elevation_Day.jpg",
+              "src": "golden-residency/Building_Full_Front_Elevation_Day.webp",
               "caption": "Front Elevation"
             }
           ]
@@ -935,11 +935,11 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-residency/Residential_Complex_Birdview_Aerial.jpg",
+              "src": "golden-residency/Residential_Complex_Birdview_Aerial.webp",
               "caption": "Multi-block gated complex"
             },
             {
-              "src": "golden-residency/project_1bhk_typical_floor_plan.webp",
+              "src": "golden-residency/project_1bhk_typical_floor_plan.png",
               "caption": "1 BHK & 2 BHK layouts"
             },
             {
@@ -1296,16 +1296,16 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.jpg"
+          "src": "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.webp"
         },
         {
-          "src": "golden-square-bharuch/Entrance_Parking_Ramp_Close_up.jpg"
+          "src": "golden-square-bharuch/Entrance_Parking_Ramp_Close_up.webp"
         },
         {
-          "src": "golden-square-bharuch/Interior_Atrium_Mall_View.jpg"
+          "src": "golden-square-bharuch/Interior_Atrium_Mall_View.webp"
         },
         {
-          "src": "golden-square-bharuch/Cinemas entry-01.jpg"
+          "src": "golden-square-bharuch/Cinemas entry-01.webp"
         }
       ],
       "detail": {
@@ -1320,11 +1320,11 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-square-bharuch/Entrance_Parking_Ramp_Close_up.jpg",
+              "src": "golden-square-bharuch/Entrance_Parking_Ramp_Close_up.webp",
               "caption": "Main Entrance & Ramp"
             },
             {
-              "src": "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.jpg",
+              "src": "golden-square-bharuch/Building_Front_Daylight_Full_Elevation.webp",
               "caption": "Front Elevation"
             }
           ]
@@ -1361,19 +1361,19 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-square-bharuch/Interior_Atrium_Mall_View.jpg",
+              "src": "golden-square-bharuch/Interior_Atrium_Mall_View.webp",
               "caption": "Grand Interior Atrium"
             },
             {
-              "src": "golden-square-bharuch/Cinemas entry-01.jpg",
+              "src": "golden-square-bharuch/Cinemas entry-01.webp",
               "caption": "Luxury Cinema Entry"
             },
             {
-              "src": "golden-square-bharuch/Food court-04.jpg",
+              "src": "golden-square-bharuch/Food court-04.webp",
               "caption": "Premium Food Court Area"
             },
             {
-              "src": "golden-square-bharuch/Exterior_Walkway_Ivy_Lights.jpg",
+              "src": "golden-square-bharuch/Exterior_Walkway_Ivy_Lights.webp",
               "caption": "Landscaped Walkways"
             }
           ]
@@ -1618,13 +1618,13 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-nirvana/Building_Low_Angle_Street_View.jpg"
+          "src": "golden-nirvana/Building_Low_Angle_Street_View.webp"
         },
         {
-          "src": "golden-nirvana/Exterior_Frontage_Aerial.jpg"
+          "src": "golden-nirvana/Exterior_Frontage_Aerial.webp"
         },
         {
-          "src": "golden-nirvana/Community_Park_Aerial_Birdview.jpg"
+          "src": "golden-nirvana/Community_Park_Aerial_Birdview.webp"
         },
         {
           "src": "golden-nirvana/Bungalow_Main_Front_Elevation_Perspective.webp"
@@ -1642,7 +1642,7 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-nirvana/Building_Low_Angle_Street_View.jpg",
+              "src": "golden-nirvana/Building_Low_Angle_Street_View.webp",
               "caption": "Main Entrance"
             },
             {
@@ -1684,15 +1684,15 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-nirvana/Exterior_Frontage_Aerial.jpg",
+              "src": "golden-nirvana/Exterior_Frontage_Aerial.webp",
               "caption": "2 BHK towers, bungalows & shops"
             },
             {
-              "src": "golden-nirvana/Community_Park_Aerial_Birdview.jpg",
+              "src": "golden-nirvana/Community_Park_Aerial_Birdview.webp",
               "caption": "Open parks & community gardens"
             },
             {
-              "src": "golden-nirvana/Landscape_Garden_Zen_Seating_Area.jpg",
+              "src": "golden-nirvana/Landscape_Garden_Zen_Seating_Area.webp",
               "caption": "Dedicated leisure & recreational zones"
             },
             {
@@ -2085,16 +2085,16 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-villa/Main_Entrance_Gate_Day_Perspective.jpg"
+          "src": "golden-villa/Main_Entrance_Gate_Day_Perspective.webp"
         },
         {
-          "src": "golden-villa/Bungalow_Main_Front_Elevation_Day.jpg"
+          "src": "golden-villa/Bungalow_Main_Front_Elevation_Day.webp"
         },
         {
-          "src": "golden-villa/Community_Park_Aerial_Birdview.jpg"
+          "src": "golden-villa/Community_Park_Aerial_Birdview.webp"
         },
         {
-          "src": "golden-villa/Residential_Layout_Birdview_Aerial.jpg"
+          "src": "golden-villa/Residential_Layout_Birdview_Aerial.webp"
         }
       ],
       "detail": {
@@ -2109,11 +2109,11 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-villa/Main_Entrance_Gate_Day_Perspective.jpg",
+              "src": "golden-villa/Main_Entrance_Gate_Day_Perspective.webp",
               "caption": "Main Entrance"
             },
             {
-              "src": "golden-villa/Bungalow_Main_Front_Elevation_Day.jpg",
+              "src": "golden-villa/Bungalow_Main_Front_Elevation_Day.webp",
               "caption": "Front Elevation"
             }
           ]
@@ -2151,19 +2151,19 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-villa/Community_Park_Aerial_Birdview.jpg",
+              "src": "golden-villa/Community_Park_Aerial_Birdview.webp",
               "caption": "Landscaped community parks & walkways"
             },
             {
-              "src": "golden-villa/Landscape_Zen_Garden_Buddha_Statue.jpg",
+              "src": "golden-villa/Landscape_Zen_Garden_Buddha_Statue.webp",
               "caption": "Zen garden & premium landscaping"
             },
             {
-              "src": "golden-villa/Landscape_Garden_Seating_Ground_View.jpg",
+              "src": "golden-villa/Landscape_Garden_Seating_Ground_View.webp",
               "caption": "Resident seating & relaxation areas"
             },
             {
-              "src": "golden-villa/Residential_Layout_Birdview_Aerial.jpg",
+              "src": "golden-villa/Residential_Layout_Birdview_Aerial.webp",
               "caption": "4 BHK bungalows with an on-site shopping arcade"
             }
           ]
@@ -2507,16 +2507,16 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-homes/Bungalow_Full_Front_View_Day.jpg"
+          "src": "golden-homes/Bungalow_Full_Front_View_Day.webp"
         },
         {
-          "src": "golden-homes/Bungalow_Entrance_Parking_View.jpg"
+          "src": "golden-homes/Bungalow_Entrance_Parking_View.webp"
         },
         {
-          "src": "golden-homes/Bungalow_Side_Elevation_Landscaping.jpg"
+          "src": "golden-homes/Bungalow_Side_Elevation_Landscaping.webp"
         },
         {
-          "src": "golden-homes/Residential_Layout_Birdview_Aerial.jpg"
+          "src": "golden-homes/Residential_Layout_Birdview_Aerial.webp"
         }
       ],
       "detail": {
@@ -2531,11 +2531,11 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-homes/Bungalow_Entrance_Parking_View.jpg",
+              "src": "golden-homes/Bungalow_Entrance_Parking_View.webp",
               "caption": "Main Entrance"
             },
             {
-              "src": "golden-homes/Bungalow_Full_Front_View_Day.jpg",
+              "src": "golden-homes/Bungalow_Full_Front_View_Day.webp",
               "caption": "Front Elevation"
             }
           ]
@@ -2573,19 +2573,19 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-homes/Bungalow_Side_Elevation_Landscaping.jpg",
+              "src": "golden-homes/Bungalow_Side_Elevation_Landscaping.webp",
               "caption": "Private garden & dedicated parking per home"
             },
             {
-              "src": "golden-homes/Community_Park_Area_Amenities.jpg",
+              "src": "golden-homes/Community_Park_Area_Amenities.webp",
               "caption": "Community park & open amenities"
             },
             {
-              "src": "golden-homes/Residential_Layout_Birdview_Aerial.jpg",
+              "src": "golden-homes/Residential_Layout_Birdview_Aerial.webp",
               "caption": "G+1 independent plotted bungalows"
             },
             {
-              "src": "golden-homes/Bungalow_Full_Front_View_Day.jpg",
+              "src": "golden-homes/Bungalow_Full_Front_View_Day.webp",
               "caption": "3 BHK with Puja room & garden"
             }
           ]
@@ -2926,16 +2926,13 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.jpg"
+          "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.webp"
         },
         {
-          "src": "golden-palm-villa/Bungalow_Main_Front_Elevation_Night.jpg"
+          "src": "golden-palm-villa/Community_Park_And_Landscaping_Aerial.webp"
         },
         {
-          "src": "golden-palm-villa/Community_Park_And_Landscaping_Aerial.jpg"
-        },
-        {
-          "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.jpg"
+          "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.webp"
         }
       ],
       "detail": {
@@ -2950,12 +2947,8 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.jpg",
+              "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.webp",
               "caption": "Main Entrance Approach"
-            },
-            {
-              "src": "golden-palm-villa/Bungalow_Main_Front_Elevation_Night.jpg",
-              "caption": "Front Elevation"
             }
           ]
         },
@@ -2991,19 +2984,19 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-palm-villa/Community_Park_And_Landscaping_Aerial.jpg",
+              "src": "golden-palm-villa/Community_Park_And_Landscaping_Aerial.webp",
               "caption": "74 private bungalow homes"
             },
             {
-              "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.jpg",
+              "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.webp",
               "caption": "Garden gazebo & water pond"
             },
             {
-              "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.jpg",
+              "src": "golden-palm-villa/Bungalow_Street_Level_Day_View.webp",
               "caption": "3 BHK with individual plot & garden"
             },
             {
-              "src": "golden-palm-villa/Bungalow_Street_Landscape_Night_Perspective.jpg",
+              "src": "golden-palm-villa/Bungalow_Street_Landscape_Night_Perspective.webp",
               "caption": "Club house & premium amenities"
             }
           ]
@@ -3012,7 +3005,7 @@
           "headline": "Community Amenities",
           "body": "Curated grounds, a clubhouse, and quiet streets to call your own.",
           "feature": {
-            "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.jpg"
+            "src": "golden-palm-villa/Landscape_Garden_Gazebo_and_Waterpond.webp"
           },
           "items": [
             {

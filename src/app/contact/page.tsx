@@ -3,6 +3,13 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
+import {
+  CONTACT_EMAIL,
+  INSTAGRAM_URL,
+  OFFICE_ADDRESS,
+  PHONE_DISPLAY,
+  PHONE_TEL,
+} from "@/lib/site";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
@@ -46,8 +53,8 @@ function InfoGrid() {
       <InfoCard
         className="border-x-0 md:border-l-0 md:border-r"
         label="Email"
-        value="contact@goldengroupblr.com"
-        action={{ kind: "copy", text: "contact@goldengroupblr.com", verb: "Email" }}
+        value={CONTACT_EMAIL}
+        action={{ kind: "copy", text: CONTACT_EMAIL, verb: "Email" }}
       />
       <InfoCard
         className="-mt-px border-x-0 md:mt-0 md:-ml-px md:border-l md:border-r-0"
@@ -55,30 +62,25 @@ function InfoGrid() {
         value="@goldengroupofficial"
         action={{
           kind: "open",
-          href: "https://www.instagram.com/goldengroupofficial",
+          href: INSTAGRAM_URL,
           verb: "Instagram",
         }}
       />
       <InfoCard
         className="-mt-px border-x-0 md:border-r"
         label="Location"
-        value={
-          <span className="block">
-            3rd Floor, Part-B, Plot No-5, Kohinoor Industrial Estate, Varachha
-            Road, Surat, Gujarat - 395006
-          </span>
-        }
+        value={<span className="block">{OFFICE_ADDRESS}</span>}
         action={{
           kind: "copy",
-          text: "3rd Floor, Part-B, Plot No-5, Kohinoor Industrial Estate, Varachha Road, Surat, Gujarat - 395006",
+          text: OFFICE_ADDRESS,
           verb: "Address",
         }}
       />
       <InfoCard
         className="-mt-px border-x-0 md:-ml-px md:border-l md:border-r-0"
         label="Phone"
-        value="+91 98765 43210"
-        action={{ kind: "call", href: "tel:+919876543210", verb: "Phone" }}
+        value={PHONE_DISPLAY}
+        action={{ kind: "call", href: `tel:${PHONE_TEL}`, verb: "Phone" }}
       />
     </div>
   );
