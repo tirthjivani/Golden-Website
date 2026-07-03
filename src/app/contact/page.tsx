@@ -42,15 +42,15 @@ function ContactSection() {
 
 function InfoGrid() {
   return (
-    <div className="grid grid-cols-2 -mt-px h-full">
+    <div className="grid grid-cols-1 -mt-px h-full md:grid-cols-2">
       <InfoCard
-        className="border-l-0"
+        className="border-x-0 md:border-l-0 md:border-r"
         label="Email"
-        value="info@goldengroup.in"
-        action={{ kind: "copy", text: "info@goldengroup.in", verb: "Email" }}
+        value="contact@goldengroupblr.com"
+        action={{ kind: "copy", text: "contact@goldengroupblr.com", verb: "Email" }}
       />
       <InfoCard
-        className="-ml-px md:border-r-0"
+        className="-mt-px border-x-0 md:mt-0 md:-ml-px md:border-l md:border-r-0"
         label="Instagram"
         value="@goldengroupofficial"
         action={{
@@ -60,25 +60,25 @@ function InfoGrid() {
         }}
       />
       <InfoCard
-        className="-mt-px border-l-0"
+        className="-mt-px border-x-0 md:border-r"
         label="Location"
         value={
           <span className="block">
             3rd Floor, Part-B, Plot No-5, Kohinoor Industrial Estate, Varachha
-            Road, Surat, Gujarat – 395006
+            Road, Surat, Gujarat - 395006
           </span>
         }
         action={{
           kind: "copy",
-          text: "3rd Floor, Part-B, Plot No-5, Kohinoor Industrial Estate, Varachha Road, Surat, Gujarat – 395006",
+          text: "3rd Floor, Part-B, Plot No-5, Kohinoor Industrial Estate, Varachha Road, Surat, Gujarat - 395006",
           verb: "Address",
         }}
       />
       <InfoCard
-        className="-ml-px -mt-px md:border-r-0"
+        className="-mt-px border-x-0 md:-ml-px md:border-l md:border-r-0"
         label="Phone"
         value="+91 98765 43210"
-        action={{ kind: "copy", text: "+919876543210", verb: "Phone" }}
+        action={{ kind: "call", href: "tel:+919876543210", verb: "Phone" }}
       />
     </div>
   );
@@ -86,7 +86,8 @@ function InfoGrid() {
 
 type CardAction =
   | { kind: "copy"; text: string; verb: string }
-  | { kind: "open"; href: string; verb: string };
+  | { kind: "open"; href: string; verb: string }
+  | { kind: "call"; href: string; verb: string };
 
 function InfoCard({
   label,
@@ -106,11 +107,8 @@ function InfoCard({
     if (timerRef.current) clearTimeout(timerRef.current);
   }, []);
 
-  const onClick = async () => {
-    if (action.kind === "open") {
-      window.open(action.href, "_blank", "noopener,noreferrer");
-      return;
-    }
+  const onCopy = async () => {
+    if (action.kind !== "copy") return;
     try {
       await navigator.clipboard.writeText(action.text);
       setCopied(true);
@@ -124,18 +122,18 @@ function InfoCard({
   const hint =
     action.kind === "open"
       ? `Open ${action.verb}`
-      : copied
-        ? `Copied ${action.verb}`
-        : `Copy ${action.verb}`;
+      : action.kind === "call"
+        ? `Call ${action.verb}`
+        : copied
+          ? `Copied ${action.verb}`
+          : `Copy ${action.verb}`;
 
   const showTick = action.kind === "copy" && copied;
 
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`card-hover group/info relative flex min-h-[180px] w-full flex-col justify-between overflow-hidden border border-[#464646] bg-black p-[30px] text-left md:min-h-[198px] ${className}`}
-    >
+  const cardClass = `card-hover group/info relative flex w-full flex-col justify-between overflow-hidden border border-[#464646] bg-black p-[30px] text-left md:min-h-[198px] ${className}`;
+
+  const inner = (
+    <>
       <span
         aria-hidden
         className="card-fill pointer-events-none absolute inset-0 z-0 bg-[#C19B4D]"
@@ -157,6 +155,33 @@ function InfoCard({
           </span>
         </span>
       </span>
+    </>
+  );
+
+  // Real anchors so the OS handles them natively: tel: starts a call, and the
+  // Instagram URL is a universal link that opens the app when installed.
+  if (action.kind === "open") {
+    return (
+      <a
+        href={action.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cardClass}
+      >
+        {inner}
+      </a>
+    );
+  }
+  if (action.kind === "call") {
+    return (
+      <a href={action.href} className={cardClass}>
+        {inner}
+      </a>
+    );
+  }
+  return (
+    <button type="button" onClick={onCopy} className={cardClass}>
+      {inner}
     </button>
   );
 }
@@ -201,6 +226,21 @@ function ContactForm() {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    // Fire-and-forget: the success state shows immediately, keepalive lets the
+    // request finish even if the user navigates away.
+    void fetch("/api/enquiry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify({
+        source: "contact",
+        name: fd.get("name"),
+        phone: fd.get("phone"),
+        email: fd.get("email"),
+        message: fd.get("message"),
+      }),
+    }).catch(() => {});
     if (formRef.current) setLockedHeight(formRef.current.offsetHeight);
     setSubmitted(true);
     window.setTimeout(() => setSubmitted(false), 2500);
@@ -291,7 +331,7 @@ function PillButton({
     <button
       type="submit"
       disabled={disabled}
-      className={`pill-hover relative block h-[50px] w-[245px] shrink-0 overflow-hidden transition-all duration-300 ${
+      className={`pill-hover relative block h-[50px] w-full shrink-0 overflow-hidden transition-all duration-300 sm:w-[245px] ${
         disabled
           ? "bg-neutral-955 border border-neutral-800 text-neutral-500 cursor-not-allowed"
           : "bg-white text-black"
@@ -442,6 +482,17 @@ function CareersForm() {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Multipart so the resume travels as an attachment (too big for a JSON
+    // keepalive body).
+    const fd = new FormData();
+    fd.set("name", name);
+    fd.set("phone", phone);
+    fd.set("email", email);
+    fd.set("role", role);
+    fd.set("experience", experience);
+    fd.set("message", message);
+    if (resume) fd.set("resume", resume);
+    void fetch("/api/enquiry", { method: "POST", body: fd }).catch(() => {});
     if (formRef.current) setLockedHeight(formRef.current.offsetHeight);
     setSubmitted(true);
     window.setTimeout(() => {
@@ -605,7 +656,7 @@ function ResumeUploadButton({
   };
 
   return (
-    <div className="relative shrink-0">
+    <div className="relative w-full shrink-0 sm:w-auto">
       <input
         ref={fileInputRef}
         type="file"
@@ -616,7 +667,7 @@ function ResumeUploadButton({
       <button
         type="button"
         onClick={onClick}
-        className={`card-hover group/upload relative flex h-[50px] w-[245px] shrink-0 items-end justify-between overflow-hidden border px-[12px] pb-[8px] pt-[4px] text-sm font-medium transition-colors duration-300 ${
+        className={`card-hover group/upload relative flex h-[50px] w-full shrink-0 items-end justify-between overflow-hidden border px-[12px] pb-[8px] pt-[4px] text-sm font-medium transition-colors duration-300 sm:w-[245px] ${
           file
             ? "border-transparent bg-[#2a2a2a] text-white hover:bg-[#3a3a3a]"
             : "border-[#464646] bg-black text-white"

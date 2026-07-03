@@ -13,9 +13,13 @@ import { ChatText, Phone, X } from "@phosphor-icons/react";
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 
 // Floating "Enquire Now" action + a Contact popup, shown on every project detail
-// page. The form is client-only (mirrors the /contact page) — submit shows a
-// short success state, no backend call.
-export function EnquiryModal({ projectName }: { projectName?: string }) {
+// page. Submit posts to /api/enquiry, which emails the sales inbox with the
+// project's details in the subject and body.
+export function EnquiryModal({
+  project,
+}: {
+  project?: { name: string; slug?: string; location?: string; rera?: string };
+}) {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [agree, setAgree] = useState(false);
@@ -94,6 +98,23 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!formValid) return;
+    const fd = new FormData(e.currentTarget);
+    void fetch("/api/enquiry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify({
+        source: "project",
+        name,
+        email,
+        phone: `+91 ${phone}`,
+        message: fd.get("query"),
+        project: {
+          ...project,
+          url: window.location.href,
+        },
+      }),
+    }).catch(() => {});
     setSubmitted(true);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(close, 2500);
@@ -235,7 +256,7 @@ export function EnquiryModal({ projectName }: { projectName?: string }) {
                     rows={3}
                     placeholder="Query"
                     defaultValue={
-                      projectName ? `Interested in ${projectName}. ` : undefined
+                      project ? `Interested in ${project.name}. ` : undefined
                     }
                     className="resize-none bg-black/[0.04] px-3 py-4 text-[15px] text-[#1c1c1c] outline-none transition-colors placeholder:text-black/45 focus:bg-black/[0.07]"
                   />

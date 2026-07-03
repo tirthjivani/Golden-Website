@@ -57,8 +57,8 @@ export function ContactBlock() {
       <p className="font-medium text-white">Golden Lifespace Developers LLP</p>
       <ul className="mt-3 flex flex-col gap-1 text-white/80">
         <li>Official Website: ____________________</li>
-        <li>Phone: [+91 - insert number]</li>
-        <li>Email: [insert email]</li>
+        <li>Phone: +91 98765 43210</li>
+        <li>Email: contact@goldengroupblr.com</li>
         <li>Registered Office: [insert full registered office address, Surat, Gujarat]</li>
       </ul>
     </div>

@@ -294,8 +294,8 @@ export default function PrivacyPolicyPage() {
         may request to opt out by contacting us at:
       </P>
       <UL>
-        <LI>Email: [insert email]</LI>
-        <LI>Phone: [+91 - insert number]</LI>
+        <LI>Email: contact@goldengroupblr.com</LI>
+        <LI>Phone: +91 98765 43210</LI>
       </UL>
       <P>
         Please note that even after opting out of promotional communication,

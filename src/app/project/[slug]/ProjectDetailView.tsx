@@ -21,6 +21,7 @@ import {
   FirstAid,
   GraduationCap,
   type Icon,
+  MapTrifold,
   NavigationArrow,
   PersonSimpleWalk,
   SecurityCamera,
@@ -82,7 +83,14 @@ export function ProjectDetailView({
         return node ? <Fragment key={s.key}>{node}</Fragment> : null;
       })}
       <SiteFooter />
-      <EnquiryModal projectName={project.name} />
+      <EnquiryModal
+        project={{
+          name: project.name,
+          slug: project.slug,
+          location: project.location,
+          rera: project.rera,
+        }}
+      />
     </main>
   );
 }
@@ -118,7 +126,7 @@ function Hero({
       ref={sectionRef}
       className={`relative w-full ${
         !heroSrc
-          ? "min-h-[80svh]"
+          ? "min-h-[60svh] md:min-h-[40svh]"
           : heroAspect
           ? "min-h-[100svh]"
           : "h-[200vh] min-h-[1280px]"
@@ -180,9 +188,9 @@ function Hero({
             />
           </Link>
         </Reveal>
-        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[30px] pl-[30px]">
+        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[90px] pl-[30px]">
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 bottom-[-40px]"
+            className="pointer-events-none absolute inset-x-0 top-0 bottom-0"
             style={{
               background: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.1) 85%, rgba(0,0,0,0) 100%)"
             }}
@@ -326,7 +334,7 @@ function ProjectFacts({ project }: { project: Project }) {
                 {f.label}
               </dt>
               {f.sub && (
-                <span className="text-[13px] tracking-normal text-white/55">
+                <span className="hidden text-[13px] tracking-normal text-white/55 md:block">
                   {f.sub}
                 </span>
               )}
@@ -337,6 +345,11 @@ function ProjectFacts({ project }: { project: Project }) {
               <dd className="text-[20px] font-medium leading-[1.2] tracking-tight text-white md:text-[24px]">
                 {f.value}
               </dd>
+            )}
+            {f.sub && (
+              <span className="text-[13px] tracking-normal text-white/55 md:hidden">
+                {f.sub}
+              </span>
             )}
           </Reveal>
         ))}
@@ -733,7 +746,7 @@ function MasterPlan({ project }: { project: Project }) {
           fill
           unoptimized
           sizes="100vw"
-          className="object-contain p-6 md:p-12"
+          className="object-contain md:p-12"
           containerClassName="relative aspect-[16/10] w-full"
         />
       </div>
@@ -1072,6 +1085,21 @@ function LocationSection({ project }: { project: Project }) {
           selectedName={selected?.name ?? null}
         />
         <div className="golden-map-tabs absolute left-[19px] top-[22px] z-10 sm:left-[30px] sm:top-[30px]">
+          <button
+            type="button"
+            onClick={() => {
+              setActive(null);
+              setSelected(null);
+            }}
+            className="golden-map-tab"
+            data-active={active === null}
+            aria-pressed={active === null}
+          >
+            <span className="golden-map-tab__icon">
+              <MapTrifold size={24} weight="regular" color="currentColor" />
+            </span>
+            All Landmarks
+          </button>
           {availableCategories.map((key) => {
             const Icon = LANDMARK_ICONS[key];
             const label = LANDMARK_CATEGORIES.find((c) => c.key === key)!.label;

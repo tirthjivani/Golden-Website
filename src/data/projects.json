@@ -319,8 +319,8 @@
             {
               "name": "Vardaan Multispeciality Hospital",
               "category": "healthcare",
-              "distanceKm": 0.8,
-              "minutes": 2
+              "distanceKm": 0.2,
+              "minutes": 1
             },
             {
               "name": "Care and Cure Hospital",
@@ -944,7 +944,7 @@
             },
             {
               "src": "golden-residency/typical_first_floor_plan.webp",
-              "caption": "2 BHK across Wings A–H"
+              "caption": "2 BHK across Wings A-H"
             },
             {
               "src": "golden-residency/basement_parking_plan.webp",
@@ -1181,8 +1181,8 @@
             {
               "name": "Vardaan Multispeciality Hospital",
               "category": "healthcare",
-              "distanceKm": 1.4,
-              "minutes": 3
+              "distanceKm": 0.6,
+              "minutes": 2
             },
             {
               "name": "Jai Jhulelal Hospital",
@@ -1493,7 +1493,7 @@
             },
             {
               "id": "office",
-              "label": "Offices (4th – 9th)",
+              "label": "Offices (4th - 9th)",
               "plans": [
                 {
                   "id": "office-plan",
@@ -1752,7 +1752,7 @@
               "plans": [
                 {
                   "id": "2bhk-typical",
-                  "label": "2 BHK (Blocks A–E)",
+                  "label": "2 BHK (Blocks A-E)",
                   "metrics": [
                     {
                       "label": "C.A.",
@@ -1903,7 +1903,7 @@
           "headline": "Master Plan",
           "body": "Township layout - towers and bungalow plots.",
           "image": {
-            "src": "golden-nirvana/ground_layout_plan_bungalow.png"
+            "src": "golden-nirvana/master_layout_plan.png"
           }
         },
         "location": {
@@ -3677,7 +3677,7 @@
             },
             {
               "id": "office",
-              "label": "Offices (2nd – 4th)",
+              "label": "Offices (2nd - 4th)",
               "plans": [
                 {
                   "id": "office-plan",

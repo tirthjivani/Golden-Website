@@ -288,7 +288,7 @@ const BHARUCH_TAVRA_LANDMARKS_LUXURIA: Landmark[] = [
   { name: "Jay Ambe International School", category: "education", distanceKm: 5.5, minutes: 11 },
   { name: "GNFC Narmada Vidyalaya", category: "education", distanceKm: 5.8, minutes: 11 },
   { name: "Delhi Public School", category: "education", distanceKm: 11.6, minutes: 22 },
-  { name: "Vardaan Multispeciality Hospital", category: "healthcare", distanceKm: 0.8, minutes: 2 },
+  { name: "Vardaan Multispeciality Hospital", category: "healthcare", distanceKm: 0.2, minutes: 1 },
   { name: "Care and Cure Hospital", category: "healthcare", distanceKm: 1.6, minutes: 3 },
   { name: "Sankalp Hospital", category: "healthcare", distanceKm: 2.4, minutes: 4 },
   { name: "Jai Jhulelal Hospital", category: "healthcare", distanceKm: 2.6, minutes: 5 },
@@ -312,7 +312,7 @@ const BHARUCH_TAVRA_LANDMARKS_RESIDENCY: Landmark[] = [
   { name: "Delhi Public School", category: "education", distanceKm: 10.6, minutes: 21 },
   { name: "Care and Cure Hospital", category: "healthcare", distanceKm: 0.55, minutes: 1 },
   { name: "Sankalp Hospital", category: "healthcare", distanceKm: 1.3, minutes: 2 },
-  { name: "Vardaan Multispeciality Hospital", category: "healthcare", distanceKm: 1.4, minutes: 3 },
+  { name: "Vardaan Multispeciality Hospital", category: "healthcare", distanceKm: 0.6, minutes: 2 },
   { name: "Jai Jhulelal Hospital", category: "healthcare", distanceKm: 1.5, minutes: 3 },
   { name: "Bharuch Multispeciality Hospital", category: "healthcare", distanceKm: 2, minutes: 5 },
   { name: "Apex Multispeciality & Trauma Centre", category: "healthcare", distanceKm: 8.5, minutes: 21 },
@@ -749,7 +749,7 @@ const goldenNirvana: Project = {
           plans: [
             {
               id: "2bhk-typical",
-              label: "2 BHK (Blocks A–E)",
+              label: "2 BHK (Blocks A-E)",
               metrics: [
                 { label: "C.A.", value: "705.31 SQ.FT." },
                 { label: "R.C.A.", value: "680.00 SQ.FT." },
@@ -1304,7 +1304,7 @@ const goldenResidency: Project = {
       items: [
         { src: "golden-residency/Residential_Complex_Birdview_Aerial.jpg", caption: "Multi-block gated complex" },
         { src: "golden-residency/project_1bhk_typical_floor_plan.webp", caption: "1 BHK & 2 BHK layouts" },
-        { src: "golden-residency/typical_first_floor_plan.webp", caption: "2 BHK across Wings A–H" },
+        { src: "golden-residency/typical_first_floor_plan.webp", caption: "2 BHK across Wings A-H" },
         { src: "golden-residency/basement_parking_plan.webp", caption: "Covered basement parking" },
       ],
     },
@@ -1471,7 +1471,7 @@ const goldenPalmPlaza: Project = {
         },
         {
           id: "office",
-          label: "Offices (2nd – 4th)",
+          label: "Offices (2nd - 4th)",
           plans: [
             {
               id: "office-plan",
@@ -1737,7 +1737,7 @@ const goldenSquareBharuch: Project = {
         },
         {
           id: "office",
-          label: "Offices (4th – 9th)",
+          label: "Offices (4th - 9th)",
           plans: [
             {
               id: "office-plan",

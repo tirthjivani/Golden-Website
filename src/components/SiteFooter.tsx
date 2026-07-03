@@ -18,7 +18,7 @@ const navLinks = [
 
 const socials = [
   { href: "https://www.instagram.com/goldengroupofficial", label: "Instagram" },
-  { href: "mailto:info@goldengroup.in", label: "Email" },
+  { href: "mailto:contact@goldengroupblr.com", label: "Email" },
 ];
 
 export function SiteFooter() {
@@ -87,16 +87,16 @@ export function SiteFooter() {
             />
             <div className="flex w-full flex-col gap-6 md:w-1/2 md:max-w-none">
               <div className="flex flex-col gap-2 pb-6 md:pb-0">
-                <p className="text-base leading-[1.5] text-white">
+                <p className="hidden text-base leading-[1.5] text-white md:block">
                   3rd Floor, Part-B, Plot No-5, Block No-4, Kohinoor Industrial
                   Estate, Varachha Road, Varachha, Surat, Gujarat - 395006
                 </p>
                 <div className="flex flex-col text-base leading-[1.5] text-white/55">
                   <a
-                    href="mailto:info@goldengroup.in"
+                    href="mailto:contact@goldengroupblr.com"
                     className="hover:text-white"
                   >
-                    info@goldengroup.in
+                    contact@goldengroupblr.com
                   </a>
                   <a href="tel:+919876543210" className="hover:text-white">
                     +91 98765 43210
@@ -106,10 +106,9 @@ export function SiteFooter() {
             </div>
           </div>
           <div className="flex w-full flex-col gap-6 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
-            <span>
-              © 2026 Golden Group.
-              <br />
-              All rights reserved.
+            <span className="flex w-full items-center justify-between sm:block sm:w-auto">
+              <span>© 2026 Golden Group.</span>
+              <span className="sm:block">All rights reserved.</span>
             </span>
             <FooterPill href="/contact" label="Contact Us" />
           </div>
@@ -131,7 +130,7 @@ export function SiteFooter() {
             href="https://thesummerdesign.com"
             target="_blank"
             rel="noreferrer noopener"
-            className="self-end hover:text-white lg:self-auto"
+            className="hidden hover:text-white lg:block"
           >
             By The Summer Design
           </a>

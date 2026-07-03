@@ -36,26 +36,31 @@ export function WordReveal({
   stagger = 70,
   className = "",
   as: Tag = "span",
+  mobileInline = false,
 }: {
   text: string;
   startDelay?: number;
   stagger?: number;
   className?: string;
   as?: "span" | "h1" | "h2" | "h3";
+  /** Below md, ignore \n breaks and let the lines wrap as one flow. */
+  mobileInline?: boolean;
 }) {
   const lines = text.split("\n").map((line) => line.split(/\s+/).filter(Boolean));
   let idx = 0;
   return (
     <Tag className={className}>
       {lines.map((words, li) => (
-        <span key={`line-${li}`} className="block">
+        <span key={`line-${li}`} className={mobileInline ? "inline md:block" : "block"}>
           {words.map((word, i) => {
             const current = idx++;
             const isLast = i === words.length - 1;
             return (
               <span
                 key={`${word}-${current}`}
-                className={`hero-rise inline-block ${isLast ? "" : "mr-[0.25em]"}`}
+                className={`hero-rise inline-block ${
+                  isLast ? (mobileInline ? "mr-[0.25em] md:mr-0" : "") : "mr-[0.25em]"
+                }`}
                 style={
                   {
                     "--hero-rise-delay": `${startDelay + current * stagger}ms`,

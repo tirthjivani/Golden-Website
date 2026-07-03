@@ -98,7 +98,7 @@ function Hero() {
   }, []);
 
   return (
-    <section className="relative h-[150svh] min-h-[960px] w-full">
+    <section className="relative h-[100svh] w-full md:h-[150svh] md:min-h-[960px]">
       {/* Image clip in its own box so the sticky content below
           isn't trapped by an overflow:hidden ancestor. */}
       <div className="absolute inset-0 overflow-hidden">
@@ -126,6 +126,7 @@ function Hero() {
               as="h2"
               text={"Where Everyday Life\nFeels Extraordinary"}
               startDelay={headlineStart}
+              mobileInline
               className="max-w-[22ch] text-[44px] font-normal leading-[1.02] tracking-tight lg:text-[88px]"
             />
             <HeroRise delay={ctaDelay}>
@@ -525,11 +526,17 @@ function ProjectCard({
         fill
         priority={priority}
         sizes="(min-width: 1024px) 380px, (min-width: 640px) 300px, 80vw"
-        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
+        className={`object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105 ${
+          active ? "max-md:scale-105" : ""
+        }`}
         containerClassName="relative aspect-[380/370] w-full"
       />
       <div className="mt-2 flex w-full flex-col gap-3 pr-4">
-        <h4 className="text-[24px] font-normal leading-[1.4] text-white transition-colors duration-300 group-hover:text-[#C19B4D]">
+        <h4
+          className={`text-[24px] font-normal leading-[1.4] text-white transition-colors duration-300 group-hover:text-[#C19B4D] ${
+            active ? "max-md:text-[#C19B4D]" : ""
+          }`}
+        >
           {project.name}
         </h4>
         <ul className="flex flex-col gap-2 text-[16px] text-[#737373]">
