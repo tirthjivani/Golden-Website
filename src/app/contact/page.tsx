@@ -208,6 +208,8 @@ function TickIcon() {
 
 function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(false);
   const [lockedHeight, setLockedHeight] = useState<number | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -226,26 +228,35 @@ function ContactForm() {
     };
   }, [submitted]);
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (sending) return;
     const fd = new FormData(e.currentTarget);
-    // Fire-and-forget: the success state shows immediately, keepalive lets the
-    // request finish even if the user navigates away.
-    void fetch("/api/enquiry", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      keepalive: true,
-      body: JSON.stringify({
-        source: "contact",
-        name: fd.get("name"),
-        phone: fd.get("phone"),
-        email: fd.get("email"),
-        message: fd.get("message"),
-      }),
-    }).catch(() => {});
     if (formRef.current) setLockedHeight(formRef.current.offsetHeight);
-    setSubmitted(true);
-    window.setTimeout(() => setSubmitted(false), 2500);
+    setSending(true);
+    setError(false);
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({
+          source: "contact",
+          name: fd.get("name"),
+          phone: fd.get("phone"),
+          email: fd.get("email"),
+          message: fd.get("message"),
+          website: fd.get("website"),
+        }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setSubmitted(true);
+      window.setTimeout(() => setSubmitted(false), 2500);
+    } catch {
+      setError(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -280,13 +291,35 @@ function ContactForm() {
               placeholder="Your message here"
               required
             />
+            <HoneypotField />
             <div className="mt-2">
-              <PillButton label="Send" />
+              <PillButton label={sending ? "Sending..." : "Send"} disabled={sending} />
             </div>
+            {error ? (
+              <p className="text-sm text-red-400" role="alert">
+                Something went wrong and your message was not sent. Please try
+                again, or reach us by phone or email.
+              </p>
+            ) : null}
           </form>
         )}
       </div>
     </div>
+  );
+}
+
+// Off-screen text field real users never see; bots auto-fill it and the API
+// silently discards those submissions.
+function HoneypotField() {
+  return (
+    <input
+      type="text"
+      name="website"
+      tabIndex={-1}
+      autoComplete="off"
+      aria-hidden="true"
+      className="pointer-events-none absolute -left-[9999px] top-auto h-px w-px opacity-0"
+    />
   );
 }
 
@@ -453,8 +486,12 @@ function CareersSection() {
   );
 }
 
+const MAX_RESUME_BYTES = 4 * 1024 * 1024;
+
 function CareersForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [lockedHeight, setLockedHeight] = useState<number | null>(null);
   const [resume, setResume] = useState<File | null>(null);
 
@@ -482,8 +519,13 @@ function CareersForm() {
     };
   }, [submitted]);
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (sending) return;
+    if (resume && resume.size > MAX_RESUME_BYTES) {
+      setError("Resume is too large — please keep it under 4MB.");
+      return;
+    }
     // Multipart so the resume travels as an attachment (too big for a JSON
     // keepalive body).
     const fd = new FormData();
@@ -493,20 +535,32 @@ function CareersForm() {
     fd.set("role", role);
     fd.set("experience", experience);
     fd.set("message", message);
+    fd.set("website", String(new FormData(e.currentTarget).get("website") ?? ""));
     if (resume) fd.set("resume", resume);
-    void fetch("/api/enquiry", { method: "POST", body: fd }).catch(() => {});
     if (formRef.current) setLockedHeight(formRef.current.offsetHeight);
-    setSubmitted(true);
-    window.setTimeout(() => {
-      setSubmitted(false);
-      setResume(null);
-      setName("");
-      setPhone("");
-      setEmail("");
-      setRole("");
-      setExperience("");
-      setMessage("");
-    }, 2500);
+    setSending(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/enquiry", { method: "POST", body: fd });
+      if (!res.ok) throw new Error(String(res.status));
+      setSubmitted(true);
+      window.setTimeout(() => {
+        setSubmitted(false);
+        setResume(null);
+        setName("");
+        setPhone("");
+        setEmail("");
+        setRole("");
+        setExperience("");
+        setMessage("");
+      }, 2500);
+    } catch {
+      setError(
+        "Something went wrong and your application was not sent. Please try again.",
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   const isFormValid =
@@ -583,10 +637,19 @@ function CareersForm() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
+            <HoneypotField />
             <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-4 justify-start">
               <ResumeUploadButton file={resume} onChange={setResume} />
-              <PillButton label="Send Application" disabled={!isFormValid} />
+              <PillButton
+                label={sending ? "Sending..." : "Send Application"}
+                disabled={!isFormValid || sending}
+              />
             </div>
+            {error ? (
+              <p className="text-sm text-red-400" role="alert">
+                {error}
+              </p>
+            ) : null}
           </form>
         )}
       </div>

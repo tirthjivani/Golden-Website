@@ -31,7 +31,37 @@ type EnquiryPayload = {
 const clean = (v: unknown, max = 500) =>
   typeof v === "string" ? v.trim().slice(0, max) : "";
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// In-memory sliding-window rate limit. Instances are reused under Fluid
+// Compute so this holds across requests; a cold start resets it, which is
+// acceptable for basic abuse protection.
+const WINDOW_MS = 60_000;
+const MAX_PER_WINDOW = 5;
+const hits = new Map<string, number[]>();
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  recent.push(now);
+  if (hits.size > 10_000) hits.clear();
+  hits.set(ip, recent);
+  return recent.length > MAX_PER_WINDOW;
+}
+
+function clientIp(request: Request): string {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+  );
+}
+
 export async function POST(request: Request) {
+  if (rateLimited(clientIp(request))) {
+    return Response.json(
+      { ok: false, error: "Too many requests" },
+      { status: 429 },
+    );
+  }
+
   // Careers applications arrive as multipart (resume attachment); contact and
   // project enquiries as JSON.
   const contentType = request.headers.get("content-type") ?? "";
@@ -39,20 +69,25 @@ export async function POST(request: Request) {
     return handleCareers(request);
   }
 
-  let body: EnquiryPayload;
+  let body: EnquiryPayload & { website?: string };
   try {
     body = await request.json();
   } catch {
     return Response.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
 
+  // Honeypot: real users never see this field; bots fill it. Pretend success.
+  if (clean(body.website)) {
+    return Response.json({ ok: true, delivered: false });
+  }
+
   const name = clean(body.name, 120);
   const email = clean(body.email, 200);
   const phone = clean(body.phone, 30);
   const message = clean(body.message, 4000);
-  if (!name || !email) {
+  if (!name || !EMAIL_RE.test(email)) {
     return Response.json(
-      { ok: false, error: "Name and email are required" },
+      { ok: false, error: "A name and a valid email are required" },
       { status: 400 },
     );
   }
@@ -107,15 +142,20 @@ async function handleCareers(request: Request) {
     );
   }
 
+  // Honeypot (see JSON path above).
+  if (clean(fd.get("website"))) {
+    return Response.json({ ok: true, delivered: false });
+  }
+
   const name = clean(fd.get("name"), 120);
   const email = clean(fd.get("email"), 200);
   const phone = clean(fd.get("phone"), 30);
   const role = clean(fd.get("role"), 120);
   const experience = clean(fd.get("experience"), 120);
   const message = clean(fd.get("message"), 4000);
-  if (!name || !email) {
+  if (!name || !EMAIL_RE.test(email)) {
     return Response.json(
-      { ok: false, error: "Name and email are required" },
+      { ok: false, error: "A name and a valid email are required" },
       { status: 400 },
     );
   }

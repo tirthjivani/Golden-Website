@@ -41,6 +41,9 @@ export default function Header({
           transform: visible ? "translateY(0)" : "translateY(-100%)",
           transition: `transform 450ms ${EASE}`,
         }}
+        aria-hidden={!visible}
+        // Off-screen duplicate header must not add tab stops.
+        inert={!visible || undefined}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 md:gap-6">

@@ -20,7 +20,10 @@ type Coords = [number, number];
 // (road casing, dense labels, transit, POIs) matching the site's dark theme.
 // The key is a publishable client-side key; restrict it to the site's domain
 // in the MapTiler dashboard. Free tier (100k loads/mo), commercial use allowed.
-const MAPTILER_KEY = "jTWeD4sqej7xVBLZ2f5r";
+// Production must set NEXT_PUBLIC_MAPTILER_KEY to the client's own key; the
+// fallback is the development key.
+const MAPTILER_KEY =
+  process.env.NEXT_PUBLIC_MAPTILER_KEY ?? "jTWeD4sqej7xVBLZ2f5r";
 const STYLE_URL = `https://api.maptiler.com/maps/basic-v2-dark/style.json?key=${MAPTILER_KEY}`;
 
 const CATEGORY_ICONS: Record<LandmarkCategory, typeof GraduationCap> = {

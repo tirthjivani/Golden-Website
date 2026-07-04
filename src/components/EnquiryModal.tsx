@@ -23,6 +23,8 @@ export function EnquiryModal({
 }) {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(false);
   const [agree, setAgree] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [buttonHidden, setButtonHidden] = useState(false);
@@ -83,6 +85,43 @@ export function EnquiryModal({
     };
   }, [open]);
 
+  // Focus management: move focus into the dialog on open, keep Tab cycling
+  // inside it, and restore focus to the trigger on close.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    lastFocusedRef.current = document.activeElement as HTMLElement | null;
+    const focusables = () =>
+      dialogRef.current
+        ? [
+            ...dialogRef.current.querySelectorAll<HTMLElement>(
+              "button, [href], input, textarea, select",
+            ),
+          ].filter((el) => el.tabIndex !== -1 && !el.hasAttribute("disabled"))
+        : [];
+    focusables()[0]?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const els = focusables();
+      if (els.length === 0) return;
+      const first = els[0];
+      const last = els[els.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      lastFocusedRef.current?.focus();
+    };
+  }, [open]);
+
   useEffect(() => () => {
     if (timerRef.current) clearTimeout(timerRef.current);
   }, []);
@@ -90,35 +129,47 @@ export function EnquiryModal({
   const close = () => {
     setOpen(false);
     setSubmitted(false);
+    setSending(false);
+    setError(false);
     setAgree(false);
     setName("");
     setEmail("");
     setPhone("");
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!formValid) return;
+    if (!formValid || sending) return;
     const fd = new FormData(e.currentTarget);
-    void fetch("/api/enquiry", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      keepalive: true,
-      body: JSON.stringify({
-        source: "project",
-        name,
-        email,
-        phone: `+91 ${phone}`,
-        message: fd.get("query"),
-        project: {
-          ...project,
-          url: window.location.href,
-        },
-      }),
-    }).catch(() => {});
-    setSubmitted(true);
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(close, 2500);
+    setSending(true);
+    setError(false);
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({
+          source: "project",
+          name,
+          email,
+          phone: `+91 ${phone}`,
+          message: fd.get("query"),
+          website: fd.get("website"),
+          project: {
+            ...project,
+            url: window.location.href,
+          },
+        }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setSubmitted(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(close, 2500);
+    } catch {
+      setError(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   if (!mounted) return null;
@@ -175,6 +226,7 @@ export function EnquiryModal({
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden />
           <div
+            ref={dialogRef}
             className="relative w-full max-w-[620px] bg-[#FBF7EA] p-7 text-[#1c1c1c] shadow-2xl md:p-10"
             style={{ animation: `enquiry-pop 320ms ${EASE} both` }}
           >
@@ -281,13 +333,27 @@ export function EnquiryModal({
                     </span>
                   </label>
 
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -left-[9999px] top-auto h-px w-px opacity-0"
+                  />
                   <button
                     type="submit"
-                    disabled={!formValid}
+                    disabled={!formValid || sending}
                     className="mt-5 h-[52px] w-full bg-black text-[15px] font-medium text-white transition-colors hover:bg-[#2a2a2a] disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    Send
+                    {sending ? "Sending..." : "Send"}
                   </button>
+                  {error ? (
+                    <p className="text-sm text-red-600" role="alert">
+                      Something went wrong and your enquiry was not sent.
+                      Please try again or call us directly.
+                    </p>
+                  ) : null}
                 </form>
               </>
             )}

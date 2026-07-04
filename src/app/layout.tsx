@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Golden Group | Residential & Commercial Real Estate in Gujarat",
   description:
-    "Golden Group develops trusted residential apartments, row villas, commercial plazas and industrial estates across Bharuch, Ankleshwar and Surat. Three generations of building communities in Gujarat.",
+    "Golden Group develops trusted residential apartments, row villas, commercial plazas and industrial estates across Bharuch, Ankleshwar and Surat. Two decades of building communities in Gujarat.",
 };
 
 export default function RootLayout({

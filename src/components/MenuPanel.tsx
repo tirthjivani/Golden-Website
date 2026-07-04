@@ -34,6 +34,8 @@ export default function MenuPanel({
         transition: `transform 700ms ${EASE}`,
       }}
       aria-hidden={!open}
+      // Keep the off-screen panel out of the tab order entirely.
+      inert={!open || undefined}
     >
       <Image
         src="/icon.svg"
