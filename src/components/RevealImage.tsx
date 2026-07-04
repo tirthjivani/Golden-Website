@@ -8,6 +8,7 @@ const DEFAULT_DURATION = 900;
 
 type RevealImageProps = Omit<ImageProps, "loading"> & {
   containerClassName?: string;
+  containerStyle?: React.CSSProperties;
   delay?: number;
   duration?: number;
   shown?: boolean;
@@ -15,6 +16,7 @@ type RevealImageProps = Omit<ImageProps, "loading"> & {
 
 export function RevealImage({
   containerClassName = "",
+  containerStyle,
   delay = 0,
   duration = DEFAULT_DURATION,
   shown,
@@ -49,7 +51,11 @@ export function RevealImage({
   }, [shown]);
 
   return (
-    <div ref={ref} className={`overflow-hidden ${containerClassName}`}>
+    <div
+      ref={ref}
+      className={`overflow-hidden ${containerClassName}`}
+      style={containerStyle}
+    >
       <div
         className="absolute inset-0"
         style={{

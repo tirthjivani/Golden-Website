@@ -884,7 +884,7 @@
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-residency/Building_Full_Front_Elevation_Day.webp"
+            "src": "golden-residency/Building_Central_Tower_Twilight.webp"
           },
           "eyebrow": "Urban Apartments",
           "tagline": "A well-designed home at a price that makes sense."
@@ -1454,12 +1454,7 @@
                 {
                   "id": "first-plan",
                   "label": "First Floor Retail",
-                  "metrics": [
-                    {
-                      "label": "Status",
-                      "value": "Available"
-                    }
-                  ],
+                  "metrics": [],
                   "features": [
                     "High-speed elevators and wide corridors for smooth traffic flow."
                   ],
@@ -1476,12 +1471,7 @@
                 {
                   "id": "second-plan",
                   "label": "Second Floor Retail",
-                  "metrics": [
-                    {
-                      "label": "Status",
-                      "value": "Available"
-                    }
-                  ],
+                  "metrics": [],
                   "features": [
                     "Continuous retail concourse linked by the central atrium."
                   ],

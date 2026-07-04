@@ -69,15 +69,16 @@ button {
   transform: translateY(0);
 }
 
+/* Underline shows by default; hovering retracts it to the right for feedback. */
 .cta-underline-bar {
-  transform-origin: right center;
-  transform: scaleX(0);
+  transform-origin: left center;
+  transform: scaleX(1);
   transition: transform 500ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .cta-underline:hover .cta-underline-bar {
-  transform-origin: left center;
-  transform: scaleX(1);
+  transform-origin: right center;
+  transform: scaleX(0);
 }
 
 @keyframes pill-wipe-pass {

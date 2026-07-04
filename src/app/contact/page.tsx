@@ -4,11 +4,12 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
-  CONTACT_EMAIL,
+  CAREERS_EMAIL,
   INSTAGRAM_URL,
   OFFICE_ADDRESS,
   PHONE_DISPLAY,
   PHONE_TEL,
+  SALES_EMAIL,
 } from "@/lib/site";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
@@ -19,45 +20,104 @@ export default function ContactPage() {
   return (
     <main className="relative w-full bg-black text-white">
       <ContactSection />
-      <CareersSection />
       <SiteFooter />
     </main>
   );
 }
 
+const TABS = [
+  { id: "inquire", label: "Inquire" },
+  { id: "careers", label: "Careers" },
+] as const;
+
+type TabId = (typeof TABS)[number]["id"];
+
 function ContactSection() {
+  const [tab, setTab] = useState<TabId>("inquire");
+
+  const onTabKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    const next = tab === "inquire" ? "careers" : "inquire";
+    setTab(next);
+    document.getElementById(`tab-${next}`)?.focus();
+  };
+
   return (
     <section className="relative w-full">
-      <div className="relative grid grid-cols-1 md:grid-cols-2 border-b border-[#464646]">
-        {/* LEFT - Contact title + info cards */}
-        <div className="flex flex-col">
-          <div className="flex items-start px-[30px] pb-12 pt-[120px] md:pt-[140px]">
-            <h1 className="text-[40px] font-normal leading-[1.1] tracking-tight text-white md:text-[52px]">
-              Contact
-            </h1>
-          </div>
-          <InfoGrid />
-        </div>
-        {/* RIGHT - form */}
-        <div className="flex flex-col md:border-l md:border-[#464646] pt-[120px] md:pt-[140px]">
-          <ContactForm />
+      <div className="flex items-start px-[30px] pb-12 pt-[120px] md:pt-[140px]">
+        <h1 className="text-[40px] font-normal leading-[1.1] tracking-tight text-white md:text-[52px]">
+          Contact
+        </h1>
+      </div>
+
+      <div className="mx-auto w-full max-w-[760px] px-[30px]">
+        <div
+          role="tablist"
+          aria-label="Contact forms"
+          className="flex w-full border border-[#464646]"
+        >
+          {TABS.map((t) => {
+          const active = t.id === tab;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              id={`tab-${t.id}`}
+              aria-selected={active}
+              aria-controls={`panel-${t.id}`}
+              tabIndex={active ? 0 : -1}
+              onClick={() => setTab(t.id)}
+              onKeyDown={onTabKeyDown}
+              className={`-ml-px h-[56px] flex-1 border-l border-[#464646] px-3 text-center text-[13px] uppercase tracking-[0.08em] transition-colors duration-300 first:ml-0 first:border-l-0 ${
+                active
+                  ? "z-10 bg-white text-black"
+                  : "bg-transparent text-white/80 hover:bg-white/5"
+              }`}
+            >
+              {t.label}
+            </button>
+          );
+          })}
         </div>
       </div>
+
+      <div
+        role="tabpanel"
+        id={`panel-${tab}`}
+        aria-labelledby={`tab-${tab}`}
+        className="border-b border-[#464646]"
+      >
+        <div className="mx-auto w-full max-w-[760px]">
+          {tab === "inquire" ? <ContactForm /> : <CareersForm />}
+        </div>
+      </div>
+
+      <InfoGrid tab={tab} />
     </section>
   );
 }
 
-function InfoGrid() {
+function InfoGrid({ tab }: { tab: TabId }) {
+  // The email card mirrors where the enquiry API routes the active form.
+  const email = tab === "careers" ? CAREERS_EMAIL : SALES_EMAIL;
   return (
-    <div className="grid grid-cols-1 -mt-px h-full md:grid-cols-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
       <InfoCard
-        className="border-x-0 md:border-l-0 md:border-r"
-        label="Email"
-        value={CONTACT_EMAIL}
-        action={{ kind: "copy", text: CONTACT_EMAIL, verb: "Email" }}
+        className="-mt-px border-x-0 md:-ml-px md:border-x"
+        label="Phone"
+        value={PHONE_DISPLAY}
+        action={{ kind: "call", href: `tel:${PHONE_TEL}`, verb: "Phone" }}
       />
       <InfoCard
-        className="-mt-px border-x-0 md:mt-0 md:-ml-px md:border-l md:border-r-0"
+        className="-mt-px border-x-0 md:-ml-px md:border-x"
+        label="Email"
+        value={email}
+        action={{ kind: "copy", text: email, verb: "Email" }}
+      />
+      <InfoCard
+        className="-mt-px border-x-0 md:-ml-px md:border-x"
         label="Instagram"
         value="@goldengroupofficial"
         action={{
@@ -67,7 +127,7 @@ function InfoGrid() {
         }}
       />
       <InfoCard
-        className="-mt-px border-x-0 md:border-r"
+        className="-mt-px border-x-0 md:-ml-px md:border-x"
         label="Location"
         value={<span className="block">{OFFICE_ADDRESS}</span>}
         action={{
@@ -75,12 +135,6 @@ function InfoGrid() {
           text: OFFICE_ADDRESS,
           verb: "Address",
         }}
-      />
-      <InfoCard
-        className="-mt-px border-x-0 md:-ml-px md:border-l md:border-r-0"
-        label="Phone"
-        value={PHONE_DISPLAY}
-        action={{ kind: "call", href: `tel:${PHONE_TEL}`, verb: "Phone" }}
       />
     </div>
   );
@@ -463,26 +517,6 @@ function TextareaField({
       rows={3}
       className="min-h-[120px] w-full resize-none bg-[#131313] px-3 py-4 text-[15px] text-white outline-none transition-colors duration-300 placeholder:text-[#a1a1a1] focus:bg-[#2a2114] md:min-h-[148px] md:text-base"
     />
-  );
-}
-
-function CareersSection() {
-  return (
-    <section className="relative w-full border-t border-[#464646] -mt-px">
-      <div className="relative grid grid-cols-1 md:grid-cols-2">
-        {/* LEFT - Careers title */}
-        <div className="flex items-start px-[30px] pb-12 pt-[120px] md:pt-[140px]">
-          <h2 className="text-[40px] font-normal leading-[1.1] tracking-tight text-white md:text-[52px]">
-            Careers
-          </h2>
-        </div>
-
-        {/* RIGHT - form */}
-        <div className="flex flex-col md:border-l md:border-[#464646] pt-[120px] md:pt-[140px]">
-          <CareersForm />
-        </div>
-      </div>
-    </section>
   );
 }
 

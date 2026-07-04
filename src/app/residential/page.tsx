@@ -169,17 +169,19 @@ function IntroSection() {
   );
 }
 
+// aspect = intrinsic width / height, so the mobile column can render each
+// photo at its natural height instead of a viewport-cropped slide.
 const PROJECT_IMAGES = [
   // Buildings
-  "/projects/golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp",
-  "/projects/golden-heaven/Building_Full_Elevation_Twilight.webp",
-  "/projects/golden-residency/Building_Full_Front_Elevation_Day.webp",
+  { src: "/projects/golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp", aspect: 2048 / 1664 },
+  { src: "/projects/golden-heaven/Building_Full_Elevation_Twilight.webp", aspect: 5000 / 5479 },
+  { src: "/projects/golden-residency/Building_Full_Front_Elevation_Day.webp", aspect: 2000 / 1395 },
   // Amenities
-  "/projects/golden-luxuria/Interior_Fitness_Gym_Amenities.webp",
-  "/projects/golden-heaven/Garden_Landscaping_Water_Feature.webp",
-  "/projects/golden-luxuria/Children_Play_Area_Community_Park.webp",
+  { src: "/projects/golden-luxuria/Interior_Fitness_Gym_Amenities.webp", aspect: 4500 / 2813 },
+  { src: "/projects/golden-heaven/Garden_Landscaping_Water_Feature.webp", aspect: 5000 / 2918 },
+  { src: "/projects/golden-luxuria/Children_Play_Area_Community_Park.webp", aspect: 5000 / 2813 },
   // Zen garden
-  "/projects/golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.webp",
+  { src: "/projects/golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.webp", aspect: 4985 / 2240 },
 ];
 
 function StatsGallery() {
@@ -235,11 +237,29 @@ function StatsGallery() {
         </Reveal>
       </div>
 
-      <div className="relative h-[100vh] min-h-[480px] w-full overflow-hidden">
-        {PROJECT_IMAGES.map((src, i) => (
+      {/* Mobile: stacked column, each photo at its natural height */}
+      <div className="flex flex-col gap-[14px] md:hidden">
+        {PROJECT_IMAGES.map((img, i) => (
           <RevealImage
-            key={src}
-            src={src}
+            key={img.src}
+            src={img.src}
+            alt=""
+            fill
+            priority={i === 0}
+            sizes="100vw"
+            className="object-cover"
+            containerClassName="relative w-full"
+            containerStyle={{ aspectRatio: img.aspect }}
+          />
+        ))}
+      </div>
+
+      {/* Desktop: full-height crossfade slideshow */}
+      <div className="relative hidden h-[100vh] min-h-[480px] w-full overflow-hidden md:block">
+        {PROJECT_IMAGES.map((img, i) => (
+          <RevealImage
+            key={img.src}
+            src={img.src}
             alt=""
             fill
             priority={i === 0}
@@ -261,9 +281,9 @@ function StatsGallery() {
 
         <div className="absolute inset-x-0 bottom-0 z-10 flex justify-end p-[20px] md:p-[30px]">
           <div className="flex gap-2 md:gap-3">
-            {PROJECT_IMAGES.map((src, i) => (
+            {PROJECT_IMAGES.map((img, i) => (
               <button
-                key={src}
+                key={img.src}
                 type="button"
                 onClick={() => select(i)}
                 aria-label={`Show project ${i + 1}`}
@@ -274,7 +294,7 @@ function StatsGallery() {
                 }}
               >
                 <RevealImage
-                  src={src}
+                  src={img.src}
                   alt=""
                   fill
                   sizes="96px"

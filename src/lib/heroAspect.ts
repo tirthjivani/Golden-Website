@@ -3,7 +3,7 @@
 export const HERO_ASPECT: Record<string, number> = {
   "golden-luxuria": 1,
   "golden-heaven": 0.9126,
-  "golden-residency": 1.4337,
+  "golden-residency": 1.5004,
   "golden-square-bharuch": 1.7095,
   "golden-nirvana": 1.5,
   "golden-villa": 1.4998,

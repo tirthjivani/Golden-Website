@@ -54,7 +54,7 @@ function Hero() {
           fetchPriority="high"
           quality={90}
           sizes="(min-width: 1024px) 60vw, 100vw"
-          className="object-cover"
+          className="object-cover max-md:object-[43%_50%]"
         />
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black" />
@@ -114,13 +114,15 @@ function IntroSection() {
   );
 }
 
+// aspect = intrinsic width / height, so the mobile column can render each
+// photo at its natural height instead of a viewport-cropped slide.
 const PROJECT_IMAGES = [
-  "/projects/golden-square-bharuch/Building_Front_Daylight_Full_Elevation.webp",
-  "/projects/golden-square-bharuch/Interior_Atrium_Mall_View.webp",
-  "/projects/golden-square-bharuch/Cinemas entry-01.webp",
-  "/projects/golden-square/Building_Street_Perspective_View.webp",
-  "/projects/golden-square/Interior_Mall_Retail_Floor.webp",
-  "/projects/golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp",
+  { src: "/projects/golden-square-bharuch/Building_Front_Daylight_Full_Elevation.webp", aspect: 2048 / 2055 },
+  { src: "/projects/golden-square-bharuch/Interior_Atrium_Mall_View.webp", aspect: 2048 / 1365 },
+  { src: "/projects/golden-square-bharuch/Cinemas entry-01.webp", aspect: 2048 / 1024 },
+  { src: "/projects/golden-square/Building_Street_Perspective_View.webp", aspect: 2000 / 979 },
+  { src: "/projects/golden-square/Interior_Mall_Retail_Floor.webp", aspect: 2000 / 1364 },
+  { src: "/projects/golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp", aspect: 4096 / 1180 },
 ];
 
 function StatsGallery() {
@@ -165,11 +167,29 @@ function StatsGallery() {
         </Reveal>
       </div>
 
-      <div className="relative h-[100vh] min-h-[480px] w-full overflow-hidden">
-        {PROJECT_IMAGES.map((src, i) => (
+      {/* Mobile: stacked column, each photo at its natural height */}
+      <div className="flex flex-col gap-[14px] md:hidden">
+        {PROJECT_IMAGES.map((img, i) => (
           <RevealImage
-            key={src}
-            src={src}
+            key={img.src}
+            src={img.src}
+            alt=""
+            fill
+            priority={i === 0}
+            sizes="100vw"
+            className="object-cover"
+            containerClassName="relative w-full"
+            containerStyle={{ aspectRatio: img.aspect }}
+          />
+        ))}
+      </div>
+
+      {/* Desktop: full-height crossfade slideshow */}
+      <div className="relative hidden h-[100vh] min-h-[480px] w-full overflow-hidden md:block">
+        {PROJECT_IMAGES.map((img, i) => (
+          <RevealImage
+            key={img.src}
+            src={img.src}
             alt=""
             fill
             priority={i === 0}
@@ -190,9 +210,9 @@ function StatsGallery() {
 
         <div className="absolute inset-x-0 bottom-0 z-10 flex justify-end p-[20px] md:p-[30px]">
           <div className="flex gap-2 md:gap-3">
-            {PROJECT_IMAGES.map((src, i) => (
+            {PROJECT_IMAGES.map((img, i) => (
               <button
-                key={src}
+                key={img.src}
                 type="button"
                 onClick={() => select(i)}
                 aria-label={`Show project ${i + 1}`}
@@ -203,7 +223,7 @@ function StatsGallery() {
                 }}
               >
                 <RevealImage
-                  src={src}
+                  src={img.src}
                   alt=""
                   fill
                   sizes="96px"

@@ -32,7 +32,26 @@ export default function ProjectTransitionOverlay() {
   if (!state) return null;
   const { rect, expanded, src, previewSrc, alt } = state;
 
+  // Expand to the detail hero's actual size (80svh on mobile, full screen on
+  // md+) so the overlay hands off without a jump when it clears.
+  const heroHeight =
+    typeof window !== "undefined" &&
+    window.matchMedia("(min-width: 768px)").matches
+      ? "100vh"
+      : "80svh";
+
   return (
+    <>
+      {/* Mobile: the hero only fills 80svh, so fade the page out behind the
+          zoom — otherwise the list stays visible around the expanding image. */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-[99] bg-black md:hidden"
+        style={{
+          opacity: expanded ? 1 : 0,
+          transition: `opacity ${PROJECT_TRANSITION_MS}ms ${EASE}`,
+        }}
+      />
     <div
       aria-hidden
       className="pointer-events-none fixed z-[100] overflow-hidden bg-black"
@@ -40,7 +59,7 @@ export default function ProjectTransitionOverlay() {
         left: expanded ? 0 : `${rect.left}px`,
         top: expanded ? 0 : `${rect.top}px`,
         width: expanded ? "100vw" : `${rect.width}px`,
-        height: expanded ? "100vh" : `${rect.height}px`,
+        height: expanded ? heroHeight : `${rect.height}px`,
         transition: `width ${PROJECT_TRANSITION_MS}ms ${EASE}, height ${PROJECT_TRANSITION_MS}ms ${EASE}, left ${PROJECT_TRANSITION_MS}ms ${EASE}, top ${PROJECT_TRANSITION_MS}ms ${EASE}`,
       }}
     >
@@ -89,5 +108,6 @@ export default function ProjectTransitionOverlay() {
         }}
       />
     </div>
+    </>
   );
 }

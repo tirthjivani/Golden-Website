@@ -128,8 +128,8 @@ function Hero({
         !heroSrc
           ? "min-h-[60svh] md:min-h-[40svh]"
           : heroAspect
-          ? "min-h-[100svh]"
-          : "h-[200vh] min-h-[1280px]"
+          ? "h-[80svh] md:h-auto md:min-h-[100svh]"
+          : "h-[80svh] md:h-[200vh] md:min-h-[1280px]"
       }`}
       style={heroSrc && heroAspect ? { aspectRatio: String(heroAspect) } : undefined}
     >
@@ -157,38 +157,7 @@ function Hero({
       />
 
       <div className="absolute inset-0 z-10 flex flex-col justify-end">
-        <Reveal
-          delay={titleStart - 100}
-          className="absolute left-[30px] top-[200px] sm:hidden"
-        >
-          <Link
-            href="/projects"
-            className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              className="h-3.5 w-3.5"
-              aria-hidden
-            >
-              <path
-                d="M12 7H2m0 0 4-4M2 7l4 4"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Back to Our Projects
-            <span
-              aria-hidden
-              className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
-            />
-          </Link>
-        </Reveal>
-        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[90px] pl-[30px]">
+        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[48px] pl-[30px] md:pb-[90px]">
           <div
             className="pointer-events-none absolute inset-x-0 top-0 bottom-0"
             style={{
@@ -197,8 +166,36 @@ function Hero({
           />
           <div
             ref={titleRef}
-            className="relative z-10 flex flex-col gap-2"
+            className="relative z-10 flex flex-col gap-3"
           >
+            <Reveal delay={titleStart - 100} className="sm:hidden">
+              <Link
+                href="/projects"
+                className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  className="h-3.5 w-3.5"
+                  aria-hidden
+                >
+                  <path
+                    d="M12 7H2m0 0 4-4M2 7l4 4"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Back to Our Projects
+                <span
+                  aria-hidden
+                  className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
+                />
+              </Link>
+            </Reveal>
             <WordReveal
               as="h1"
               text={project.name}
@@ -313,12 +310,13 @@ function ProjectFacts({ project }: { project: Project }) {
   }
   const total = facts.length + 1; // + Carpet Area cell
   const mdColsClass = total === 4 ? "md:grid-cols-4" : "md:grid-cols-3";
-  const lastBottomRowStart = total % 2 === 0 ? total - 2 : total - 1;
+  // Rows separate via each lower cell's border-t; a border-b would double it.
+  // Only the cell sitting above an empty slot (odd count) needs its own line.
   const cellClass = (i: number) =>
     `flex flex-col gap-3 border-t border-[#464646] px-[30px] py-10 md:py-14 ${
       i < total - 1 ? "md:border-r md:border-[#464646]" : ""
     } ${
-      i < lastBottomRowStart ? "border-b border-[#464646] md:border-b-0" : ""
+      total % 2 === 1 && i === total - 2 ? "border-b border-[#464646] md:border-b-0" : ""
     } ${i % 2 === 0 && i + 1 < total ? "border-r border-[#464646]" : ""}`;
   return (
     <section className="border-t border-[#464646] bg-black">
@@ -506,6 +504,15 @@ function Overview({
       scheduled = false;
       const sec = sectionRef.current;
       if (!sec) return;
+      // Parallax only on md+; on the stacked mobile grid the per-card speeds
+      // push images out of their rows and into the headline.
+      if (!window.matchMedia("(min-width: 768px)").matches) {
+        if (textRef.current) textRef.current.style.transform = "";
+        cardRefs.current.forEach((el) => {
+          if (el) el.style.transform = "";
+        });
+        return;
+      }
       const rect = sec.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       const total = rect.height + vh;
@@ -554,7 +561,7 @@ function Overview({
       ref={sectionRef}
       className="relative scroll-mt-24 overflow-hidden bg-black px-[30px] py-20 md:flex md:h-[100vh] md:min-h-[720px] md:items-center md:py-0"
     >
-      <div className="relative mx-auto grid w-full max-w-[1500px] grid-cols-2 gap-6 md:h-full md:grid-cols-12 md:grid-rows-[1fr_auto_1fr] md:gap-x-10 md:gap-y-10 md:py-20">
+      <div className="relative mx-auto grid w-full max-w-[1500px] grid-cols-1 gap-6 md:h-full md:grid-cols-12 md:grid-rows-[1fr_auto_1fr] md:gap-x-10 md:gap-y-10 md:py-20">
         {tl ? (
           <OverviewCard
             card={tl}
@@ -572,7 +579,7 @@ function Overview({
 
         <div
           ref={textRef}
-          className="col-span-2 flex flex-col items-center justify-center text-center will-change-transform md:col-span-6 md:col-start-4 md:row-start-2"
+          className="col-span-full flex flex-col items-center justify-center py-4 text-center will-change-transform md:col-span-6 md:col-start-4 md:row-start-2 md:py-0"
         >
           <Reveal>
             <h2 className="max-w-[24ch] whitespace-pre-line text-[28px] font-normal leading-[1.15] tracking-tight md:text-[44px]">
@@ -721,6 +728,9 @@ function planImage(src: string): string {
 
 function MasterPlan({ project }: { project: Project }) {
   const block = project.detail?.masterPlan;
+  // Mobile shows the plan full-bleed at its own aspect ratio (measured on
+  // load) so portrait plans aren't letterboxed; md: keeps the 16/10 stage.
+  const [planRatio, setPlanRatio] = useState<number | null>(null);
   if (!block || !block.image.src) return null;
   return (
     <section id="master-plan" className="scroll-mt-24 border-t border-[#464646] bg-black px-[30px] py-16 md:py-24">
@@ -739,15 +749,24 @@ function MasterPlan({ project }: { project: Project }) {
         ) : null}
       </div>
 
-      <div className="mt-10 md:mt-14">
+      <div className="-mx-[30px] mt-10 md:mx-0 md:mt-14">
         <RevealImage
           src={planImage(block.image.src)}
           alt={block.image.alt ?? `${project.name} master plan`}
           fill
           unoptimized
           sizes="100vw"
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            if (img.naturalWidth && img.naturalHeight) {
+              setPlanRatio(img.naturalWidth / img.naturalHeight);
+            }
+          }}
           className="object-contain md:p-12"
-          containerClassName="relative aspect-[16/10] w-full"
+          containerClassName="relative w-full aspect-[var(--plan-aspect)] md:aspect-[16/10]"
+          containerStyle={{
+            ["--plan-aspect" as string]: String(planRatio ?? 16 / 10),
+          }}
         />
       </div>
     </section>
@@ -801,7 +820,7 @@ function FloorPlans({ project }: { project: Project }) {
       <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-10 md:items-start">
         <div className="md:col-span-6">
           {groups.length > 1 ? (
-            <div className="flex w-full border border-[#2a2a2a]">
+            <div className="grid w-full grid-cols-2 border border-[#2a2a2a] md:flex">
               {groups.map((g) => {
                 const active = g.id === activeGroup.id;
                 return (
@@ -813,7 +832,7 @@ function FloorPlans({ project }: { project: Project }) {
                       const firstPlan = g.plans[0]?.id ?? "";
                       setPlanId(firstPlan);
                     }}
-                    className={`-ml-px flex-1 h-[56px] border-l border-[#2a2a2a] px-3 text-center text-[12px] uppercase tracking-[0.08em] first:ml-0 ${
+                    className={`-ml-px -mt-px h-[56px] flex-1 border-l border-t border-[#2a2a2a] px-3 text-center text-[12px] uppercase tracking-[0.08em] last:odd:col-span-2 ${
                       active ? "z-10 bg-white text-black" : "bg-transparent text-white/80 hover:bg-white/5"
                     }`}
                     aria-pressed={active}
