@@ -420,7 +420,7 @@ function PillButton({
     <button
       type="submit"
       disabled={disabled}
-      className={`pill-hover relative block h-[50px] w-full shrink-0 overflow-hidden transition-all duration-300 sm:w-[245px] ${
+      className={`pill-hover relative block h-[50px] w-full min-w-0 overflow-hidden transition-all duration-300 sm:w-[245px] sm:shrink-0 ${
         disabled
           ? "bg-neutral-955 border border-neutral-800 text-neutral-500 cursor-not-allowed"
           : "bg-white text-black"
@@ -672,7 +672,7 @@ function CareersForm() {
               onChange={(e) => setMessage(e.target.value)}
             />
             <HoneypotField />
-            <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-4 justify-start">
+            <div className="mt-2 flex items-center justify-start gap-4">
               <ResumeUploadButton file={resume} onChange={setResume} />
               <PillButton
                 label={sending ? "Sending..." : "Send Application"}
@@ -755,7 +755,7 @@ function ResumeUploadButton({
   };
 
   return (
-    <div className="relative w-full shrink-0 sm:w-auto">
+    <div className="relative w-full min-w-0 sm:w-auto sm:shrink-0">
       <input
         ref={fileInputRef}
         type="file"
