@@ -114,15 +114,13 @@ function IntroSection() {
   );
 }
 
-// aspect = intrinsic width / height, so the mobile column can render each
-// photo at its natural height instead of a viewport-cropped slide.
 const PROJECT_IMAGES = [
-  { src: "/projects/golden-square-bharuch/Building_Front_Daylight_Full_Elevation.webp", aspect: 2048 / 2055 },
-  { src: "/projects/golden-square-bharuch/Interior_Atrium_Mall_View.webp", aspect: 2048 / 1365 },
-  { src: "/projects/golden-square-bharuch/Cinemas entry-01.webp", aspect: 2048 / 1024 },
-  { src: "/projects/golden-square/Building_Street_Perspective_View.webp", aspect: 2000 / 979 },
-  { src: "/projects/golden-square/Interior_Mall_Retail_Floor.webp", aspect: 2000 / 1364 },
-  { src: "/projects/golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp", aspect: 4096 / 1180 },
+  { src: "/projects/golden-square-bharuch/Building_Front_Daylight_Full_Elevation.webp" },
+  { src: "/projects/golden-square-bharuch/Interior_Atrium_Mall_View.webp" },
+  { src: "/projects/golden-square-bharuch/Cinemas entry-01.webp" },
+  { src: "/projects/golden-square/Building_Street_Perspective_View.webp" },
+  { src: "/projects/golden-square/Interior_Mall_Retail_Floor.webp" },
+  { src: "/projects/golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp" },
 ];
 
 function StatsGallery() {
@@ -167,8 +165,8 @@ function StatsGallery() {
         </Reveal>
       </div>
 
-      {/* Mobile: stacked column, each photo at its natural height */}
-      <div className="flex flex-col gap-[14px] md:hidden">
+      {/* Mobile: fixed-height swipeable carousel (native scroll-snap) */}
+      <div className="no-scrollbar flex snap-x snap-mandatory gap-[10px] overflow-x-auto px-[7.5vw] pb-[40px] md:hidden">
         {PROJECT_IMAGES.map((img, i) => (
           <RevealImage
             key={img.src}
@@ -176,10 +174,9 @@ function StatsGallery() {
             alt=""
             fill
             priority={i === 0}
-            sizes="100vw"
+            sizes="85vw"
             className="object-cover"
-            containerClassName="relative w-full"
-            containerStyle={{ aspectRatio: img.aspect }}
+            containerClassName="relative h-[420px] w-[85vw] shrink-0 snap-center snap-always"
           />
         ))}
       </div>

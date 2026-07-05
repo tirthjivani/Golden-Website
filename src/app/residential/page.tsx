@@ -169,19 +169,17 @@ function IntroSection() {
   );
 }
 
-// aspect = intrinsic width / height, so the mobile column can render each
-// photo at its natural height instead of a viewport-cropped slide.
 const PROJECT_IMAGES = [
   // Buildings
-  { src: "/projects/golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp", aspect: 2048 / 1664 },
-  { src: "/projects/golden-heaven/Building_Full_Elevation_Twilight.webp", aspect: 5000 / 5479 },
-  { src: "/projects/golden-residency/Building_Full_Front_Elevation_Day.webp", aspect: 2000 / 1395 },
+  { src: "/projects/golden-luxuria/Building_Full_Front_Elevation_Golden_Hour.webp" },
+  { src: "/projects/golden-heaven/Building_Full_Elevation_Twilight.webp" },
+  { src: "/projects/golden-residency/Building_Full_Front_Elevation_Day.webp" },
   // Amenities
-  { src: "/projects/golden-luxuria/Interior_Fitness_Gym_Amenities.webp", aspect: 4500 / 2813 },
-  { src: "/projects/golden-heaven/Garden_Landscaping_Water_Feature.webp", aspect: 5000 / 2918 },
-  { src: "/projects/golden-luxuria/Children_Play_Area_Community_Park.webp", aspect: 5000 / 2813 },
+  { src: "/projects/golden-luxuria/Interior_Fitness_Gym_Amenities.webp" },
+  { src: "/projects/golden-heaven/Garden_Landscaping_Water_Feature.webp" },
+  { src: "/projects/golden-luxuria/Children_Play_Area_Community_Park.webp" },
   // Zen garden
-  { src: "/projects/golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.webp", aspect: 4985 / 2240 },
+  { src: "/projects/golden-luxuria/Landscape_Zen_Garden_Buddha_Statue.webp" },
 ];
 
 function StatsGallery() {
@@ -237,8 +235,8 @@ function StatsGallery() {
         </Reveal>
       </div>
 
-      {/* Mobile: stacked column, each photo at its natural height */}
-      <div className="flex flex-col gap-[14px] md:hidden">
+      {/* Mobile: fixed-height swipeable carousel (native scroll-snap) */}
+      <div className="no-scrollbar flex snap-x snap-mandatory gap-[10px] overflow-x-auto px-[7.5vw] pb-[40px] md:hidden">
         {PROJECT_IMAGES.map((img, i) => (
           <RevealImage
             key={img.src}
@@ -246,10 +244,9 @@ function StatsGallery() {
             alt=""
             fill
             priority={i === 0}
-            sizes="100vw"
+            sizes="85vw"
             className="object-cover"
-            containerClassName="relative w-full"
-            containerStyle={{ aspectRatio: img.aspect }}
+            containerClassName="relative h-[420px] w-[85vw] shrink-0 snap-center snap-always"
           />
         ))}
       </div>
