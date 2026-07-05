@@ -14,6 +14,7 @@ import {
 import { RevealImage } from "@/components/RevealImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PROJECT_TRANSITION_MS } from "@/components/ProjectTransitionOverlay";
+import { HERO_ASPECT } from "@/lib/heroAspect";
 import {
   getProjectTransition,
   setProjectTransition,
@@ -145,6 +146,7 @@ function ProjectsBody({ initialFilter }: { initialFilter: Filter }) {
       src: projectImage(heroRef.src),
       previewSrc,
       alt: heroRef.alt ?? project.name,
+      heroAspect: HERO_ASPECT[project.slug],
       rect: {
         top: rect.top,
         left: rect.left,

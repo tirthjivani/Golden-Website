@@ -5,6 +5,9 @@ export type ProjectTransitionState = {
    *  never flashes black while the full-res hero is still downloading. */
   previewSrc?: string;
   alt: string;
+  /** Hero image width/height — the mobile hero renders at this natural ratio,
+   *  so the zoom must end at the same height. */
+  heroAspect?: number;
   rect: { top: number; left: number; width: number; height: number };
   viewport: { w: number; h: number };
   expanded: boolean;

@@ -30,14 +30,19 @@ export default function ProjectTransitionOverlay() {
   }, [slug]);
 
   if (!state) return null;
-  const { rect, expanded, src, previewSrc, alt } = state;
+  const { rect, expanded, src, previewSrc, alt, heroAspect } = state;
 
-  // Expand to the detail hero's actual size (80svh on mobile, full screen on
-  // md+) so the overlay hands off without a jump when it clears.
-  const heroHeight =
+  // Expand to the detail hero's actual box so the overlay hands off without
+  // a jump: on mobile the hero sits below the 80px navbar at
+  // max(50svh, natural image height); md+ stays full screen from the top.
+  const isMd =
     typeof window !== "undefined" &&
-    window.matchMedia("(min-width: 768px)").matches
-      ? "100vh"
+    window.matchMedia("(min-width: 768px)").matches;
+  const heroTop = isMd ? 0 : 80;
+  const heroHeight = isMd
+    ? "100vh"
+    : heroAspect
+      ? `max(50svh, calc(100vw / ${heroAspect}))`
       : "80svh";
 
   return (
@@ -57,7 +62,7 @@ export default function ProjectTransitionOverlay() {
       className="pointer-events-none fixed z-[100] overflow-hidden bg-black"
       style={{
         left: expanded ? 0 : `${rect.left}px`,
-        top: expanded ? 0 : `${rect.top}px`,
+        top: expanded ? `${heroTop}px` : `${rect.top}px`,
         width: expanded ? "100vw" : `${rect.width}px`,
         height: expanded ? heroHeight : `${rect.height}px`,
         transition: `width ${PROJECT_TRANSITION_MS}ms ${EASE}, height ${PROJECT_TRANSITION_MS}ms ${EASE}, left ${PROJECT_TRANSITION_MS}ms ${EASE}, top ${PROJECT_TRANSITION_MS}ms ${EASE}`,

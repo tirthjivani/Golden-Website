@@ -74,7 +74,7 @@ export function ProjectDetailView({
   const sections = getOrderedSections(project);
 
   return (
-    <main className="relative min-h-screen w-full bg-black text-white">
+    <main className="relative min-h-screen w-full bg-black pt-[80px] text-white md:pt-0">
       {sections.map((s) => {
         if (s.kind === "custom") {
           return <CustomSectionView key={s.key} section={s.custom} />;
@@ -122,13 +122,14 @@ function Hero({
   }, [fromProjects]);
 
   return (
+    <>
     <section
       ref={sectionRef}
       className={`relative w-full ${
         !heroSrc
           ? "min-h-[60svh] md:min-h-[40svh]"
           : heroAspect
-          ? "h-[80svh] md:h-auto md:min-h-[100svh]"
+          ? "min-h-[50svh] md:min-h-[100svh]"
           : "h-[80svh] md:h-[200vh] md:min-h-[1280px]"
       }`}
       style={heroSrc && heroAspect ? { aspectRatio: String(heroAspect) } : undefined}
@@ -150,14 +151,16 @@ function Hero({
       ) : (
         <div className="absolute inset-0 bg-black" />
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
+      {/* Mobile shows the plain image at its natural ratio with the title
+          below it; the gradients + overlaid title are a md+ treatment. */}
+      <div className="hidden bg-gradient-to-b from-black/40 via-transparent to-black/65 absolute inset-0 md:block" />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black"
+        className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[150px] bg-gradient-to-b from-transparent to-black md:block"
       />
 
-      <div className="absolute inset-0 z-10 flex flex-col justify-end">
-        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[48px] pl-[30px] md:pb-[90px]">
+      <div className="absolute inset-0 z-10 hidden flex-col justify-end md:flex">
+        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[90px] pl-[30px]">
           <div
             className="pointer-events-none absolute inset-x-0 top-0 bottom-0"
             style={{
@@ -168,34 +171,6 @@ function Hero({
             ref={titleRef}
             className="relative z-10 flex flex-col gap-3"
           >
-            <Reveal delay={titleStart - 100} className="sm:hidden">
-              <Link
-                href="/projects"
-                className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  className="h-3.5 w-3.5"
-                  aria-hidden
-                >
-                  <path
-                    d="M12 7H2m0 0 4-4M2 7l4 4"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                Back to Our Projects
-                <span
-                  aria-hidden
-                  className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
-                />
-              </Link>
-            </Reveal>
             <WordReveal
               as="h1"
               text={project.name}
@@ -206,6 +181,44 @@ function Hero({
         </div>
       </div>
     </section>
+
+    <div className="flex flex-col gap-3 px-[30px] pb-10 pt-6 md:hidden">
+      <Reveal delay={titleStart - 100}>
+        <Link
+          href="/projects"
+          className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            className="h-3.5 w-3.5"
+            aria-hidden
+          >
+            <path
+              d="M12 7H2m0 0 4-4M2 7l4 4"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Back to Our Projects
+          <span
+            aria-hidden
+            className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
+          />
+        </Link>
+      </Reveal>
+      <WordReveal
+        as="span"
+        text={project.name}
+        startDelay={titleStart}
+        className="text-[44px] font-medium leading-[1] tracking-tight"
+      />
+    </div>
+    </>
   );
 }
 
