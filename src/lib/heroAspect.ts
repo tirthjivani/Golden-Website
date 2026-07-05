@@ -10,5 +10,5 @@ export const HERO_ASPECT: Record<string, number> = {
   "golden-homes": 1.3333,
   "golden-palm-villa": 1.3451,
   "golden-square": 2.2792,
-  "golden-palm-plaza": 2.2237
+  "golden-palm-plaza": 2.2274
 };

@@ -7,6 +7,7 @@ import {
   getProjectTransition,
   subscribeProjectTransition,
 } from "@/lib/projectTransition";
+import { FULL_BLEED_HERO_SLUGS } from "@/lib/heroStyle";
 
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
 export const PROJECT_TRANSITION_MS = 750;
@@ -33,17 +34,21 @@ export default function ProjectTransitionOverlay() {
   const { rect, expanded, src, previewSrc, alt, heroAspect } = state;
 
   // Expand to the detail hero's actual box so the overlay hands off without
-  // a jump: on mobile the hero sits below the 80px navbar at
-  // max(50svh, natural image height); md+ stays full screen from the top.
+  // a jump. md+ is always full screen from the top; on mobile, full-bleed
+  // pages end at 80svh from the top while the rest sit below the 80px navbar
+  // at max(50svh, natural image height).
   const isMd =
     typeof window !== "undefined" &&
     window.matchMedia("(min-width: 768px)").matches;
-  const heroTop = isMd ? 0 : 80;
+  const fullBleed = FULL_BLEED_HERO_SLUGS.has(state.slug);
+  const heroTop = isMd || fullBleed ? 0 : 80;
   const heroHeight = isMd
     ? "100vh"
-    : heroAspect
-      ? `max(50svh, calc(100vw / ${heroAspect}))`
-      : "80svh";
+    : fullBleed
+      ? "80svh"
+      : heroAspect
+        ? `max(50svh, calc(100vw / ${heroAspect}))`
+        : "80svh";
 
   return (
     <>
@@ -96,19 +101,20 @@ export default function ProjectTransitionOverlay() {
         }}
       />
 
-      {/* Dark gradient eases in as the image expands, matching the detail hero
-          so the handoff at the end of the zoom is seamless. */}
+      {/* Dark gradient eases in as the image expands, matching the detail
+          hero so the handoff at the end of the zoom is seamless. Mobile
+          natural-ratio heroes have no gradients, so skip the fade there. */}
       <div
         className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65"
         style={{
-          opacity: expanded ? 1 : 0,
+          opacity: expanded && (isMd || fullBleed) ? 1 : 0,
           transition: `opacity ${PROJECT_TRANSITION_MS}ms ${EASE}`,
         }}
       />
       <div
         className="absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black"
         style={{
-          opacity: expanded ? 1 : 0,
+          opacity: expanded && (isMd || fullBleed) ? 1 : 0,
           transition: `opacity ${PROJECT_TRANSITION_MS}ms ${EASE}`,
         }}
       />

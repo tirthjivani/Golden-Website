@@ -7,6 +7,7 @@ import { EnquiryModal } from "@/components/EnquiryModal";
 import { MinimalMap } from "@/components/MinimalMap";
 import { RevealImage } from "@/components/RevealImage";
 import { setProjectTransition } from "@/lib/projectTransition";
+import { FULL_BLEED_HERO_SLUGS } from "@/lib/heroStyle";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
   ArrowUpRight,
@@ -74,7 +75,11 @@ export function ProjectDetailView({
   const sections = getOrderedSections(project);
 
   return (
-    <main className="relative min-h-screen w-full bg-black pt-[80px] text-white md:pt-0">
+    <main
+      className={`relative min-h-screen w-full bg-black text-white ${
+        FULL_BLEED_HERO_SLUGS.has(project.slug) ? "" : "pt-[80px] md:pt-0"
+      }`}
+    >
       {sections.map((s) => {
         if (s.kind === "custom") {
           return <CustomSectionView key={s.key} section={s.custom} />;
@@ -107,6 +112,7 @@ function Hero({
   const detail = project.detail!;
   const heroSrc = projectImage(detail.hero.image.src);
   const fromProjects = useFromProjects();
+  const fullBleed = FULL_BLEED_HERO_SLUGS.has(project.slug);
 
   const titleStart = fromProjects ? 250 : 450;
   const sectionRef = useRef<HTMLElement>(null);
@@ -129,7 +135,9 @@ function Hero({
         !heroSrc
           ? "min-h-[60svh] md:min-h-[40svh]"
           : heroAspect
-          ? "min-h-[50svh] md:min-h-[100svh]"
+          ? fullBleed
+            ? "h-[80svh] md:h-auto md:min-h-[100svh]"
+            : "min-h-[50svh] md:min-h-[100svh]"
           : "h-[80svh] md:h-[200vh] md:min-h-[1280px]"
       }`}
       style={heroSrc && heroAspect ? { aspectRatio: String(heroAspect) } : undefined}
@@ -151,16 +159,31 @@ function Hero({
       ) : (
         <div className="absolute inset-0 bg-black" />
       )}
-      {/* Mobile shows the plain image at its natural ratio with the title
-          below it; the gradients + overlaid title are a md+ treatment. */}
-      <div className="hidden bg-gradient-to-b from-black/40 via-transparent to-black/65 absolute inset-0 md:block" />
+      {/* Full-bleed pages keep the gradients + overlaid title on mobile too;
+          the rest show the plain natural-ratio image with the title below,
+          and the gradients + overlaid title become a md+ treatment. */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65 md:block ${
+          fullBleed ? "" : "hidden"
+        }`}
+      />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[150px] bg-gradient-to-b from-transparent to-black md:block"
+        className={`pointer-events-none absolute inset-x-0 bottom-0 h-[150px] bg-gradient-to-b from-transparent to-black md:block ${
+          fullBleed ? "" : "hidden"
+        }`}
       />
 
-      <div className="absolute inset-0 z-10 hidden flex-col justify-end md:flex">
-        <div className="sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pb-[90px] pl-[30px]">
+      <div
+        className={`absolute inset-0 z-10 flex-col justify-end md:flex ${
+          fullBleed ? "flex" : "hidden"
+        }`}
+      >
+        <div
+          className={`sticky bottom-0 left-0 flex h-[350px] w-full flex-col justify-end pl-[30px] md:pb-[90px] ${
+            fullBleed ? "pb-[48px]" : "pb-[90px]"
+          }`}
+        >
           <div
             className="pointer-events-none absolute inset-x-0 top-0 bottom-0"
             style={{
@@ -171,6 +194,11 @@ function Hero({
             ref={titleRef}
             className="relative z-10 flex flex-col gap-3"
           >
+            {fullBleed ? (
+              <Reveal delay={titleStart - 100} className="sm:hidden">
+                <BackToProjectsLink />
+              </Reveal>
+            ) : null}
             <WordReveal
               as="h1"
               text={project.name}
@@ -182,34 +210,10 @@ function Hero({
       </div>
     </section>
 
+    {fullBleed ? null : (
     <div className="flex flex-col gap-3 px-[30px] pb-10 pt-6 md:hidden">
       <Reveal delay={titleStart - 100}>
-        <Link
-          href="/projects"
-          className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            className="h-3.5 w-3.5"
-            aria-hidden
-          >
-            <path
-              d="M12 7H2m0 0 4-4M2 7l4 4"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Back to Our Projects
-          <span
-            aria-hidden
-            className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
-          />
-        </Link>
+        <BackToProjectsLink />
       </Reveal>
       <WordReveal
         as="span"
@@ -218,7 +222,39 @@ function Hero({
         className="text-[44px] font-medium leading-[1] tracking-tight"
       />
     </div>
+    )}
     </>
+  );
+}
+
+function BackToProjectsLink() {
+  return (
+    <Link
+      href="/projects"
+      className="cta-underline relative inline-flex w-fit items-center gap-2 pb-1 text-sm font-medium text-white/85 hover:text-white"
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+        className="h-3.5 w-3.5"
+        aria-hidden
+      >
+        <path
+          d="M12 7H2m0 0 4-4M2 7l4 4"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      Back to Our Projects
+      <span
+        aria-hidden
+        className="cta-underline-bar absolute bottom-0 left-0 h-px w-full bg-current"
+      />
+    </Link>
   );
 }
 

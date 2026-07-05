@@ -3534,22 +3534,16 @@
       "status": "Completed",
       "images": [
         {
-          "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp"
+          "src": "golden-palm-plaza/Commercial_Plaza_Street_Front_Day.webp"
         },
         {
-          "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp"
-        },
-        {
-          "src": "/commercial-hero.webp"
-        },
-        {
-          "src": "/commercial-hero.webp"
+          "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp"
         }
       ],
       "detail": {
         "hero": {
           "image": {
-            "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp"
+            "src": "golden-palm-plaza/Commercial_Plaza_Street_Front_Day.webp"
           },
           "eyebrow": "Retail & Office",
           "tagline": "Premium retail and office spaces in the heart of Ankleshwar."
@@ -3558,11 +3552,11 @@
           "headline": "First Look",
           "items": [
             {
-              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp",
+              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp",
               "caption": "Entrance Gate (Night)"
             },
             {
-              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp",
+              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp",
               "caption": "Front Elevation (Day)"
             }
           ]
@@ -3575,11 +3569,6 @@
           "cards": [
             {
               "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp",
-              "metric": "Ankleshwar",
-              "label": "Location"
-            },
-            {
-              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp",
               "metric": "100 Units",
               "label": "Total Inventory"
             }
@@ -3589,11 +3578,11 @@
           "headline": "Visual Highlights",
           "items": [
             {
-              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp",
+              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp",
               "caption": "High-visibility Retail Hub"
             },
             {
-              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp",
+              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp",
               "caption": "Premium Night Visibility"
             },
             {
@@ -3608,9 +3597,6 @@
         },
         "amenities": {
           "headline": "Building Amenities",
-          "feature": {
-            "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp"
-          },
           "items": [
             {
               "key": "elevators",
@@ -3708,16 +3694,10 @@
           "body": "A look at the plaza.",
           "images": [
             {
-              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective.webp"
+              "src": "golden-palm-plaza/Commercial_Plaza_Street_Front_Day.webp"
             },
             {
               "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day.webp"
-            },
-            {
-              "src": "golden-palm-plaza/Commercial_Plaza_Gate_Side_Night_Perspective (1) 1.webp"
-            },
-            {
-              "src": "golden-palm-plaza/Commercial_Plaza_Main_Front_Elevation_Day 1.webp"
             }
           ]
         },
